@@ -1,12 +1,17 @@
-name = "hoonsu.io"
+name = "mymollu"
 
 workers_dev = true
 main = "./build/index.js"
 # https://developers.cloudflare.com/workers/platform/compatibility-dates
 compatibility_date = "2023-04-20"
 
+[[kv_namespaces]]
+  binding = "KV_USERDATA"
+  id = "a613bc84ffeb4362b3deaa05c617a7b3"
+  preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
+
 [site]
   bucket = "./public"
 
 [build]
-  command = "npm run build"
+  command = "yarn build"
