@@ -1,5 +1,7 @@
 import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/cloudflare";
 import { Env } from "~/env";
+import { getAllStudents } from "~/models/student";
+import { StudentState } from "~/models/studentState";
 
 function userStateKey(username: string) {
   return `student-states:${username}`;
@@ -19,7 +21,13 @@ export const loader: LoaderFunction = async ({ context, request }) => {
     return json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
-  return json({ states: JSON.parse(userState) });
+  const allStudents = getAllStudents();
+  const states = JSON.parse(userState) as StudentState[];
+
+  return json({ states: states.map((state) => ({
+    ...state,
+    student: allStudents.find((student) => student.id === state.student.id),
+  }))});
 };
 
 export const action: ActionFunction = async ({ context, request }) => {

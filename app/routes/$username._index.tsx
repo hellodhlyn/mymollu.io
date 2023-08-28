@@ -1,9 +1,10 @@
 import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
-import { Link, useLoaderData, useRouteError } from "@remix-run/react";
+import { Form, Link, useLoaderData, useRouteError } from "@remix-run/react";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
-import { Star, Archery } from "iconoir-react";
+import { Star, Archery, ArrowRight } from "iconoir-react";
 import { useEffect, useState } from "react";
 import FilterButton from "~/components/FilterButton";
+import { PartyGenerator } from "~/components/PartyGenerator";
 import { fetchAllStudents, fetchStudentStates } from "~/fetches/api";
 import { Student } from "~/models/student";
 import { StudentState } from "~/models/studentState";
@@ -12,7 +13,7 @@ type LoaderData = {
   username: string;
 }
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ params }) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
@@ -59,6 +60,8 @@ export default function UserPage() {
 
   const [allStudents, setAllStudents]  = useState<Student[]>([]);
   const [states, setStates] = useState<StudentState[]>([]);
+  const [partyStudents, setPartyStudents] = useState<(Student | null)[]>(new Array(6).fill(null));
+
   const [filter, setFilter] = useState<Filter>({ minimumTier: 1, attackTypes: [] });
 
   const onActivateAttackType = (activated: boolean, attackType: Student["attackType"]) => {
@@ -66,6 +69,37 @@ export default function UserPage() {
       ...prev,
       attackTypes: activated ? [...prev.attackTypes, attackType] : prev.attackTypes.filter((type) => type !== attackType),
     }));
+  };
+
+  const addPartyStudent = (student: Student) => () => {
+    if (partyStudents.filter((each) => each !== null).length >= 6 ||
+        partyStudents.includes(student)) {
+      return;
+    }
+
+    if (student.role === "striker") {
+      const currentStrikers = partyStudents.filter((each) => each?.role === "striker");
+      if (currentStrikers.length >= 4) {
+        return;
+      }
+
+      setPartyStudents((prev) => {
+        const newPartyStudents = [...prev];
+        newPartyStudents[newPartyStudents.indexOf(null)] = student;
+        return newPartyStudents;
+      });
+    } else {
+      const currentSpecials = partyStudents.filter((each) => each?.role === "special");
+      if (currentSpecials.length >= 2) {
+        return;
+      }
+
+      setPartyStudents((prev) => {
+        const newPartyStudents = [...prev];
+        newPartyStudents[prev[4] == null ? 4 : 5] = student;
+        return newPartyStudents;
+      });
+    }
   };
 
   useEffect(() => {
@@ -86,6 +120,12 @@ export default function UserPage() {
           <p className="cursor-pointer text-gray-500 hover:underline">← 처음으로</p>
         </Link>
         <h1 className="my-2 font-black text-4xl">@{username}의 학생부</h1>
+        <Link to="./parties">
+          <div className="my-4 flex items-center text-xl cursor-pointer hover:underline">
+            <span>편성파티 보기</span>
+            <ArrowRight className="h-5 w-5 ml-1" strokeWidth={2} />
+          </div>
+        </Link>
       </div>
 
       <div className="my-8">
@@ -118,7 +158,11 @@ export default function UserPage() {
         <p className="font-bold text-xl my-2">보유 학생</p>
         <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
           {applyFilter(states, filter).map(({ student }) => (
-            <div key={`list-students-${student.id}`}>
+            <div
+              key={`list-students-${student.id}`}
+              className="hover:scale-105 cursor-pointer transition"
+              onClick={addPartyStudent(student)}
+            >
               <img className="rounded-lg" src={student.imageUrl} alt={student.name} />
               <p className="text-center text-sm">{student.name}</p>
             </div>
@@ -138,6 +182,13 @@ export default function UserPage() {
         </div>
       </div>
 
+      <div className="fixed w-screen bottom-0 left-0">
+        <Form action="/api/parties" method="post">
+          <PartyGenerator students={partyStudents} onReset={() => setPartyStudents(new Array(6).fill(null))} />
+          <input type="hidden" name="username" value={username} />
+          <input type="hidden" name="studentIds" value={JSON.stringify(partyStudents.filter((each) => each !== null).map((each) => each?.id))} />
+        </Form>
+      </div>
     </>
   );
 };
