@@ -34,7 +34,7 @@ export function getAllStudents(): Student[] {
   return studentsData.filter((row) => row.IsReleased[1]).map((row) => ({
     id: row.Id.toString(),
     name: row.Name,
-    imageUrl: `https://schale.gg/images/student/collection/${row.CollectionTexture}.webp`,
+    imageUrl: `https://schale.gg/images/student/collection/${row.Id}.webp`,
     tier: row.StarGrade,
     attackType: parseAttackType(row.BulletType),
     role: parseRole(row.SquadType),
