@@ -1,5 +1,10 @@
 import FilterButton from "./FilterButton";
+import Header from "./Header";
 
-export default {
+export {
+  // Molecules
   FilterButton,
+
+  // Organisms
+  Header,
 };

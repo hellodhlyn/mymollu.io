@@ -62,6 +62,7 @@ export default function UserPage() {
   const [states, setStates] = useState<StudentState[]>([]);
   const [partyStudents, setPartyStudents] = useState<(Student | null)[]>(new Array(6).fill(null));
 
+  const [loaded, setLoaded] = useState(false);
   const [filter, setFilter] = useState<Filter>({ minimumTier: 1, attackTypes: [] });
 
   const onActivateAttackType = (activated: boolean, attackType: Student["attackType"]) => {
@@ -103,22 +104,31 @@ export default function UserPage() {
   };
 
   useEffect(() => {
-    if (allStudents && allStudents.length > 0) {
+    if (loaded) {
       return;
     }
 
-    fetchAllStudents().then((students) => {
-      setAllStudents(students);
-      fetchStudentStates(username).then((states) => setStates(states));
+    Promise.all([
+      fetchAllStudents(),
+      fetchStudentStates(username),
+    ]).then((values) => {
+      setAllStudents(values[0]);
+      setStates(values[1]);
+      setLoaded(true);
     });
-  }, [allStudents, setAllStudents]);
+  }, [loaded, allStudents, states]);
+
+  if (!loaded) {
+    return null;
+  } else if (loaded && !states) {
+    return (
+      <p>선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
+    );
+  }
 
   return (
     <>
       <div className="my-12">
-        <Link to="/">
-          <p className="cursor-pointer text-gray-500 hover:underline">← 처음으로</p>
-        </Link>
         <h1 className="my-2 font-black text-4xl">@{username}의 학생부</h1>
         <Link to="./parties">
           <div className="my-4 flex items-center text-xl cursor-pointer hover:underline">

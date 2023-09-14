@@ -5,6 +5,7 @@ import { StudentState } from "~/models/studentState";
 import { fetchAllStudents } from "~/fetches/api";
 import FilterButton from "~/components/FilterButton";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
+import Title from "~/components/atoms/typography/Title";
 
 export const meta: V2_MetaFunction = () => [
   { title: "학생부 편집 | MyMollu" },
@@ -50,36 +51,18 @@ export default function EditPage() {
 
   return (
     <>
-      <div className="my-12">
-        <Link to="/">
-          <p className="cursor-pointer text-gray-500 hover:underline">← 처음으로</p>
-        </Link>
-        <h1 className="my-2 font-black text-4xl">학생부 편집</h1>
-      </div>
+      <Title text="학생부 편집" />
 
       <Form method="post" action="/api/student-states">
-        <div className="my-8">
-          <p className="font-bold text-xl my-1">저장/불러오기 (임시)</p>
-          <p className="text-gray-500 my-1 text-sm">추후 로그인 기능으로 대체</p>
-          <div className="flex my-4">
-            <input
-              type="text" name="username" placeholder="사용자 이름" className="p-2 border w-1/2"
-              value={username} onChange={(e) => setUsername(e.target.value)}
-            />
-            <input type="hidden" name="states" value={JSON.stringify(students.filter(({ owned }) => owned))} />
-            <button type="button" className="inline-block ml-2 px-4 py-2 border rounded-lg shadow-lg" onClick={loadState}>불러오기</button>
-            <button type="submit" className="inline-block ml-2 px-4 py-2 bg-blue-500 rounded-lg text-white shadow-lg shadow-blue-300">저장</button>
-          </div>
-        </div>
-
         <div className="my-8 items-center">
-          <p className="font-bold text-xl my-2">필터</p>
+          <p className="font-bold text-xl my-4">필터</p>
           <FilterButton
             label="3성 이하 감추기" active={filter.minimumTier === 3}
             onActivate={(activated) => setFilter({ minimumTier: activated ? 3 : 1 })}
           />
         </div>
 
+        <p className="font-bold text-xl my-4">학생 목록</p>
         <div className="grid grid-cols-6 md:grid-cols-8 gap-2">
           {students.filter(({ student }) => student.tier >= filter.minimumTier).map(({ student, owned }) => (
             <div
