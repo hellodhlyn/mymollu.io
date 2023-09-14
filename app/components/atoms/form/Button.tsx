@@ -16,7 +16,7 @@ export default function Button({ text, type, color, onClick }: ButtonProps) {
   return (
     <button
       type={type || "button"}
-      className={`inline-block ml-2 px-4 py-2 rounded-lg shadow-lg transition ${className}`}
+      className={`inline-block mr-2 px-4 py-2 rounded-lg shadow-lg transition ${className}`}
       onClick={onClick}
     >
       {text}

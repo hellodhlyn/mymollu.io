@@ -3,24 +3,31 @@ import { Form, Link, useLoaderData, useRouteError } from "@remix-run/react";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
 import { Star, Archery, ArrowRight } from "iconoir-react";
 import { useEffect, useState } from "react";
+import { authenticator } from "~/auth/authenticator.server";
 import FilterButton from "~/components/FilterButton";
 import { PartyGenerator } from "~/components/PartyGenerator";
+import { Button } from "~/components/atoms/form";
 import { fetchAllStudents, fetchStudentStates } from "~/fetches/api";
 import { Student } from "~/models/student";
 import { StudentState } from "~/models/studentState";
 
 type LoaderData = {
   username: string;
+  currentUsername: string | null;
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
   }
 
   const username = usernameParam.replace("@", "");
-  return json<LoaderData>({ username });
+  const sensei = await authenticator.isAuthenticated(request);
+  return json<LoaderData>({
+    username,
+    currentUsername: sensei?.username || null,
+  });
 };
 
 export const meta: V2_MetaFunction = ({ params }) => {
@@ -56,7 +63,7 @@ function applyFilter(states: StudentState[], filter: Filter): StudentState[] {
 }
 
 export default function UserPage() {
-  const { username } = useLoaderData<LoaderData>();
+  const { username, currentUsername } = useLoaderData<LoaderData>();
 
   const [allStudents, setAllStudents]  = useState<Student[]>([]);
   const [states, setStates] = useState<StudentState[]>([]);
@@ -129,13 +136,20 @@ export default function UserPage() {
   return (
     <>
       <div className="my-12">
-        <h1 className="my-2 font-black text-4xl">@{username}의 학생부</h1>
-        <Link to="./parties">
-          <div className="my-4 flex items-center text-xl cursor-pointer hover:underline">
-            <span>편성파티 보기</span>
-            <ArrowRight className="h-5 w-5 ml-1" strokeWidth={2} />
-          </div>
-        </Link>
+        <h1 className="my-2 font-black text-4xl">
+          {username === currentUsername ? "나" : `@${username}`}의 학생부
+        </h1>
+
+        <div className="my-4">
+          {(username === currentUsername) && (
+            <Link to="/edit">
+              <Button text="학생부 편집" color="primary" />
+            </Link>
+          )}
+          <Link to="./parties">
+            <Button text="편성한 파티" />
+          </Link>
+        </div>
       </div>
 
       <div className="my-8">
@@ -192,13 +206,15 @@ export default function UserPage() {
         </div>
       </div>
 
-      <div className="fixed w-screen bottom-0 left-0">
-        <Form action="/api/parties" method="post">
-          <PartyGenerator students={partyStudents} onReset={() => setPartyStudents(new Array(6).fill(null))} />
-          <input type="hidden" name="username" value={username} />
-          <input type="hidden" name="studentIds" value={JSON.stringify(partyStudents.filter((each) => each !== null).map((each) => each?.id))} />
-        </Form>
-      </div>
+      {(username === currentUsername) && (
+        <div className="fixed w-screen bottom-0 left-0">
+          <Form action="/api/parties" method="post">
+            <PartyGenerator students={partyStudents} onReset={() => setPartyStudents(new Array(6).fill(null))} />
+            <input type="hidden" name="username" value={username} />
+            <input type="hidden" name="studentIds" value={JSON.stringify(partyStudents.filter((each) => each !== null).map((each) => each?.id))} />
+          </Form>
+        </div>
+      )}
     </>
   );
 };

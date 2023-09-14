@@ -1,5 +1,5 @@
 import Title from "./Title";
 
-export default {
+export {
   Title,
 };

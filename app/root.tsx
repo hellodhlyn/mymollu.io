@@ -1,4 +1,4 @@
-import type { LinksFunction } from "@remix-run/cloudflare";
+import { json, type LinksFunction, type LoaderFunction } from "@remix-run/cloudflare";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import {
   Links,
@@ -7,9 +7,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { Header } from "./components";
+import { authenticator } from "./auth/authenticator.server";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -17,7 +19,18 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
 ];
 
+type LoaderData = {
+  currentUsername: string | null;
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const sensei = await authenticator.isAuthenticated(request);
+  return json<LoaderData>({ currentUsername: sensei?.username || null });
+};
+
 export default function App() {
+  const { currentUsername } = useLoaderData<LoaderData>();
+
   return (
     <html lang="ko">
       <head>
@@ -28,7 +41,7 @@ export default function App() {
       </head>
       <body>
         <div className="mx-auto max-w-3xl p-4 pb-32">
-          <Header />
+          <Header currentUsername={currentUsername} />
           <Outlet />
         </div>
         <ScrollRestoration />

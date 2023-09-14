@@ -19,28 +19,18 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Index() {
-  const [showSearch, setShowSearch] = useState(false);
-
   return (
     <>
       <Title text="학생부" />
-      <div className="my-4 flex items-center text-xl cursor-pointer hover:underline">
-        <span>내 학생부</span>
-        <ArrowRight className="h-5 w-5 ml-1" strokeWidth={2} />
-      </div>
-      <div
-        className="my-4 flex items-center text-xl cursor-pointer hover:underline"
-        onClick={() => { setShowSearch(true) }}
-      >
+
+      <div className="my-4 flex items-center text-xl">
         <span>다른 선생님의 학생부</span>
         <ArrowRight className="h-5 w-5 ml-1" strokeWidth={2} />
       </div>
-      {showSearch && (
         <Form method="post">
           <Input name="username" placeholder="@username" />
           <Button type="submit" text="찾기" color="primary" />
         </Form>
-      )}
     </>
   );
 }
