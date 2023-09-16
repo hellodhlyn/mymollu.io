@@ -67,7 +67,7 @@ export function useStateFilter(initStates: StudentState[]): [JSX.Element, Studen
 
   return [(
     <div className="my-8">
-      <p className="my.-2 font-bold text-xl">필터 및 정렬</p>
+      <p className="my-2 font-bold text-xl">필터 및 정렬</p>
       <FilterButtons Icon={Star} buttonProps={[
         {
           text: "3성 미만 감추기",

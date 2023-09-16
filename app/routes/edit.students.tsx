@@ -49,8 +49,6 @@ export default function EditPage() {
 
   return (
     <>
-      <Title text="학생부 편집" />
-
       {StateFilter}
 
       <div className="my-8">

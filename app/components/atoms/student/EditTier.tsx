@@ -9,11 +9,6 @@ type EditTierProps = {
 export default function EditTier(
   { initialTier, currentTier, onUpdate }: EditTierProps,
 ) {
-  const [tier, setTier] = useState(currentTier);
-  useEffect(() => {
-    onUpdate(tier);
-  }, [tier]);
-
   return (
     <div className="text-2xl font-thin">
       <div className="text-yellow-500">
@@ -21,9 +16,9 @@ export default function EditTier(
           <span
             key={`tier-${position}`}
             className="cursor-pointer hover:text-yellow-600 transition"
-            onClick={() => { if (position >= initialTier) { setTier(position); } }}
+            onClick={() => { if (position >= initialTier) { onUpdate(position); } }}
           >
-            {tier >= position ? "★" : "☆"}
+            {currentTier >= position ? "★" : "☆"}
           </span>
         ))}
       </div>
@@ -32,9 +27,9 @@ export default function EditTier(
           <span
             key={`tier-${position}`}
             className="cursor-pointer hover:text-teal-600 transition"
-            onClick={() => { setTier(position); }}
+            onClick={() => { onUpdate(position); }}
           >
-            {tier >= position ? "★" : "☆"}
+            {currentTier >= position ? "★" : "☆"}
           </span>
         ))}
       </div>

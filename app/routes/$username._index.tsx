@@ -106,14 +106,9 @@ export default function UserPage() {
 
         <div className="my-4">
           {(username === currentUsername) && (
-            <>
-              <Link to="/edit/students">
-                <Button text="보유 학생 관리" color="primary" />
-              </Link>
-              <Link to="/edit/specs">
-                <Button text="학생 성장 관리" color="primary" />
-              </Link>
-            </>
+            <Link to="/edit/students">
+              <Button text="학생부 관리" color="primary" />
+            </Link>
           )}
           <Link to="./parties">
             <Button text="편성한 파티" />

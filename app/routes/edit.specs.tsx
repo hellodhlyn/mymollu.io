@@ -1,10 +1,9 @@
 import { LoaderFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authenticator } from "~/auth/authenticator.server";
 import { Button } from "~/components/atoms/form";
-import { Title } from "~/components/atoms/typography";
-import { SpecEditor } from "~/components/organisms/student";
+import { SpecEditBulkActions, SpecEditor } from "~/components/organisms/student";
 import { Env } from "~/env.server";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
@@ -29,13 +28,42 @@ export default function EditSpecs() {
   const loaderData = useLoaderData<LoaderData>();
   const [states, setStates] = useState(loaderData.states);
 
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const setStatesBulkAction = (action: (prevState: StudentState) => StudentState) => {
+    setStates((prev) => prev.map((prevState) => {
+      if (selectedIds.includes(prevState.student.id)) {
+        return action(prevState);
+      } else {
+        return prevState;
+      }
+    }));
+  };
+
   return (
-    <>
-      <Title text="학생 성장 관리" />
+    <div className="my-8">
+      <SpecEditBulkActions
+        selectedAny={selectedIds.length > 0}
+        onToggleAll={(select) => {
+          setSelectedIds(select ? loaderData.states.map(({ student }) => student.id) : [])
+        }}
+        onSelectTier={(tier) => {
+          setStatesBulkAction((prev) => ({ ...prev, tier: prev.student.initialTier <= tier ? tier : prev.tier }));
+          setSelectedIds([]);
+        }}
+      />
+
       <SpecEditor
-        initialStates={loaderData.states.filter(({ owned }) => owned)}
+        states={states.filter(({ owned }) => owned)}
+        selectedIds={selectedIds}
         onUpdate={(state) => {
           setStates((prev) => prev.map((prevState) => prevState.student.id === state.student.id ? state : prevState));
+        }}
+        onSelect={(state, selected) => {
+          if (selected && !selectedIds.includes(state.student.id)) {
+            setSelectedIds((prev) => ([ ...prev, state.student.id ]));
+          } else if (!selected && selectedIds.includes(state.student.id)) {
+            setSelectedIds((prev) => prev.filter((prevId) => prevId !== state.student.id))
+          }
         }}
       />
 
@@ -46,6 +74,6 @@ export default function EditSpecs() {
           <Button type="submit" text="저장하기" color="primary" />
         </Form>
       </div>
-    </>
+    </div>
   );
 }

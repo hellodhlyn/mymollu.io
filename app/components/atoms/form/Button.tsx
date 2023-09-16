@@ -1,11 +1,15 @@
-type ButtonProps = {
-  text: string;
+import { ReactNode } from "react";
+
+export type ButtonProps = {
+  text?: string;
+  children?: ReactNode | ReactNode[];
+
   type?: "button" | "submit" | "reset";
   color?: "primary" | "white";
-  onClick?: () => {};
+  onClick?: () => void;
 };
 
-export default function Button({ text, type, color, onClick }: ButtonProps) {
+export default function Button({ text, children, type, color, onClick }: ButtonProps) {
   let className = "";
   if (color === "primary") {
     className = "bg-blue-500 hover:bg-blue-400 shadow-blue-300 text-white"
@@ -19,7 +23,7 @@ export default function Button({ text, type, color, onClick }: ButtonProps) {
       className={`inline-block my-1 mr-1 md:mr-2 px-4 py-2 rounded-lg shadow-lg transition ${className}`}
       onClick={onClick}
     >
-      {text}
+      {children ?? text}
     </button>
   );
 }

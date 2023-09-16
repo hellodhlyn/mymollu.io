@@ -11,6 +11,7 @@ export default function StudentCards({ cardProps, onSelect }: StudentCardsProps)
     <div className="grid grid-cols-5 md:grid-cols-8 gap-1 sm:gap-2">
       {cardProps.map((prop) => (
         <div
+          key={`student-card-${prop.id}`}
           className={selectable ? "hover:scale-105 cursor-pointer transition" : ""}
           onClick={() => { if (selectable) { onSelect(prop.id); } } }
         >
