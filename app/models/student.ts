@@ -4,7 +4,8 @@ export type Student = {
   id: string;
   name: string;
   imageUrl: string;
-  tier: number;
+  initialTier: number;
+  order: number;
   attackType: "explosive" | "piercing" | "mystic" | "sonic" | null;
   role: "striker" | "special";
 };
@@ -35,7 +36,8 @@ export function getAllStudents(): Student[] {
     id: row.Id.toString(),
     name: row.Name,
     imageUrl: `https://schale.gg/images/student/collection/${row.Id}.webp`,
-    tier: row.StarGrade,
+    initialTier: row.StarGrade,
+    order: row.DefaultOrder,
     attackType: parseAttackType(row.BulletType),
     role: parseRole(row.SquadType),
   }));

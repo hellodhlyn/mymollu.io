@@ -26,12 +26,8 @@ export const loader: LoaderFunction = async ({ context, request }) => {
 
   return json<LoaderData>({
     currentUsername: sensei.username,
-    states: await getUserStudentStates(context.env as Env, sensei.username),
+    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!!,
   });
-};
-
-type Filter = {
-  minimumTier: number;
 };
 
 export const ErrorBoundary: V2_ErrorBoundaryComponent = () => {

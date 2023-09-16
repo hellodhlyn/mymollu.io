@@ -9,11 +9,12 @@ import { Student } from "~/models/student";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
+import { StudentCards } from "~/components/molecules/student";
 
 type LoaderData = {
   username: string;
   currentUsername: string | null;
-  states: StudentState[];
+  states: StudentState[] | null;
 }
 
 export const loader: LoaderFunction = async ({ context, request, params }) => {
@@ -24,10 +25,12 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
 
   const username = usernameParam.replace("@", "");
   const sensei = await authenticator.isAuthenticated(request);
+  let states = await getUserStudentStates(context.env as Env, username, true);
+
   return json<LoaderData>({
     username,
     currentUsername: sensei?.username || null,
-    states: await getUserStudentStates(context.env as Env, username),
+    states,
   });
 };
 
@@ -46,15 +49,10 @@ export const ErrorBoundary: V2_ErrorBoundaryComponent = () => {
   return <p>{error.toString()}</p>
 };
 
-type Filter = {
-  minimumTier: number;
-  attackTypes: Student["attackType"][];
-};
-
 export default function UserPage() {
   const loaderData = useLoaderData<LoaderData>();
   const { username, currentUsername, states } = loaderData;
-  if (!states || states.length === 0) {
+  if (!states) {
     return (
       <p>선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
     );
@@ -63,7 +61,12 @@ export default function UserPage() {
   const [StateFilter, filteredStates] = useStateFilter(states);
   const [partyStudents, setPartyStudents] = useState<(Student | null)[]>(new Array(6).fill(null));
 
-  const addPartyStudent = (student: Student) => () => {
+  const addPartyStudent = (id: string) => {
+    const student = states.find((state) => state.student.id === id)?.student;
+    if (!student) {
+      return;
+    }
+
     if (partyStudents.filter((each) => each !== null).length >= 6 ||
         partyStudents.includes(student)) {
       return;
@@ -103,9 +106,14 @@ export default function UserPage() {
 
         <div className="my-4">
           {(username === currentUsername) && (
-            <Link to="/edit">
-              <Button text="학생부 편집" color="primary" />
-            </Link>
+            <>
+              <Link to="/edit/students">
+                <Button text="보유 학생 관리" color="primary" />
+              </Link>
+              <Link to="/edit/specs">
+                <Button text="학생 성장 관리" color="primary" />
+              </Link>
+            </>
           )}
           <Link to="./parties">
             <Button text="편성한 파티" />
@@ -117,30 +125,27 @@ export default function UserPage() {
 
       <div className="my-8">
         <p className="font-bold text-xl my-2">보유 학생</p>
-        <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
-          {filteredStates.filter(({ owned }) => owned).map(({ student }) => (
-            <div
-              key={`list-students-${student.id}`}
-              className="hover:scale-105 cursor-pointer transition"
-              onClick={addPartyStudent(student)}
-            >
-              <img className="rounded-lg" src={student.imageUrl} alt={student.name} />
-              <p className="text-center text-sm">{student.name}</p>
-            </div>
-          ))}
-        </div>
+        <StudentCards
+          cardProps={filteredStates.filter(({ owned }) => owned).map(({ student, tier }) => ({
+            id: student.id,
+            name: student.name,
+            imageUrl: student.imageUrl,
+            tier: tier ?? student.initialTier,
+          }))}
+          onSelect={(id) => { addPartyStudent(id); }}
+        />
       </div>
 
       <div className="my-8">
         <p className="font-bold text-xl my-2">미보유 학생</p>
-        <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
-          {filteredStates.filter(({ owned }) => !owned).map(({ student }) => (
-            <div key={`list-students-${student.id}`}>
-              <img className="rounded-lg grayscale" src={student.imageUrl} alt={student.name} />
-              <p className="text-center text-sm">{student.name}</p>
-            </div>
-          ))}
-        </div>
+        <StudentCards
+          cardProps={filteredStates.filter(({ owned }) => !owned).map(({ student }) => ({
+            id: student.id,
+            name: student.name,
+            imageUrl: student.imageUrl,
+            grayscale: true,
+          }))}
+        />
       </div>
 
       {(username === currentUsername) && (
