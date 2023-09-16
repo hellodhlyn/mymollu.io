@@ -1,4 +1,4 @@
-import { LoaderFunction, json, redirect } from "@remix-run/cloudflare";
+import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { authenticator } from "~/auth/authenticator.server";
@@ -6,6 +6,10 @@ import { Button } from "~/components/atoms/form";
 import { SpecEditBulkActions, SpecEditor, useStateFilter } from "~/components/organisms/student";
 import { Env } from "~/env.server";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
+
+export const meta: V2_MetaFunction = () => [
+  { title: "학생 성장 관리 | MolluLog" },
+];
 
 type LoaderData = {
   currentUsername: string;

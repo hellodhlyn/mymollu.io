@@ -1,14 +1,13 @@
 import { redirect, type ActionFunction, type V2_MetaFunction } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
 import { ArrowRight } from "iconoir-react";
-import { useState } from "react";
 import { Button, Input } from "~/components/atoms/form";
 import Title from "~/components/atoms/typography/Title";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "MyMollu" },
-    { name: "description", content: "Share your blue archive specs and get feedbacks from your friends." },
+    { title: "MolluLog" },
+    { name: "description", content: "블루 아카이브 학생 목록과 성장 상태를 공유해보세요." },
   ];
 };
 

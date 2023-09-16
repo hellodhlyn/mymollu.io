@@ -1,6 +1,5 @@
 import { LoaderFunction, json } from "@remix-run/cloudflare";
 import { Outlet, useLoaderData, useParams } from "@remix-run/react";
-import { useEffect } from "react";
 import { authenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
 import { Navigation } from "~/components/organisms/navigation";

@@ -1,8 +1,17 @@
-import { LoaderFunction, json } from "@remix-run/cloudflare";
+import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { Env } from "~/env.server";
 import { Party, getUserParties } from "~/models/party";
 import { Student, getAllStudents } from "~/models/student";
+
+export const meta: V2_MetaFunction = ({ params }) => {
+  return [
+    { title: `${params.username || ""}의 학생 편성 | MolluLog`.trim() },
+    { name: "description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
+    { name: "og:title", content: `${params.username || ""}의 학생부 | MolluLog`.trim() },
+    { name: "og:description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
+  ];
+};
 
 type LoaderData = {
   username: string;

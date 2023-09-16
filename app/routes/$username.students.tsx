@@ -35,10 +35,10 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
 
 export const meta: V2_MetaFunction = ({ params }) => {
   return [
-    { title: `${params.username || ""}의 학생부 | MyMollu`.trim() },
-    { name: "description", content: `모집한 학생 목록을 확인해보세요` },
-    { name: "og:title", content: `${params.username || ""}의 학생부 | MyMollu`.trim() },
-    { name: "og:description", content: `모집한 학생 목록을 확인해보세요` },
+    { title: `${params.username || ""}의 학생부 | MolluLog`.trim() },
+    { name: "description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
+    { name: "og:title", content: `${params.username || ""}의 학생부 | MolluLog`.trim() },
+    { name: "og:description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
   ];
 };
 

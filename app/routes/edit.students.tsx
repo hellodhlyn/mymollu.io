@@ -9,7 +9,7 @@ import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 
 export const meta: V2_MetaFunction = () => [
-  { title: "학생부 편집 | MyMollu" },
+  { title: "학생 목록 관리 | MolluLog" },
 ];
 
 type LoaderData = {
