@@ -13,9 +13,15 @@ export default function Header({ currentUsername }: HeaderProps) {
           <span>처음으로</span>
         </Link>
         {currentUsername ? (
-          <Link to={`/@${currentUsername}`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
-            <span>나의 학생부</span>
-          </Link>
+          <>
+            <Link to={`/@${currentUsername}`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
+              <span>나의 학생부</span>
+            </Link>
+            <Link to={`/edit/students`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
+              <span>학생부 관리</span>
+            </Link>
+          </>
+          
         ) : (
           <Link to="/signin">
             <span>로그인</span>
