@@ -3,21 +3,21 @@ import { useEffect, useState } from "react";
 import { EditTier, StudentCard } from "~/components/atoms/student";
 import { StudentState } from "~/models/studentState";
 
-type SpecEditProps = {
+type StudentSpecEditProps = {
   state: StudentState;
   selected: boolean;
   onUpdate: (state: StudentState) => void;
   onSelect: (state: StudentState, selected: boolean) => void;
 };
 
-export default function SpecEdit(
-  { state, selected, onUpdate, onSelect }: SpecEditProps,
+export default function StudentSpecEdit(
+  { state, selected, onUpdate, onSelect }: StudentSpecEditProps,
 ) {
   const { student } = state;
   return (
-    <div className="flex p-1 hover:bg-gray-100 transition items-center rounded-lg">
+    <div className="flex p-1 md:px-0 hover:bg-gray-100 transition items-center rounded-lg">
       <CheckCircle
-        className={`px-2 py-4 mr-1 h-14 w-10 ${selected ? "text-blue-500" : "text-gray-300"} transition cursor-pointer`}
+        className={`px-1 md:px-2 py-4 mr-1 h-14 w-8 md:w-10 ${selected ? "text-blue-500" : "text-gray-300"} transition cursor-pointer`}
         strokeWidth={selected ? 2 : 1}
         onClick={() => onSelect(state, !selected)}
       />

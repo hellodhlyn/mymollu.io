@@ -1,6 +1,6 @@
 import { LoaderFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { authenticator } from "~/auth/authenticator.server";
 import { Button } from "~/components/atoms/form";
 import { SpecEditBulkActions, SpecEditor } from "~/components/organisms/student";
