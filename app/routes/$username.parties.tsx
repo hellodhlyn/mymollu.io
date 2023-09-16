@@ -1,39 +1,31 @@
 import { LoaderFunction, json } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import { fetchAllStudents, fetchParties } from "~/fetches/api";
-import { Party } from "~/models/party";
-import { Student } from "~/models/student";
+import { Env } from "~/env.server";
+import { Party, getUserParties } from "~/models/party";
+import { Student, getAllStudents } from "~/models/student";
 
 type LoaderData = {
   username: string;
+  allStudents: Student[];
+  parties: Party[];
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ context, params }) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
   }
 
   const username = usernameParam.replace("@", "");
-  return json<LoaderData>({ username });
+  return json<LoaderData>({
+    username,
+    allStudents: getAllStudents(),
+    parties: await getUserParties(context.env as Env, username),
+  });
 };
 
 export default function UserPartyPage() {
-  const { username } = useLoaderData<LoaderData>();
-
-  const [allStudents, setAllStudents]  = useState<Student[]>([]);
-  const [parties, setParties] = useState<Party[]>([]);
-
-  useEffect(() => {
-    if (allStudents && allStudents.length > 0) {
-      return;
-    }
-    fetchAllStudents().then((allStudents) => {
-      setAllStudents(allStudents);
-      fetchParties(username).then(setParties);
-    });
-  }, [allStudents, setAllStudents]);
+  const { username, allStudents, parties } = useLoaderData<LoaderData>();
 
   return (
     <>
@@ -46,7 +38,7 @@ export default function UserPartyPage() {
 
       <div>
         {parties.map((party) => (
-          <div id={`party-${party.studentIds.join("_")}`} className="my-8">
+          <div key={`party-${party.studentIds.join("_")}`} className="my-8">
             <p className="my-2 font-bold text-2xl">{party.name}</p>
             <div className="grid grid-cols-6 md:grid-cols-8 gap-1 md:gap-2">
               {party.studentIds.map((studentId) => {

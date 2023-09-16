@@ -1,22 +1,23 @@
 import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
 import { Form, Link, useLoaderData, useRouteError } from "@remix-run/react";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
-import { Star, Archery, ArrowRight } from "iconoir-react";
-import { useEffect, useState } from "react";
+import { Star, Archery } from "iconoir-react";
+import { useState } from "react";
 import { authenticator } from "~/auth/authenticator.server";
 import FilterButton from "~/components/FilterButton";
 import { PartyGenerator } from "~/components/PartyGenerator";
 import { Button } from "~/components/atoms/form";
-import { fetchAllStudents, fetchStudentStates } from "~/fetches/api";
 import { Student } from "~/models/student";
-import { StudentState } from "~/models/studentState";
+import { StudentState, getUserStudentStates } from "~/models/studentState";
+import { Env } from "~/env.server";
 
 type LoaderData = {
   username: string;
   currentUsername: string | null;
+  states: StudentState[];
 }
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ context, request, params }) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
@@ -27,6 +28,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   return json<LoaderData>({
     username,
     currentUsername: sensei?.username || null,
+    states: await getUserStudentStates(context.env as Env, username),
   });
 };
 
@@ -63,13 +65,18 @@ function applyFilter(states: StudentState[], filter: Filter): StudentState[] {
 }
 
 export default function UserPage() {
-  const { username, currentUsername } = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<LoaderData>();
+  const { username, currentUsername, states } = loaderData;
+  if (!states) {
+    return (
+      <p>선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
+    );
+  }
 
-  const [allStudents, setAllStudents]  = useState<Student[]>([]);
-  const [states, setStates] = useState<StudentState[]>([]);
+  const ownedStates = states.filter((state) => state.owned);
+  const notOwnedStates = states.filter((state) => !state.owned);
+
   const [partyStudents, setPartyStudents] = useState<(Student | null)[]>(new Array(6).fill(null));
-
-  const [loaded, setLoaded] = useState(false);
   const [filter, setFilter] = useState<Filter>({ minimumTier: 1, attackTypes: [] });
 
   const onActivateAttackType = (activated: boolean, attackType: Student["attackType"]) => {
@@ -110,28 +117,6 @@ export default function UserPage() {
     }
   };
 
-  useEffect(() => {
-    if (loaded) {
-      return;
-    }
-
-    Promise.all([
-      fetchAllStudents(),
-      fetchStudentStates(username),
-    ]).then((values) => {
-      setAllStudents(values[0]);
-      setStates(values[1]);
-      setLoaded(true);
-    });
-  }, [loaded, allStudents, states]);
-
-  if (!loaded) {
-    return null;
-  } else if (loaded && !states) {
-    return (
-      <p>선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
-    );
-  }
 
   return (
     <>
@@ -181,7 +166,7 @@ export default function UserPage() {
       <div className="my-8">
         <p className="font-bold text-xl my-2">보유 학생</p>
         <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
-          {applyFilter(states, filter).map(({ student }) => (
+          {applyFilter(ownedStates, filter).map(({ student }) => (
             <div
               key={`list-students-${student.id}`}
               className="hover:scale-105 cursor-pointer transition"
@@ -197,7 +182,7 @@ export default function UserPage() {
       <div className="my-8">
         <p className="font-bold text-xl my-2">미보유 학생</p>
         <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
-          {allStudents.filter((student) => !states.find((state) => state.student.id === student.id)).map((student) => (
+          {applyFilter(notOwnedStates, filter).map(({ student }) => (
             <div key={`list-students-${student.id}`}>
               <img className="rounded-lg grayscale" src={student.imageUrl} alt={student.name} />
               <p className="text-center text-sm">{student.name}</p>
