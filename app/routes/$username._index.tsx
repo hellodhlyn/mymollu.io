@@ -1,15 +1,14 @@
 import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
 import { Form, Link, useLoaderData, useRouteError } from "@remix-run/react";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
-import { Star, Archery } from "iconoir-react";
 import { useState } from "react";
 import { authenticator } from "~/auth/authenticator.server";
-import FilterButton from "~/components/FilterButton";
 import { PartyGenerator } from "~/components/PartyGenerator";
 import { Button } from "~/components/atoms/form";
 import { Student } from "~/models/student";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 import { Env } from "~/env.server";
+import { useStateFilter } from "~/components/organisms/student";
 
 type LoaderData = {
   username: string;
@@ -52,39 +51,17 @@ type Filter = {
   attackTypes: Student["attackType"][];
 };
 
-function applyFilter(states: StudentState[], filter: Filter): StudentState[] {
-  return states.filter(({ student }) => {
-    if (student.tier < filter.minimumTier) {
-      return false;
-    }
-    if (filter.attackTypes.length > 0 && !filter.attackTypes.includes(student.attackType)) {
-      return false;
-    }
-    return true;
-  });
-}
-
 export default function UserPage() {
   const loaderData = useLoaderData<LoaderData>();
   const { username, currentUsername, states } = loaderData;
-  if (!states) {
+  if (!states || states.length === 0) {
     return (
       <p>선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
     );
   }
 
-  const ownedStates = states.filter((state) => state.owned);
-  const notOwnedStates = states.filter((state) => !state.owned);
-
+  const [StateFilter, filteredStates] = useStateFilter(states);
   const [partyStudents, setPartyStudents] = useState<(Student | null)[]>(new Array(6).fill(null));
-  const [filter, setFilter] = useState<Filter>({ minimumTier: 1, attackTypes: [] });
-
-  const onActivateAttackType = (activated: boolean, attackType: Student["attackType"]) => {
-    setFilter((prev) => ({
-      ...prev,
-      attackTypes: activated ? [...prev.attackTypes, attackType] : prev.attackTypes.filter((type) => type !== attackType),
-    }));
-  };
 
   const addPartyStudent = (student: Student) => () => {
     if (partyStudents.filter((each) => each !== null).length >= 6 ||
@@ -117,7 +94,6 @@ export default function UserPage() {
     }
   };
 
-
   return (
     <>
       <div className="my-12">
@@ -137,36 +113,12 @@ export default function UserPage() {
         </div>
       </div>
 
-      <div className="my-8">
-        <p className="my-2 font-bold text-xl">필터</p>
-        <div className="my-2 flex items-center">
-          <Star className="h-5 w-5 mr-2" strokeWidth={2} />
-          <FilterButton
-            label="3성 이하 감추기" active={filter.minimumTier === 3}
-            onActivate={(activated) => setFilter((prev) => ({ ...prev, minimumTier: activated ? 3 : 1 }))}
-          />
-        </div>
-        <div className="my-2 flex items-center">
-          <Archery className="h-5 w-5 mr-2" strokeWidth={2} />
-          <FilterButton
-            label="폭발" color="bg-red-500" active={filter.attackTypes.includes("explosive")}
-            onActivate={(activated) => onActivateAttackType(activated, "explosive")}
-          />
-          <FilterButton
-            label="관통" color="bg-yellow-500" active={filter.attackTypes.includes("piercing")}
-            onActivate={(activated) => onActivateAttackType(activated, "piercing")}
-          />
-          <FilterButton
-            label="신비" color="bg-blue-500" active={filter.attackTypes.includes("mystic")}
-            onActivate={(activated) => onActivateAttackType(activated, "mystic")}
-          />
-        </div>
-      </div>
+      {StateFilter}
 
       <div className="my-8">
         <p className="font-bold text-xl my-2">보유 학생</p>
         <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
-          {applyFilter(ownedStates, filter).map(({ student }) => (
+          {filteredStates.filter(({ owned }) => owned).map(({ student }) => (
             <div
               key={`list-students-${student.id}`}
               className="hover:scale-105 cursor-pointer transition"
@@ -182,7 +134,7 @@ export default function UserPage() {
       <div className="my-8">
         <p className="font-bold text-xl my-2">미보유 학생</p>
         <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
-          {applyFilter(notOwnedStates, filter).map(({ student }) => (
+          {filteredStates.filter(({ owned }) => !owned).map(({ student }) => (
             <div key={`list-students-${student.id}`}>
               <img className="rounded-lg grayscale" src={student.imageUrl} alt={student.name} />
               <p className="text-center text-sm">{student.name}</p>
