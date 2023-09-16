@@ -1,26 +1,22 @@
-import { Filter, FilterList } from "iconoir-react";
-import { useEffect, useState } from "react";
+import { FilterList } from "iconoir-react";
+import { useState } from "react";
 
 // === FilterButton
 type FilterButtonProps = {
   text: string;
   color?: string;
+  active?: boolean;
   onToggle: (activated: boolean) => void;
 };
 
-function FilterButton({ text, onToggle, color }: FilterButtonProps) {
-  const [active, setActive] = useState(false);
-  useEffect(() => {
-    onToggle(active);
-  }, [active]);
-
+function FilterButton({ text, color, active, onToggle }: FilterButtonProps) {
   return (
     <div
       className={`
         inline-block w-fit flex items-center mr-1 px-2 py-1 border border-gray-300 rounded-xl shadow-lg cursor-pointer
         ${active ? `${color || "bg-blue-500"} text-white` : ""}
       `}
-      onClick={() => { setActive((prev) => !prev) }}
+      onClick={() => { onToggle(!active); }}
     >
       {text}
     </div>
@@ -31,14 +27,34 @@ function FilterButton({ text, onToggle, color }: FilterButtonProps) {
 type FilterButtonsProps = {
   Icon?: typeof FilterList,
   buttonProps: FilterButtonProps[],
+  exclusive?: boolean;
 }
 
-export default function FilterButtons({ Icon, buttonProps }: FilterButtonsProps) {
+export default function FilterButtons({ Icon, buttonProps, exclusive }: FilterButtonsProps) {
+  const [actives, setActives] = useState(buttonProps.map((prop) => prop.active ?? false));
+
   const IconElem = Icon || FilterList;
   return (
     <div className="my-2 flex items-center">
       <IconElem className="h-5 w-5 mr-2" strokeWidth={2} />
-      {buttonProps.map((prop) => (<FilterButton key={`filter-${prop.text}`} {...prop} />))}
+      {buttonProps.map((prop, index) => (
+        <FilterButton
+          key={`filter-${prop.text}`}
+          text={prop.text}
+          color={prop.color}
+          active={actives[index]}
+          onToggle={(activated) => {
+            if (exclusive) {
+              const newActives = new Array(buttonProps.length).fill(false);
+              newActives[index] = activated;
+              setActives(newActives);
+            } else {
+              setActives((prev) => { prev[index] = activated; return prev; })
+            }
+            prop.onToggle(activated);
+          }}
+        />
+      ))}
     </div>
   );
 }

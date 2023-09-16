@@ -1,9 +1,9 @@
 import { LoaderFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { authenticator } from "~/auth/authenticator.server";
 import { Button } from "~/components/atoms/form";
-import { SpecEditBulkActions, SpecEditor } from "~/components/organisms/student";
+import { SpecEditBulkActions, SpecEditor, useStateFilter } from "~/components/organisms/student";
 import { Env } from "~/env.server";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
@@ -28,6 +28,15 @@ export default function EditSpecs() {
   const loaderData = useLoaderData<LoaderData>();
   const [states, setStates] = useState(loaderData.states);
 
+  const [StateFilter, filteredStates] = useStateFilter(states, false, true);
+  useEffect(() => {
+    const orders = new Map();
+    filteredStates.forEach((state, index) => orders.set(state.student.id, index));
+    setStates((prev) => [
+      ...prev.sort((a, b) => orders.get(a.student.id) - orders.get(b.student.id))
+    ]);
+  }, [filteredStates]);
+
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const setStatesBulkAction = (action: (prevState: StudentState) => StudentState) => {
     setStates((prev) => prev.map((prevState) => {
@@ -41,6 +50,8 @@ export default function EditSpecs() {
 
   return (
     <div className="my-8">
+      {StateFilter}
+
       <SpecEditBulkActions
         selectedAny={selectedIds.length > 0}
         onToggleAll={(select) => {

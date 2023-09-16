@@ -10,10 +10,14 @@ type Filter = {
 }
 
 type Sort = {
-  by: "tier" | null;
+  by: "tier" | "name" | null;
 }
 
-export function useStateFilter(initStates: StudentState[]): [JSX.Element, StudentState[], Dispatch<SetStateAction<StudentState[]>>] {
+export function useStateFilter(
+  initStates: StudentState[],
+  useFilter: boolean = true,
+  useSort: boolean = true,
+): [JSX.Element, StudentState[], Dispatch<SetStateAction<StudentState[]>>] {
   const [allStates, setAllStates] = useState(initStates);
   const [filter, setFilter] = useState<Filter>({
     minimumTier: 1,
@@ -58,30 +62,44 @@ export function useStateFilter(initStates: StudentState[]): [JSX.Element, Studen
           return defaultComparision;
         }
         return tierB - tierA;
+      } else if (sort.by === "name") {
+        return a.student.name.localeCompare(b.student.name);
       }
       return defaultComparision;
-    })
+    });
 
     setFilteredStates(newFilteredStates);
   }, [allStates, filter, sort]);
 
   return [(
     <div className="my-8">
-      <p className="my-2 font-bold text-xl">필터 및 정렬</p>
-      <FilterButtons Icon={Star} buttonProps={[
-        {
-          text: "3성 미만 감추기",
-          onToggle: (activated) => { setFilter((prev) => ({ ...prev, minimumTier: activated ? 3 : 1 })) },
-        },
-      ]} />
-      <FilterButtons Icon={Archery} buttonProps={[
-        { text: "폭발", color: "bg-red-500", onToggle: toggleAttackType("explosive") },
-        { text: "관통", color: "bg-yellow-500", onToggle: toggleAttackType("piercing") },
-        { text: "신비", color: "bg-blue-500", onToggle: toggleAttackType("mystic") },
-      ]} />
-      <FilterButtons Icon={Sort} buttonProps={[
-        { text: "★ 등급", onToggle: (activated) => { setSort({ by: activated ? "tier" : null }) } },
-      ]} />
+      <p className="my-2 font-bold text-xl">
+        {[
+          useFilter ? "필터" : null,
+          useSort ? "정렬" : null,
+        ].filter((text) => text).join(" 및 ")}
+      </p>
+      {useFilter && (
+        <>
+          <FilterButtons Icon={Star} buttonProps={[
+            {
+              text: "3성 미만 감추기",
+              onToggle: (activated) => { setFilter((prev) => ({ ...prev, minimumTier: activated ? 3 : 1 })) },
+            },
+          ]} />
+          <FilterButtons Icon={Archery} buttonProps={[
+            { text: "폭발", color: "bg-red-500", onToggle: toggleAttackType("explosive") },
+            { text: "관통", color: "bg-yellow-500", onToggle: toggleAttackType("piercing") },
+            { text: "신비", color: "bg-blue-500", onToggle: toggleAttackType("mystic") },
+          ]} />
+        </>
+      )}
+      {useSort && (
+        <FilterButtons Icon={Sort} exclusive={true} buttonProps={[
+          { text: "★ 등급", onToggle: (activated) => { setSort({ by: activated ? "tier" : null }) } },
+          { text: "이름", onToggle: (activated) => { setSort({ by: activated ? "name" : null }) } },
+        ]} />
+      )}
     </div>
   ), filteredStates, setAllStates];
 }
