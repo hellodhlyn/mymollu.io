@@ -101,7 +101,7 @@ export default function UserPage() {
       {StateFilter}
 
       <div className="my-8">
-        <p className="font-bold text-xl my-4">보유 학생</p>
+        <p className="font-bold text-xl my-4">모집 학생</p>
         <StudentCards
           cardProps={filteredStates.filter(({ owned }) => owned).map(({ student, tier }) => ({
             id: student.id,
@@ -114,7 +114,7 @@ export default function UserPage() {
       </div>
 
       <div className="my-8">
-        <p className="font-bold text-xl my-4">미보유 학생</p>
+        <p className="font-bold text-xl my-4">미모집 학생</p>
         <StudentCards
           cardProps={filteredStates.filter(({ owned }) => !owned).map(({ student }) => ({
             id: student.id,
