@@ -10,7 +10,7 @@ export default function Input({ name, placeholder, required }: InputProps) {
       type="text"
       name={name}
       placeholder={placeholder}
-      className="mr-2 p-2 border rounded-lg"
+      className="my-1 mr-1 md:mr-2 p-2 border rounded-lg shadow-lg dark:shadow-neutral-500 dark:text-neutral-900"
       required={required}
     />
   );
