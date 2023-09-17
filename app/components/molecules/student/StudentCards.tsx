@@ -8,7 +8,7 @@ type StudentCardsProps = {
 export default function StudentCards({ cardProps, onSelect }: StudentCardsProps) {
   const selectable = onSelect !== undefined;
   return (
-    <div className="grid grid-cols-5 md:grid-cols-8 gap-1 sm:gap-2">
+    <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
       {cardProps.map((prop) => (
         <div
           key={`student-card-${prop.id}`}

@@ -26,7 +26,7 @@ export default function StudentCard(
       <div className="relative">
         <img className={`rounded-lg${grayscale ? " grayscale" : ""}`} src={imageUrl} alt={name} loading="lazy" />
         {showInfo && (
-          <div className="absolute bottom-0 right-0 px-2 rounded-lg bg-black bg-opacity-75 text-center font-extrabold text-sm">
+          <div className="absolute bottom-0 right-0 px-2 rounded-lg bg-black bg-opacity-75 text-center font-extrabold text-xs sm:text-sm">
             {(tier) && (
               <p className={`flex items-center ${visibileTier(tier)[1] ? "text-teal-300" : "text-yellow-300"}`}>
                 {(tier <= 5) ?

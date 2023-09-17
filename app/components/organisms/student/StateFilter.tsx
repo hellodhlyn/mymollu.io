@@ -1,4 +1,4 @@
-import { Archery, Sort, Star } from "iconoir-react";
+import { Archery, Running, Sort, Star } from "iconoir-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FilterButtons } from "~/components/molecules/student";
 import { Student } from "~/models/student";
@@ -6,6 +6,7 @@ import { StudentState } from "~/models/studentState";
 
 type Filter = {
   minimumTier: number;
+  role: Student["role"] | null;
   attackTypes: Student["attackType"][];
 }
 
@@ -21,6 +22,7 @@ export function useStateFilter(
   const [allStates, setAllStates] = useState(initStates);
   const [filter, setFilter] = useState<Filter>({
     minimumTier: 1,
+    role: null,
     attackTypes: [],
   });
   const [sort, setSort] = useState<Sort>({
@@ -48,6 +50,9 @@ export function useStateFilter(
         return false;
       }
       if (filter.attackTypes.length > 0 && !filter.attackTypes.includes(student.attackType)) {
+        return false;
+      }
+      if (filter.role && student.role !== filter.role) {
         return false;
       }
       return true;
@@ -91,6 +96,16 @@ export function useStateFilter(
             { text: "폭발", color: "bg-red-500", onToggle: toggleAttackType("explosive") },
             { text: "관통", color: "bg-yellow-500", onToggle: toggleAttackType("piercing") },
             { text: "신비", color: "bg-blue-500", onToggle: toggleAttackType("mystic") },
+          ]} />
+          <FilterButtons Icon={Running} exclusive={true} buttonProps={[
+            {
+              text: "스트라이커", color: "bg-red-500",
+              onToggle: (activated) => { setFilter((prev) => ({ ...prev, role: activated ? "striker" : null })) },
+            },
+            {
+              text: "스페셜", color: "bg-blue-500",
+              onToggle: (activated) => { setFilter((prev) => ({ ...prev, role: activated ? "special" : null })) },
+            },
           ]} />
         </>
       )}

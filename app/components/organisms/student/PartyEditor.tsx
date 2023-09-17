@@ -73,7 +73,7 @@ export default function PartyEditor(
         )}
         {selectedCount == 6 && (
           <div className="my-2 flex justify-end text-sm md:text-base">
-            <Input name="name" placeholder="편성 이름" />
+            <Input name="name" placeholder="편성 이름" className="flex-grow" />
             <Button type="button" color="red" text="초기화" onClick={onReset} />
             <Button type="submit" color="primary" text="저장" />
           </div>

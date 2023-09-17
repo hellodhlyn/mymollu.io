@@ -22,7 +22,7 @@ export default function Button({ text, children, type, color, onClick }: ButtonP
   return (
     <button
       type={type || "button"}
-      className={`inline-block my-1 mr-1 md:mr-2 last:mr-0 px-4 py-2 rounded-lg shadow-lg transition ${className}`}
+      className={`inline-block my-1 mr-1 md:mr-2 last:mr-0 px-4 py-2 rounded-lg shadow-lg transition whitespace-nowrap ${className}`}
       onClick={onClick}
     >
       {children ?? text}

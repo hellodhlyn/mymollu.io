@@ -21,17 +21,18 @@ type LoaderData = {
   parties: Party[];
 }
 
-export const loader: LoaderFunction = async ({ context, request }) => {
+export const loader: LoaderFunction = async ({ context, params }) => {
   const env = context.env as Env;
-  const sensei = await authenticator.isAuthenticated(request);
-  if (!sensei) {
-    return redirect("/signin");
+  const usernameParam = params.username;
+  if (!usernameParam || !usernameParam.startsWith("@")) {
+    throw new Error("Not found");
   }
 
-  const states = await getUserStudentStates(env, sensei.username, true);
+  const username = usernameParam.replace("@", "");
+  const states = await getUserStudentStates(env, username, true);
   return json<LoaderData>({
     states: states!,
-    parties: await getUserParties(env, sensei.username),
+    parties: await getUserParties(env, username),
   });
 };
 
