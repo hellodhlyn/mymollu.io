@@ -3,6 +3,8 @@ import type { AppLoadContext } from "@remix-run/cloudflare";
 import { createRequestHandler, logDevReady } from "@remix-run/cloudflare";
 import * as build from "@remix-run/dev/server-build";
 import __STATIC_CONTENT_MANIFEST from "__STATIC_CONTENT_MANIFEST";
+import { newAuthenticator } from "~/auth/authenticator.server";
+import { Env } from "~/env.server";
 
 const MANIFEST = JSON.parse(__STATIC_CONTENT_MANIFEST);
 const handleRemixRequest = createRequestHandler(build, process.env.NODE_ENV);
@@ -12,13 +14,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default {
-  async fetch(
-    request: Request,
-    env: {
-      __STATIC_CONTENT: Fetcher;
-    },
-    ctx: ExecutionContext
-  ): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     try {
       const url = new URL(request.url);
       const ttl = url.pathname.startsWith("/build/")
@@ -43,6 +39,7 @@ export default {
     try {
       const loadContext: AppLoadContext = {
         env,
+        authenticator: newAuthenticator(env),
       };
       return await handleRemixRequest(request, loadContext);
     } catch (error) {

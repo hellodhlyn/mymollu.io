@@ -1,6 +1,5 @@
 import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-import { authenticator } from "~/auth/authenticator.server";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { Env } from "~/env.server";

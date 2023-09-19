@@ -11,6 +11,7 @@ export default function Edit() {
         { to: "/edit/specs", text: "성장" },
         { to: "/edit/new-parties", text: "신규 편성" },
         { to: "/edit/parties", text: "기존 편성" },
+        { to: "/signout", text: "로그아웃" },
       ]} />
       <Outlet />
     </>

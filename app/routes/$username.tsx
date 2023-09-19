@@ -1,21 +1,24 @@
 import { LoaderFunction, json } from "@remix-run/cloudflare";
 import { Outlet, useLoaderData, useParams } from "@remix-run/react";
-import { authenticator } from "~/auth/authenticator.server";
+import { Authenticator } from "remix-auth";
 import { Title } from "~/components/atoms/typography";
 import { Navigation } from "~/components/organisms/navigation";
+import { Sensei } from "~/models/sensei";
 
 type LoaderData = {
   username: string;
   currentUsername: string | null;
 }
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request, context, params }) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
   }
 
   const username = usernameParam.replace("@", "");
+
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   return json<LoaderData>({
     username,

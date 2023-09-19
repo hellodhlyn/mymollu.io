@@ -1,11 +1,12 @@
 import { LoaderFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
-import { authenticator } from "~/auth/authenticator.server";
+import { Authenticator } from "remix-auth";
 import { SmallButton } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { Env } from "~/env.server";
 import { Party, getUserParties } from "~/models/party";
+import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
 type LoaderData = {
@@ -14,12 +15,13 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ context, request }) => {
-  const env = context.env as Env;
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
+  const env = context.env as Env;
   return json<LoaderData>({
     states: (await getUserStudentStates(env, sensei.username, true))!,
     parties: await getUserParties(env, sensei.username),

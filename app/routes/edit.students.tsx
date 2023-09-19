@@ -3,10 +3,11 @@ import { Form, useLoaderData, useRouteError } from "@remix-run/react";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
 import { useEffect, useState } from "react";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
-import { authenticator } from "~/auth/authenticator.server";
 import { Button } from "~/components/atoms/form";
 import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
+import { Authenticator } from "remix-auth";
+import { Sensei } from "~/models/sensei";
 
 export const meta: V2_MetaFunction = () => [
   { title: "학생 목록 관리 | MolluLog" },
@@ -18,6 +19,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ context, request }) => {
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

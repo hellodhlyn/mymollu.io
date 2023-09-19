@@ -1,10 +1,12 @@
 import { ActionFunction, redirect } from "@remix-run/cloudflare"
-import { authenticator } from "~/auth/authenticator.server";
+import { Authenticator } from "remix-auth";
 import { Env } from "~/env.server";
 import { getUserParties, partyKey } from "~/models/party";
+import { Sensei } from "~/models/sensei";
 
 export const action: ActionFunction = async ({ context, request })  => {
   const env = context.env as Env;
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

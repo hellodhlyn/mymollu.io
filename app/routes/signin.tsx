@@ -1,10 +1,12 @@
 import { ActionFunction } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
-import { authenticator } from "~/auth/authenticator.server";
+import { Authenticator } from "remix-auth";
 import { Button, Input } from "~/components/atoms/form";
 import { Title } from "~/components/atoms/typography";
+import { Sensei } from "~/models/sensei";
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, context }) => {
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   return await authenticator.authenticate("form", request, {
     successRedirect: "/my",
     failureRedirect: "/signin?state=failed",

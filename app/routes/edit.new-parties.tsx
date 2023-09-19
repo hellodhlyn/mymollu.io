@@ -1,11 +1,12 @@
 import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { authenticator } from "~/auth/authenticator.server";
+import { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { PartyEditor, useStateFilter } from "~/components/organisms/student";
 import { Env } from "~/env.server";
+import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
 export const meta: V2_MetaFunction = () => [
@@ -18,6 +19,7 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ context, request }) => {
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

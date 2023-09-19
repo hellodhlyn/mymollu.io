@@ -1,7 +1,9 @@
 import { LoaderFunction, redirect } from "@remix-run/cloudflare";
-import { authenticator } from "~/auth/authenticator.server";
+import { Authenticator } from "remix-auth/build/authenticator";
+import { Sensei } from "~/models/sensei";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, context }) => {
+  const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   if (sensei) {
     return redirect(`/@${sensei.username}`);
