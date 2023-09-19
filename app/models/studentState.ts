@@ -1,5 +1,6 @@
 import { Env } from "~/env.server";
 import { Student, getAllStudents } from "./student";
+import { Sensei } from "./sensei";
 
 export type StudentState = {
   student: Student;
@@ -7,8 +8,17 @@ export type StudentState = {
   tier?: number | null;
 };
 
+export function userStateKey(username: string) {
+  return `student-states:${username}`;
+}
+
+export function userStateKeyById(id: number) {
+  return `student-states:id:${id}`;
+}
+
 export async function getUserStudentStates(env: Env, username: string, showDefault: boolean = false): Promise<StudentState[] | null> {
-  const rawStates = await env.KV_USERDATA.get(userStateKey(username));
+  const userId = await env.DB.prepare("select * from users where username = ?").bind(username).first<number>("id");
+  const rawStates = await env.KV_USERDATA.get(userId ? userStateKeyById(userId) : userStateKey(username));
   if (!rawStates && !showDefault) {
     return null;
   }
@@ -25,6 +35,15 @@ export async function getUserStudentStates(env: Env, username: string, showDefau
   });
 }
 
-export function userStateKey(username: string) {
-  return `student-states:${username}`;
+export async function updateStudentStates(env: Env, sensei: Sensei, states: StudentState[]) {
+  await env.KV_USERDATA.put(userStateKeyById(sensei.id), JSON.stringify(states));
+}
+
+export async function migrateStates(env: Env, username: string, id: number) {
+  const states = await env.KV_USERDATA.get(userStateKey(username));
+  if (states && !(await env.KV_USERDATA.get(userStateKeyById(id)))) {
+    await env.KV_USERDATA.put(userStateKeyById(id), states);
+    // TODO: active when code become stable
+    // await env.KV_USERDATA.delete(userStateKey(username));
+  }
 }

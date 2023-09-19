@@ -7,6 +7,7 @@ import { SpecEditBulkActions, SpecEditor, useStateFilter } from "~/components/or
 import { Env } from "~/env.server";
 import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
+import { action } from "./edit.students";
 
 export const meta: V2_MetaFunction = () => [
   { title: "학생 성장 관리 | MolluLog" },
@@ -29,6 +30,8 @@ export const loader: LoaderFunction = async ({ context, request }) => {
     states: (await getUserStudentStates(context.env as Env, sensei.username, true))!!,
   });
 };
+
+export { action };
 
 export default function EditSpecs() {
   const loaderData = useLoaderData<LoaderData>();
@@ -85,8 +88,7 @@ export default function EditSpecs() {
       />
 
       <div className="my-8">
-        <Form method="post" action="/api/student-states">
-          <input type="hidden" name="username" value={loaderData.currentUsername} />
+        <Form method="post">
           <input type="hidden" name="states" value={JSON.stringify(states.filter(({ owned }) => owned))} />
           <Button type="submit" text="저장하기" color="primary" />
         </Form>

@@ -1,4 +1,4 @@
-import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Authenticator } from "remix-auth";
@@ -6,6 +6,7 @@ import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { PartyEditor, useStateFilter } from "~/components/organisms/student";
 import { Env } from "~/env.server";
+import { addParty } from "~/models/party";
 import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
@@ -30,6 +31,22 @@ export const loader: LoaderFunction = async ({ context, request }) => {
     currentUsername: sensei.username,
     states: states!,
   });
+};
+
+export const action: ActionFunction = async ({ context, request }) => {
+  const env = context.env as Env;
+  const authenticator = context.authenticator as Authenticator<Sensei>;
+  const sensei = await authenticator.isAuthenticated(request);
+  if (!sensei) {
+    return redirect("/signin");
+  }
+
+  const formData = await request.formData();
+  await addParty(env, sensei, {
+    name: formData.get("name") as string,
+    studentIds: JSON.parse(formData.get("studentIds") as string),
+  });
+  return redirect(`/@${sensei.username}/parties`);
 };
 
 export default function EditNewParties() {
@@ -115,7 +132,7 @@ export default function EditNewParties() {
       />
 
       <div className="fixed w-screen bottom-0 left-0">
-        <Form action="/api/parties" method="post">
+        <Form method="post">
           <PartyEditor
             states={partyStudents.map((id) => (
               id === null ? null : loaderData.states.find((state) => state.student.id === id)!

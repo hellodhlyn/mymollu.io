@@ -1,17 +1,20 @@
-import { createCookieSessionStorage } from "@remix-run/cloudflare";
+import { SessionStorage, createCookieSessionStorage } from "@remix-run/cloudflare";
 import { Authenticator } from "remix-auth";
-import { FormStrategy } from "remix-auth-form";
+import { GoogleStrategy } from "remix-auth-google";
 import { Env } from "~/env.server";
-import { Sensei } from "~/models/sensei";
+import { Sensei, getSenseiByGoogleId } from "~/models/sensei";
 
+let _sessionStorage: SessionStorage;
 let _authenticator: Authenticator<Sensei>;
 
-export function newAuthenticator(env: Env): Authenticator<Sensei> {
-  if (_authenticator) {
-    return _authenticator;
+const googleClientId = "129736193789-sqgen372tfq53l483j1v9br36uo4iuua.apps.googleusercontent.com";
+
+export function sessionStorage(env: Env): SessionStorage {
+  if (_sessionStorage) {
+    return _sessionStorage;
   }
 
-  const sessionStorage = createCookieSessionStorage({
+  _sessionStorage = createCookieSessionStorage({
     cookie: {
       name: "__session",
       path: "/",
@@ -22,18 +25,40 @@ export function newAuthenticator(env: Env): Authenticator<Sensei> {
       maxAge: 7 * 24 * 60 * 60,
     },
   });
+  return _sessionStorage;
+}
 
-  const authenticator = new Authenticator<Sensei>(sessionStorage);
-  authenticator.use(new FormStrategy(async ({ form }) => {
-    // TODO: implement
+export function newAuthenticator(env: Env): Authenticator<Sensei> {
+  if (_authenticator) {
+    return _authenticator;
+  }
 
-    const username = form.get("username");
-    if (!username) {
-      throw "No username";
+  const authenticator = new Authenticator<Sensei>(sessionStorage(env));
+  authenticator.use(new GoogleStrategy({
+    clientID: googleClientId,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `${env.HOST}/auth/callbacks/google`,
+  }, async ({ extraParams }) => {
+    try {
+      const googleUserId = await fetchGoogleUserId(extraParams.id_token);
+      return await getSenseiByGoogleId(env.DB, googleUserId);
+    } catch (e) {
+      console.error("Login failed");
+      console.error(e);
+      throw e;
     }
-    return { username: username as string };
-  }), "form");
+  }), "google");
 
   _authenticator = authenticator;
   return authenticator;
+}
+
+async function fetchGoogleUserId(idToken: string): Promise<string> {
+  const url = "https://oauth2.googleapis.com/tokeninfo";
+  const res = await fetch(`${url}?id_token=${idToken}`);
+  const body = await res.json<{ aud: string, sub: string }>();
+  if (body.aud !== googleClientId) {
+    throw "ClientID not matched!";
+  }
+  return body.sub;
 }

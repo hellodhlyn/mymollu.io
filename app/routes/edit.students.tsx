@@ -1,8 +1,8 @@
-import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData, useRouteError } from "@remix-run/react";
 import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
 import { useEffect, useState } from "react";
-import { StudentState, getUserStudentStates } from "~/models/studentState";
+import { StudentState, getUserStudentStates, updateStudentStates } from "~/models/studentState";
 import { Button } from "~/components/atoms/form";
 import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
@@ -30,6 +30,19 @@ export const loader: LoaderFunction = async ({ context, request }) => {
     states: (await getUserStudentStates(context.env as Env, sensei.username, true))!!,
   });
 };
+
+export const action: ActionFunction = async ({ context, request }) => {
+  const authenticator = context.authenticator as Authenticator<Sensei>;
+  const sensei = await authenticator.isAuthenticated(request);
+  if (!sensei) {
+    return redirect("/signin");
+  }
+
+  const formData = await request.formData();
+  const states = JSON.parse(formData.get("states") as string);
+  await updateStudentStates(context.env as Env, sensei, states);
+  return redirect(`/@${sensei.username}/students`);
+}
 
 export const ErrorBoundary: V2_ErrorBoundaryComponent = () => {
   const error = useRouteError() as any;
@@ -69,8 +82,7 @@ export default function EditPage() {
       </div>
 
       <div className="my-8">
-        <Form method="post" action="/api/student-states">
-          <input type="hidden" name="username" value={currentUsername} />
+        <Form method="post">
           <input type="hidden" name="states" value={JSON.stringify(states.filter(({ owned }) => owned))} />
           <Button type="submit" text="저장하기" color="primary" />
         </Form>

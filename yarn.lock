@@ -4077,6 +4077,11 @@ gunzip-maybe@^1.4.2:
     pumpify "^1.3.3"
     through2 "^2.0.3"
 
+hangul-js@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/hangul-js/-/hangul-js-0.2.6.tgz#3e552e3a68c76498cf2c7993ca354af7bad4730d"
+  integrity sha512-48axU8LgjCD30FEs66Xc04/8knxMwCMQw0f67l67rlttW7VXT3qRJgQeHmhiuGwWXGvSbk6YM0fhQlcjE1JFQA==
+
 has-bigints@^1.0.1, has-bigints@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/has-bigints/-/has-bigints-1.0.2.tgz#0871bd3e3d51626f6ca0966668ba35d5602d6eaa"
@@ -6367,12 +6372,23 @@ remark-rehype@^9.0.0:
     mdast-util-to-hast "^11.0.0"
     unified "^10.0.0"
 
-remix-auth-form@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/remix-auth-form/-/remix-auth-form-1.3.0.tgz#b275614ee75550099fca331fb023e96f3b5996c3"
-  integrity sha512-m+pwFJM61+qGPIvROHmN7LANJMbpL2QgYen/wY8wnJfwwannWt2+7zEoGWF7NbxMnoxCib75EGlPZpyyvwtBXQ==
+remix-auth-google@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/remix-auth-google/-/remix-auth-google-1.2.0.tgz#1cb78a74fe781537f083c5066a6ae05fc15a3efd"
+  integrity sha512-llyrtOt8vk503XlAoEdGuEmrHRACFOP13yPVn92VkrcogTUyALzuy8ky2O1/FSJ7Q2+B0di5yMiCF4IYD/Yn4g==
+  dependencies:
+    remix-auth-oauth2 "^1.1.0"
 
-remix-auth@^3.5.1:
+remix-auth-oauth2@^1.1.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/remix-auth-oauth2/-/remix-auth-oauth2-1.9.0.tgz#afbda289121ab99da9667aff56370848593bd823"
+  integrity sha512-ROSir28FVK4UCpialrW6dGbaboYGihfa/Qz5ifAoQ56fyTfXv4TwZ4R/AQxr1HVRU6WFmXNJiWDg51Q6+ZoLGQ==
+  dependencies:
+    debug "^4.3.4"
+    remix-auth "^3.4.0"
+    uuid "^8.3.2"
+
+remix-auth@^3.4.0, remix-auth@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/remix-auth/-/remix-auth-3.5.1.tgz#75a2a976f7a862a02ae697d2188a1ee02f5a0028"
   integrity sha512-PH8JTMd2n4OoQE7xGoCMDvrPyHfDvKMNEi8VT3Lvi/g3+HlJERHWXdYBOSl0TImEYOprs8VI/nC82y47aKJrJQ==
