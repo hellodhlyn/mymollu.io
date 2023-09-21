@@ -41,7 +41,7 @@ export function newAuthenticator(env: Env): Authenticator<Sensei> {
   }, async ({ extraParams }) => {
     try {
       const googleUserId = await fetchGoogleUserId(extraParams.id_token);
-      return await getSenseiByGoogleId(env.DB, googleUserId);
+      return await getSenseiByGoogleId(env, googleUserId);
     } catch (e) {
       console.error("Login failed");
       console.error(e);

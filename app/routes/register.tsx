@@ -45,7 +45,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   const env = context.env as Env;
   const formData = await request.formData();
   sensei.username = formData.get("username") as string;
-  sensei.profileStudentId = formData.has("profileStudentId") ? formData.get("profileStudentId") as string : undefined;
+  sensei.profileStudentId = formData.has("profileStudentId") ? formData.get("profileStudentId") as string : null;
   await updateSensei(env, sensei.id, sensei);
   await migrateStates(env, sensei.username, sensei.id);
   await migrateParties(env, sensei.username, sensei.id);

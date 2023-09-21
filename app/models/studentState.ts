@@ -1,6 +1,6 @@
 import { Env } from "~/env.server";
 import { Student, getAllStudents } from "./student";
-import { Sensei } from "./sensei";
+import { Sensei, getSenseiByUsername } from "./sensei";
 
 export type StudentState = {
   student: Student;
@@ -17,8 +17,8 @@ export function userStateKeyById(id: number) {
 }
 
 export async function getUserStudentStates(env: Env, username: string, showDefault: boolean = false): Promise<StudentState[] | null> {
-  const userId = await env.DB.prepare("select * from users where username = ?").bind(username).first<number>("id");
-  const rawStates = await env.KV_USERDATA.get(userId ? userStateKeyById(userId) : userStateKey(username));
+  const sensei = await getSenseiByUsername(env, username);
+  const rawStates = await env.KV_USERDATA.get(sensei ? userStateKeyById(sensei.id) : userStateKey(username));
   if (!rawStates && !showDefault) {
     return null;
   }

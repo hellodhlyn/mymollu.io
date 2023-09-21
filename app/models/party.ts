@@ -1,5 +1,5 @@
 import { Env } from "~/env.server";
-import { Sensei } from "./sensei";
+import { Sensei, getSenseiByUsername } from "./sensei";
 
 export type Party = {
   uid?: string;
@@ -16,8 +16,8 @@ export function partyKeyById(id: number) {
 }
 
 export async function getUserParties(env: Env, username: string): Promise<Party[]> {
-  const userId = await env.DB.prepare("select * from users where username = ?").bind(username).first<number>("id");
-  const rawParties = await env.KV_USERDATA.get(userId ? partyKeyById(userId) : partyKey(username));
+  const sensei = await getSenseiByUsername(env, username);
+  const rawParties = await env.KV_USERDATA.get(sensei ? partyKeyById(sensei.id) : partyKey(username));
   if (!rawParties) {
     return [];
   }

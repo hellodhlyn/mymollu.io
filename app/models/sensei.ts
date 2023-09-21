@@ -1,37 +1,78 @@
-import { Env } from "~/env.server";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { SupabaseSchema } from "~/schema";
+import { Env, getDB } from "~/env.server";
 
 export type Sensei = {
   id: number;
   username: string;
   active: boolean;
-  googleId?: string;
-  profileStudentId?: string;
+  googleId: string | null;
+  profileStudentId: string | null;
 };
 
-export async function getSenseiByGoogleId(db: D1Database, googleUserId: string): Promise<Sensei> {
-  const result = await db.prepare("select * from users where googleId = ?")
-    .bind(googleUserId)
-    .first<Sensei>();
-  if (result) {
-    return result;
+export async function getSenseiByUsername(env: Env, username: string): Promise<Sensei | null> {
+  const repo = new UserRepo(env);
+  return repo.findBy("username", username);
+}
+
+export async function getSenseiByGoogleId(env: Env, googleUserId: string): Promise<Sensei> {
+  const repo = new UserRepo(env);
+  const sensei = await repo.findBy("googleId", googleUserId);
+  if (sensei) {
+    return sensei;
   }
 
-  const { error } = await db.prepare("insert into users (username, active, googleId) values (?1, ?2, ?3)")
-    .bind(Math.random().toString(36).slice(2), 0, googleUserId)
-    .run();
-  if (error) {
+  try {
+    await repo.create(Math.random().toString(36).slice(2), googleUserId);
+  } catch (error) {
     console.error(error);
     throw "Failed to create user";
   }
 
-  return getSenseiByGoogleId(db, googleUserId);
+  return getSenseiByGoogleId(env, googleUserId);
 }
 
 export async function updateSensei(env: Env, id: number, values: Partial<Sensei>) {
-  const { error } = await env.DB.prepare("update users set active = ?1, username = ?2, profileStudentId = ?3 where id = ?4")
-    .bind(1, values.username, values.profileStudentId?? null, id)
-    .run();
-  if (error) {
+  try {
+    await new UserRepo(env).update(id, values);
+  } catch (error) {
     return console.error(error);
+  }
+}
+
+class UserRepo {
+  private db: SupabaseClient<SupabaseSchema>;
+  private tableName: string;
+
+  constructor(env: Env) {
+    this.db = getDB(env);
+    this.tableName = `${env.STAGE}_users`;
+  }
+
+  async create(username: string, googleId: string | null) {
+    const { error } = await this.table().insert({ username, googleId });
+    if (error) {
+      throw error;
+    }
+  }
+
+  async findBy(field: string, value: any): Promise<Sensei | null> {
+    const { data, error } = await this.table().select().eq(field, value);
+    if (error) {
+      throw error;
+    }
+
+    return (data && data.length > 0) ? data[0] : null;
+  }
+
+  async update(id: number, values: Partial<Sensei>) {
+    const { error } = await this.table().update(values).eq("id", id);
+    if (error) {
+      throw error;
+    }
+  }
+
+  private table() {
+    return this.db.from(this.tableName);
   }
 }

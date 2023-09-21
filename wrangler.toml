@@ -15,11 +15,6 @@ compatibility_date = "2023-04-20"
   id = "757ca5d838364689af06edc372cd4c56"
   preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
 
-[[d1_databases]]
-  binding = "DB"
-  database_name = "mollulog"
-  database_id = "8a001ff4-e56e-4836-8248-85e3ed37bde7"
-
 [site]
   bucket = "./public"
 
@@ -28,7 +23,10 @@ compatibility_date = "2023-04-20"
 
 [vars]
 HOST = "https://mollulog.dodam.io"
+STAGE = "prod"
 
 # [secrets]
 #   - SESSION_SECRET
 #   - GOOGLE_CLIENT_SECRET
+#   - SUPABASE_URL
+#   - SUPABASE_KEY
