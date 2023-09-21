@@ -32,8 +32,9 @@ export default function Edit() {
 
   return (
     <>
-      <Title text={(username === currentUsername) ? "나의 학생부" : `@${username}의 학생부`} />
+      <Title text={(username === currentUsername) ? "내 정보" : `@${username}의 학생부`} />
       <Navigation links={[
+        { to: `/@${username}/`, text: "프로필" },
         { to: `/@${username}/students`, text: "학생" },
         { to: `/@${username}/parties`, text: "편성" },
       ]} />

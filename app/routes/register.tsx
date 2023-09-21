@@ -42,13 +42,17 @@ export const action: ActionFunction = async ({ request, context }) => {
     return redirect(`/@${sensei.username}/students`);
   }
 
-  const env = context.env as Env;
   const formData = await request.formData();
+  sensei.active = true;
   sensei.username = formData.get("username") as string;
   sensei.profileStudentId = formData.has("profileStudentId") ? formData.get("profileStudentId") as string : null;
-  await updateSensei(env, sensei.id, sensei);
-  await migrateStates(env, sensei.username, sensei.id);
-  await migrateParties(env, sensei.username, sensei.id);
+
+  const env = context.env as Env;
+  await Promise.all([
+    updateSensei(env, sensei.id, sensei),
+    migrateStates(env, sensei.username, sensei.id),
+    migrateParties(env, sensei.username, sensei.id),
+  ]);
 
   const { getSession, commitSession } = sessionStorage(env);
   const session = await getSession(request.headers.get("cookie"));
