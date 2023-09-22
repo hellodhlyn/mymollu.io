@@ -8,7 +8,7 @@ import { getSenseiByUsername } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
 type LoaderData = {
-  username: string | null;
+  username: string;
   profileStudentId: string | null;
   states: StudentState[] | null;
 };
@@ -21,11 +21,11 @@ export const loader: LoaderFunction = async ({ context, params }) => {
 
   const env = context.env as Env;
   const username = usernameParam.replace("@", "");
-  const sensei = await getSenseiByUsername(env, username);
+  const sensei = await getSenseiByUsername(env, username)
 
-  const states = await getUserStudentStates(env, username, false);
+  const states = await getUserStudentStates(env, username);
   return json<LoaderData>({
-    username: sensei?.username ?? null,
+    username,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
   });
@@ -42,7 +42,7 @@ export const meta: V2_MetaFunction = ({ params }) => {
 
 export default function UserIndex() {
   const { username, profileStudentId, states } = useLoaderData<LoaderData>();
-  if (!username) {
+  if (!states) {
     return <p className="my-8">선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
   }
 
