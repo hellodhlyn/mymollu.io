@@ -1,13 +1,16 @@
 import { Link } from "@remix-run/react";
-import { AddUser, User } from "iconoir-react";
+import { AddUser, Group, RefreshDouble, RemoveUser, User } from "iconoir-react";
 import { Progress } from "~/components/atoms/profile";
 import { ProgressProps } from "~/components/atoms/profile/Progress";
-import { SubTitle } from "~/components/atoms/typography";
 
-type ProfileCardProps = {
+export type ProfileCardProps = {
   imageUrl: string | null;
   username: string;
   tierCounts: Map<number, number>;
+  loading: boolean;
+  followability: "followable" | "following" | "unable";
+  onFollow: () => void;
+  onUnfollow: () => void;
 };
 
 const colors: { [tier: number]: ProgressProps["color"] } = {
@@ -21,7 +24,10 @@ const colors: { [tier: number]: ProgressProps["color"] } = {
   8: "fuchsia",
 };
 
-export function ProfileCard({ imageUrl, username, tierCounts }: ProfileCardProps) {
+export function ProfileCard({
+  imageUrl, username, tierCounts,
+  loading, followability, onFollow, onUnfollow,
+}: ProfileCardProps) {
   let totalCount = 0;
   tierCounts.forEach((count) => { totalCount += count; });
 
@@ -40,15 +46,35 @@ export function ProfileCard({ imageUrl, username, tierCounts }: ProfileCardProps
           <p className="font-bold text-lg md:text-xl">@{username}</p>
           <p className="text-xs md:text-sm text-neutral-500">{totalCount}명의 학생을 모집함</p>
         </div>
-        <div
-          className={`
-            px-4 py-2 flex items-center text-white
-            border border-neutral-200 bg-neutral-900 hover:bg-neutral-700 rounded-full cursor-pointer transition
-          `}
-        >
-          <AddUser className="h-4 w-4 mr-1" strokeWidth={2} />
-          <span className="text-sm">팔로우</span>
-        </div>
+        {(followability === "followable") && (
+          <div
+            className={`
+              px-4 py-2 flex items-center text-white border border-2 border-neutral-900 bg-neutral-900
+              ${loading ? "opacity-50" : "hover:bg-neutral-700 cursor-pointer"}
+              rounded-full transition
+            `}
+            onClick={onFollow}
+          >
+            <AddUser className="h-4 w-4 mr-1" strokeWidth={2} />
+            <span className="text-sm">팔로우</span>
+          </div>
+        )}
+        {(followability === "following") && (
+          <div
+            className={`
+              px-4 py-2 flex items-center border border-2 border-neutral-900
+              hover:border-red-500 hover:bg-red-500
+              ${loading ? "opacity-50" : "hover:text-white cursor-pointer"}
+              rounded-full transition group
+            `}
+            onClick={onUnfollow}
+          >
+            <Group className="h-4 w-4 mr-1 block group-hover:hidden" strokeWidth={2} />
+            <span className="text-sm block group-hover:hidden">팔로우 중</span>
+            <RemoveUser className="h-4 w-4 mr-1 hidden group-hover:block" strokeWidth={2} />
+            <span className="text-sm hidden group-hover:block">팔로우 해제</span>
+          </div>
+        )}
       </div>
 
       <div className="m-4 md:m-6">

@@ -1,19 +1,24 @@
 import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
 import { ChatBubbleError } from "iconoir-react";
+import { useEffect, useState } from "react";
+import { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
-import { ProfileCard } from "~/components/molecules/profile/ProfileCard";
+import { ProfileCard, ProfileCardProps } from "~/components/molecules/profile/ProfileCard";
 import { Env } from "~/env.server";
-import { getSenseiByUsername } from "~/models/sensei";
+import { Relationship, getRelationship } from "~/models/followership";
+import { Sensei, getSenseiByUsername } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
 type LoaderData = {
   username: string;
+  currentUsername: string | null;
+  relationship: Relationship;
   profileStudentId: string | null;
   states: StudentState[] | null;
 };
 
-export const loader: LoaderFunction = async ({ context, params }) => {
+export const loader: LoaderFunction = async ({ context, request, params }) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
@@ -23,9 +28,19 @@ export const loader: LoaderFunction = async ({ context, params }) => {
   const username = usernameParam.replace("@", "");
   const sensei = await getSenseiByUsername(env, username)
 
+  // Get a relationship
+  const authenticator = context.authenticator as Authenticator<Sensei>;
+  const currentUser = await authenticator.isAuthenticated(request);
+  let relationship: Relationship = { followed: false, following: false };
+  if (currentUser && sensei && (currentUser.id !== sensei.id)) {
+    relationship = await getRelationship(env, currentUser.id, sensei.id);
+  }
+
   const states = await getUserStudentStates(env, username);
   return json<LoaderData>({
     username,
+    currentUsername: currentUser?.username ?? null,
+    relationship,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
   });
@@ -41,10 +56,26 @@ export const meta: V2_MetaFunction = ({ params }) => {
 };
 
 export default function UserIndex() {
-  const { username, profileStudentId, states } = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<LoaderData>();
+  const { username, currentUsername, profileStudentId, states } = loaderData;
   if (!states) {
     return <p className="my-8">선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
   }
+
+  const [relationship, setRelationship] = useState(loaderData.relationship);
+  const fetcher = useFetcher();
+  useEffect(() => {
+    if (fetcher.state !== "loading") {
+      return;
+    }
+
+    const { error } = fetcher.data;
+    if (error) {
+      console.error(error);
+    } else {
+      setRelationship((prev) => ({ ...prev, following: followability === "followable" }));
+    }
+  }, [fetcher]);
 
   let imageUrl: string | null = null;
   const tierCounts = new Map<number, number>();
@@ -58,14 +89,22 @@ export default function UserIndex() {
     }
   });
 
+  let followability: ProfileCardProps["followability"] = relationship.following ? "following" : "followable";
+  if (currentUsername === username) {
+    followability = "unable";
+  }
+
   return (
     <div className="my-8">
       <div className="my-8">
-        <SubTitle text="프로필 카드" />
         <ProfileCard
           username={username}
           imageUrl={imageUrl}
           tierCounts={tierCounts}
+          followability={followability}
+          loading={fetcher.state === "submitting"}
+          onFollow={() => fetcher.submit({ username }, { method: "post", action: "/api/followerships" })}
+          onUnfollow={() => fetcher.submit({ username }, { method: "delete", action: "/api/followerships" })}
         />
       </div>
 
