@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({ request, context }) => {
   if (!sensei) {
     return redirect("/signin");
   } else if (sensei.active) {
-    return redirect(`/@${sensei.username}/students`);
+    return redirect(`/@${sensei.username}`);
   }
 
   return json<LoaderData>({ allStudents: getAllStudents() });
@@ -39,7 +39,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   if (!sensei) {
     return redirect("/signin");
   } else if (sensei.active) {
-    return redirect(`/@${sensei.username}/students`);
+    return redirect(`/@${sensei.username}`);
   }
 
   const formData = await request.formData();

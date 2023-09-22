@@ -1,20 +1,21 @@
-import { Link } from "@remix-run/react"
+import { Link, useMatches } from "@remix-run/react"
 
 type HeaderProps = {
   currentUsername: string | null;
 };
 
 export default function Header({ currentUsername }: HeaderProps) {
+  const matches = useMatches();
+  const pathname = matches[matches.length - 1].pathname;
   return (
-    <div className="my-12 md:my-16">
-      <h1 className="my-6 font-black text-5xl italic">
-        mollulog
-      </h1>
-      <div className="flex gap-x-4 text-lg text-gray-700">
-        <Link to="/" className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
-          <span>첫 화면</span>
-        </Link>
-        {currentUsername ? (
+    <div className="mt-8 mb-12 md:my-16 text-neutral-900">
+      <Link to="/">
+        <h1 className="my-6 font-black text-4xl md:text-5xl italic">
+          mol<span className="ml-1.5 md:ml-2 pr-2 bg-neutral-900 text-white rounded-lg">lul</span>og
+        </h1>
+      </Link>
+      <div className="flex gap-x-4 text-lg">
+        {currentUsername && (
           <>
             <Link to={`/@${currentUsername}`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>내 정보</span>
@@ -23,9 +24,10 @@ export default function Header({ currentUsername }: HeaderProps) {
               <span>데이터 입력</span>
             </Link>
           </>
-        ) : (
+        )}
+        {(currentUsername === null && !pathname.startsWith("/signin")) && (
           <Link to="/signin">
-            <span>로그인</span>
+            <span>로그인 후 내 정보 관리하기 →</span>
           </Link>
         )}
       </div>

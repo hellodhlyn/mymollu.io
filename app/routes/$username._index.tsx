@@ -109,10 +109,10 @@ export default function UserIndex() {
       </div>
 
       <div className="md:my-8 my-16">
-        <SubTitle text="최근 활동 내역" />
-        <div className="my-16 w-full flex flex-col items-center justify-center text-neutral-500">
+        <SubTitle text="최근 활동" />
+        <div className="my-16 md:my-24 w-full flex flex-col items-center justify-center text-neutral-500">
           <ChatBubbleError className="my-2 w-16 h-16" strokeWidth={2} />
-          <p className="my-2 text-sm">최근 활동 내역이 없어요.</p>
+          <p className="my-2 text-sm">최근 활동 내역이 없어요</p>
         </div>
       </div>
     </div>
