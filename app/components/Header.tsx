@@ -20,6 +20,9 @@ export default function Header({ currentUsername }: HeaderProps) {
             <Link to={`/@${currentUsername}`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>내 정보</span>
             </Link>
+            <Link to="/futures" className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
+              <span>미래시</span>
+            </Link>
             <Link to={`/edit/students`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>데이터 입력</span>
             </Link>

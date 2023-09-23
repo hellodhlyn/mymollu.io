@@ -2,13 +2,19 @@ import { StudentCard, StudentCardProps } from "~/components/atoms/student"
 
 type StudentCardsProps = {
   cardProps: StudentCardProps[];
+  mobileGrid?: 4 | 6;
   onSelect?: (id: string) => void;
 };
 
-export default function StudentCards({ cardProps, onSelect }: StudentCardsProps) {
+export default function StudentCards({ cardProps, mobileGrid, onSelect }: StudentCardsProps) {
   const selectable = onSelect !== undefined;
+  let gridClass = "grid-cols-6";
+  if (mobileGrid === 4) {
+    gridClass = "grid-cols-4";
+  }
+
   return (
-    <div className="grid grid-cols-6 md:grid-cols-8 gap-1 sm:gap-2">
+    <div className={`grid ${gridClass} md:grid-cols-8 gap-1 sm:gap-2`}>
       {cardProps.map((prop) => (
         <div
           key={`student-card-${prop.id}`}

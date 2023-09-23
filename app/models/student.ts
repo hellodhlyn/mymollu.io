@@ -31,8 +31,8 @@ function parseRole(role: string): Student["role"] {
   return "special";
 }
 
-export function getAllStudents(): Student[] {
-  return studentsData.filter((row) => row.IsReleased[1]).map((row) => ({
+export function getAllStudents(unreleased: boolean = false): Student[] {
+  return studentsData.filter((row) => unreleased || row.IsReleased[1]).map((row) => ({
     id: row.Id.toString(),
     name: row.Name,
     imageUrl: `/assets/images/students/${row.Id}`,
