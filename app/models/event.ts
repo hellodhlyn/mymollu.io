@@ -1,9 +1,9 @@
 import events from "~/statics/events.json";
 
-type Pickup = {
+export type Pickup = {
   studentId: string;
   rerun: boolean;
-  limited?: boolean;
+  type: "usual" | "limited" | "given" | "fes";
 };
 
 export type PickupEvent = {
@@ -11,18 +11,18 @@ export type PickupEvent = {
   name: string;
   type: "event" | "mini_event" | "pickup" | "fes";
   rerun: boolean;
-  since: Date;
-  until: Date;
-  givens: Pickup[];
+  since: Date | null;
+  until: Date | null;
   pickups: Pickup[];
 };
 
 export function getFutureEvents(): PickupEvent[] {
-  return events.filter(({ until }) => Date.parse(until) > new Date().getTime())
+  return events.filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
     .map((event) => ({
       ...event,
       type: event.type as PickupEvent["type"],
-      since: new Date(Date.parse(event.since)),
-      until: new Date(Date.parse(event.until)),
+      since: event.since ? new Date(Date.parse(event.since)) : null,
+      until: event.until ? new Date(Date.parse(event.until)) : null,
+      pickups: event.pickups as Pickup[],
     }));
 }

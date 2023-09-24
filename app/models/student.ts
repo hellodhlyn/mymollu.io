@@ -1,8 +1,12 @@
 import studentsData from "~/statics/students.json";
 
+type School = "abydos" | "gehenna" | "millennium" | "trinity" | "hyakkiyako"
+  | "shanhaijing" | "redwinter" | "arius" | "srt" | "valkyrie" | "others";
+
 export type Student = {
   id: string;
   name: string;
+  school: School;
   imageUrl: string;
   initialTier: number;
   order: number;
@@ -35,6 +39,7 @@ export function getAllStudents(unreleased: boolean = false): Student[] {
   return studentsData.filter((row) => unreleased || row.IsReleased[1]).map((row) => ({
     id: row.Id.toString(),
     name: row.Name,
+    school: row.School.toLowerCase().replace("etc", "others") as School,
     imageUrl: `/assets/images/students/${row.Id}`,
     initialTier: row.StarGrade,
     order: row.DefaultOrder,

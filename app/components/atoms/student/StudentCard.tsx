@@ -8,6 +8,7 @@ export type StudentCardProps = {
   tier?: number | null;
   label?: ReactNode;
 
+  selected?: boolean;
   grayscale?: boolean;
 }
 
@@ -20,14 +21,17 @@ function visibileTier(tier: number): [number, boolean] {
 }
 
 export default function StudentCard(
-  { name, imageUrl, tier, label, grayscale }: StudentCardProps,
+  { name, imageUrl, tier, label, selected, grayscale }: StudentCardProps,
 ) {
   const showInfo = tier !== undefined || label !== undefined;
 
   return (
     <div>
       <div className="relative">
-        <img className={`rounded-lg${grayscale ? " grayscale" : ""}`} src={imageUrl} alt={name} loading="lazy" />
+        <img
+          className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale" : ""}`}
+          src={imageUrl} alt={name} loading="lazy"
+        />
         {showInfo && (
           <div
             className="absolute bottom-0 right-0 flex flex-col items-center px-2 rounded-lg
