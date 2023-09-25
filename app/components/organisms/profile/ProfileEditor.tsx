@@ -39,6 +39,16 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
   return (
     <>
       <Input
+        name="username" label="닉네임" defaultValue={initialData?.username}
+        error={error?.username}
+        placeholder="영숫자 및 _ 기호 (4~20글자)"
+        description={initialData?.username ?
+          "4~20글자의 영숫자 및 _ 기호를 이용할 수 있어요." :
+          "기존에 임시 로그인을 사용한 경우, 해당 아이디와 동일하게 입력해주세요."
+        }
+      />
+
+      <Input
         label="프로필 아이콘"
         placeholder="이름으로 찾기..."
         description="학생을 프로필 아이콘으로 선택할 수 있어요."
@@ -66,15 +76,6 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
         </>
       )}
 
-      <Input
-        name="username" label="닉네임" defaultValue={initialData?.username}
-        error={error?.username}
-        placeholder="영숫자 및 _ 기호 (4~20글자)"
-        description={initialData?.username ?
-          "4~20글자의 영숫자 및 _ 기호를 이용할 수 있어요." :
-          "기존에 임시 로그인을 사용한 경우, 해당 아이디와 동일하게 입력해주세요."
-        }
-      />
       <Button type="submit" text="완료" color="primary" className="my-4" />
     </>
   );
