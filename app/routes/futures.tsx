@@ -47,7 +47,6 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   });
 };
 
-
 type ActionData = {
   resources: StudentResource[];
 };
@@ -77,6 +76,10 @@ export default function Futures() {
 
   const [plan, setPlan] = useState<FuturePlan>(loaderData.futurePlan ?? { studentIds: [] });
   useEffect(() => {
+    if (!signedIn) {
+      return;
+    }
+
     const timer = setTimeout(() => {
       fetcher.submit(
         {
@@ -107,7 +110,7 @@ export default function Futures() {
       <Title text="미래시" />
       {signedIn ?
         <p>학생을 선택하여 성장에 필요한 재화량을 계산할 수 있어요.</p> :
-        <p><Link to="/signin" className="underline">로그인</Link> 후 학생을 선택하여 성장에 필요한 재화량을 계산할 수 있어요.</p>
+        <p><Link to="/signin" className="underline">로그인</Link> 후 학생을 선택하여 필요한 재화량을 계산하고, 각 이벤트에 대한 메모를 남길 수 있어요.</p>
       }
       <Events
         events={events.map((event) => ({

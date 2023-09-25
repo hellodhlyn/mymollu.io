@@ -7,6 +7,7 @@ export default function Edit() {
     <>
       <Title text="데이터 입력" />
       <Navigation links={[
+        { to: "/edit/profile", text: "프로필" },
         { to: "/edit/students", text: "학생" },
         { to: "/edit/specs", text: "성장" },
         { to: "/edit/new-parties", text: "편성 만들기" },

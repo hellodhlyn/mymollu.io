@@ -1,4 +1,4 @@
-import { ActionFunction, LoaderFunction, json, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { Authenticator } from "remix-auth";
 import { SmallButton } from "~/components/atoms/form";
@@ -8,6 +8,10 @@ import { Env } from "~/env.server";
 import { Party, getUserParties, removePartyByName } from "~/models/party";
 import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
+
+export const meta: V2_MetaFunction = () => [
+  { title: "기존 편성 관리 | MolluLog" },
+];
 
 type LoaderData = {
   states: StudentState[];

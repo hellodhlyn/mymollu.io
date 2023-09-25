@@ -1,33 +1,29 @@
 import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Authenticator } from "remix-auth";
-import { Title } from "~/components/atoms/typography";
+import { ProfileEditor } from "~/components/organisms/profile";
+import { Env } from "~/env.server";
+import { sessionStorage } from "~/auth/authenticator.server";
 import { Sensei, updateSensei } from "~/models/sensei";
 import { Student, getAllStudents } from "~/models/student";
-import { Env } from "~/env.server";
-import { migrateStates } from "~/models/studentState";
-import { sessionStorage } from "~/auth/authenticator.server";
-import { migrateParties } from "~/models/party";
-import { ProfileEditor } from "~/components/organisms/profile";
 
 export const meta: V2_MetaFunction = () => [
-  { title: "학생 편성 관리 | MolluLog" },
+  { title: "프로필 관리 | MolluLog" },
 ];
 
 type LoaderData = {
+  sensei: Sensei;
   allStudents: Student[];
 };
 
-export const loader: LoaderFunction = async ({ request, context }) => {
+export const loader: LoaderFunction = async ({ context, request }) => {
   const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
-  } else if (sensei.active) {
-    return redirect(`/@${sensei.username}`);
   }
 
-  return json<LoaderData>({ allStudents: getAllStudents() });
+  return json<LoaderData>({ sensei, allStudents: getAllStudents() });
 }
 
 type ActionData = {
@@ -39,12 +35,9 @@ export const action: ActionFunction = async ({ request, context }) => {
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
-  } else if (sensei.active) {
-    return redirect(`/@${sensei.username}`);
   }
 
   const formData = await request.formData();
-  sensei.active = true;
   sensei.username = formData.get("username") as string;
   sensei.profileStudentId = formData.has("profileStudentId") ? formData.get("profileStudentId") as string : null;
   if (!/^[a-zA-Z0-9_]{4,20}$/.test(sensei.username)) {
@@ -52,11 +45,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   }
 
   const env = context.env as Env;
-  await Promise.all([
-    updateSensei(env, sensei.id, sensei),
-    migrateStates(env, sensei.username, sensei.id),
-    migrateParties(env, sensei.username, sensei.id),
-  ]);
+  await updateSensei(env, sensei.id, sensei);
 
   const { getSession, commitSession } = sessionStorage(env);
   const session = await getSession(request.headers.get("cookie"));
@@ -66,14 +55,17 @@ export const action: ActionFunction = async ({ request, context }) => {
   });
 }
 
-export default function Register() {
-  const { allStudents } = useLoaderData<LoaderData>();
+export default function EditProfile() {
+  const { sensei, allStudents } = useLoaderData<LoaderData>();
   return (
-    <>
-      <Title text="기본 정보 설정" />
+    <div className="py-4">
       <Form method="post">
-        <ProfileEditor allStudents={allStudents} error={useActionData<ActionData>()?.error} />
+        <ProfileEditor
+          allStudents={allStudents}
+          initialData={sensei}
+          error={useActionData<ActionData>()?.error}
+        />
       </Form>
-    </>
+    </div>
   );
 }

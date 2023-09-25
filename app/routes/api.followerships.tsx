@@ -1,4 +1,4 @@
-import { ActionFunction } from "@remix-run/cloudflare";
+import { ActionFunction, redirect } from "@remix-run/cloudflare";
 import { Authenticator } from "remix-auth";
 import { Env } from "~/env.server";
 import { follow, unfollow } from "~/models/followership";
@@ -8,7 +8,7 @@ export const action: ActionFunction = async ({ request, context }) => {
   const authenticator = context.authenticator as Authenticator<Sensei>;
   const follower = await authenticator.isAuthenticated(request);
   if (!follower) {
-    return errorResponse(401);
+    return redirect("/signin");
   }
 
   const env = context.env as Env;
