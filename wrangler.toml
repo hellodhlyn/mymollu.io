@@ -15,6 +15,14 @@ compatibility_date = "2023-04-20"
   id = "757ca5d838364689af06edc372cd4c56"
   preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
 
+[[r2_buckets]]
+  binding = "ASSETS_BUCKET"
+  bucket_name = "mymollu-assets"
+  preview_bucket_name = "mymollu-assets-preview"
+
+[placement]
+  mode = "smart"
+
 [site]
   bucket = "./public"
 
