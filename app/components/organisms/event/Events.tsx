@@ -39,14 +39,24 @@ export default function Events({
         "pickup": "모집",
       }[event.type]);
 
+      const { since, until } = event;
+      const now = dayjs();
+      const currentEvent = since && until && dayjs(since).isBefore(now) && dayjs(until).isAfter(now);
+
       return (
         <div key={`event-${event.id}`} className="my-8">
           <SubTitle text={event.name} />
-          <div className="-mt-2 mb-4 text-sm text-neutral-500">
+          <div className="-mt-2 mb-4 flex items-center text-sm text-neutral-500">
+            {currentEvent && (
+              <div className="mr-2 pr-2 flex items-center border-r border-neutral-300">
+                <div className="mr-1 w-2 h-2 bg-red-600 rounded-full animate-pulse" />
+                <span className="text-red-500 text-sm font-bold">진행중</span>
+              </div>
+            )}
             <span className="pr-2 border-r border-neutral-300">
               {eventLabelTexts.join(" ")}
             </span>
-            <span className="pl-2">
+            <span className="px-2">
               {formatDate(event.since)} ~ {formatDate(event.until)}
             </span>
           </div>
