@@ -11,6 +11,7 @@ export type Student = {
   initialTier: number;
   order: number;
   attackType: "explosive" | "piercing" | "mystic" | "sonic" | null;
+  defenseType: "light" | "heavy" | "elastic" | null;
   role: "striker" | "special";
 };
 
@@ -28,6 +29,18 @@ function parseAttackType(attackType: string): Student["attackType"] | null {
   }
 };
 
+function parseDefenseType(defenseType: string): Student["defenseType"] | null {
+  if (defenseType === "LightArmor") {
+    return "light";
+  } else if (defenseType === "HeavyArmor") {
+    return "heavy";
+  } else if (defenseType === "ElasticArmor") {
+    return "elastic";
+  } else {
+    return null;
+  }
+}
+
 function parseRole(role: string): Student["role"] {
   if (role === "Main") {
     return "striker";
@@ -44,6 +57,7 @@ export function getAllStudents(unreleased: boolean = false): Student[] {
     initialTier: row.StarGrade,
     order: row.DefaultOrder,
     attackType: parseAttackType(row.BulletType),
+    defenseType: parseDefenseType(row.ArmorType),
     role: parseRole(row.SquadType),
   }));
 }

@@ -1,7 +1,7 @@
-import Events from "./Events";
+import FutureTimeline from "./FutureTimeline";
 import ResourceCalculator from "./ResourceCalculator";
 
 export {
-  Events,
+  FutureTimeline,
   ResourceCalculator,
 };

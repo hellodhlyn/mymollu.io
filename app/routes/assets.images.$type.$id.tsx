@@ -46,12 +46,15 @@ function responseObject(object: R2ObjectBody): Response {
 }
 
 const studentPattern = "aHR0cHM6Ly9zY2hhbGUuZ2cvaW1hZ2VzL3N0dWRlbnQvY29sbGVjdGlvbi8ke3N0dWRlbnRJZH0ud2VicA==";
+const bossPattern = "aHR0cHM6Ly9zY2hhbGUuZ2cvaW1hZ2VzL3JhaWQvQm9zc19Qb3J0cmFpdF8ke2lkfV9Mb2JieS5wbmc=";
 const bdPattern = "aHR0cHM6Ly9zY2hhbGUuZ2cvaW1hZ2VzL2l0ZW1zL2ljb24vaXRlbV9pY29uX21hdGVyaWFsX2V4c2tpbGxfJHtpZH1fMC53ZWJw";
 const equipmentPattern = "aHR0cHM6Ly9zY2hhbGUuZ2cvaW1hZ2VzL2VxdWlwbWVudC9pY29uL2VxdWlwbWVudF9pY29uXyR7aWR9X3RpZXIxLndlYnA";
 
 function getRemoteUrl(assetType: string, assetId: string): string | null {
   if (assetType === "students") {
     return atob(studentPattern).replace("${studentId}", assetId);
+  } else if (assetType === "boss") {
+    return atob(bossPattern).replace("${id}", bossRemoteAssetId(assetId));
   } else if (assetType === "bds") {
     const remoteId = assetId.replace("others", "etc");
     return atob(bdPattern).replace("${id}", remoteId);
@@ -59,4 +62,21 @@ function getRemoteUrl(assetType: string, assetId: string): string | null {
     return atob(equipmentPattern).replace("${id}", assetId);
   }
   return null
+}
+
+function bossRemoteAssetId(assetId: string): string {
+  if (assetId === "hod") {
+    return "HOD";
+  } else if (assetId === "gregorius") {
+    return "EN0005";
+  } else if (assetId === "hovercraft") {
+    return "RaidHoverCraft";
+  } else {
+    return capitalize(assetId);
+  }
+}
+
+function capitalize(text: string): string {
+  const camelText = text.replace(/\-[a-z]/g, (group) => group.slice(-1).toUpperCase());
+  return camelText[0].toUpperCase() + camelText.substring(1);
 }

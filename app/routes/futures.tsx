@@ -1,15 +1,16 @@
 import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
 import { Title } from "~/components/atoms/typography";
-import { Events, ResourceCalculator } from "~/components/organisms/event";
+import { FutureTimeline, ResourceCalculator } from "~/components/organisms/event";
 import { Env } from "~/env.server";
 import { PickupEvent, getFutureEvents } from "~/models/event";
 import { FuturePlan, getFuturePlan, setFuturePlan } from "~/models/future";
 import { Sensei } from "~/models/sensei";
 import { Student, getAllStudents } from "~/models/student";
 import { StudentResource, getStudentResource } from "~/models/student-resource";
+import { RaidEvent, getAllTotalAssaults } from "~/models/raid";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -21,6 +22,7 @@ export const meta: V2_MetaFunction = () => {
 type LoaderData = {
   signedIn: boolean;
   events: PickupEvent[];
+  totalAssaults: RaidEvent[];
   allStudents: Student[];
   futurePlan: FuturePlan | null;
   resources: StudentResource[];
@@ -41,6 +43,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   return json<LoaderData>({
     signedIn,
     events: getFutureEvents(),
+    totalAssaults: getAllTotalAssaults(),
     allStudents: getAllStudents(true).filter(({ id }) => eventStudentIds.includes(id)),
     futurePlan,
     resources: futurePlan?.studentIds?.map((id) => getStudentResource(id)!) ?? [],
@@ -71,7 +74,7 @@ export const action: ActionFunction = async ({ context, request }) => {
 
 export default function Futures() {
   const loaderData = useLoaderData<LoaderData>();
-  const { signedIn, events, allStudents } = loaderData;
+  const { signedIn, events, totalAssaults, allStudents } = loaderData;
   const fetcher = useFetcher();
 
   const [plan, setPlan] = useState<FuturePlan>(loaderData.futurePlan ?? { studentIds: [] });
@@ -108,33 +111,21 @@ export default function Futures() {
   return (
     <div className="pb-64">
       <Title text="미래시" />
-      {signedIn ?
-        <p>학생을 선택하여 성장에 필요한 재화량을 계산할 수 있어요.</p> :
-        <p><Link to="/signin" className="underline">로그인</Link> 후 학생을 선택하여 필요한 재화량을 계산하고, 각 이벤트에 대한 메모를 남길 수 있어요.</p>
-      }
-      <Events
-        events={events.map((event) => ({
-          ...event,
-          since: event.since ? new Date(Date.parse(event.since)) : null,
-          until: event.until ? new Date(Date.parse(event.until)) : null,
-          pickups: event.pickups.map((pickup) => ({
-            student: allStudents.find(({ id }) => pickup.studentId === id)!,
-            rerun: pickup.rerun,
-            type: pickup.type,
-          })),
-        }))}
-        selectedStudentIds={plan.studentIds}
-        initialMemos={plan.memos}
-        onSelect={signedIn ? (
-          (studentId) => {
-            const newSelectedIds = plan.studentIds.includes(studentId) ?
-              plan.studentIds.filter((id) => id !== studentId) : [...plan.studentIds, studentId];
-            setPlan((prev) => ({ ...prev, studentIds: newSelectedIds }));
-          }
-        ) : undefined}
-        onMemoUpdate={signedIn ? (
-          (eventId, text) => setPlan((prev) => ({ ...prev, memos: { ...prev.memos, [eventId]: text } }))
-        ) : undefined}
+
+      <FutureTimeline
+        events={events}
+        totalAssaults={totalAssaults}
+        allStudents={allStudents}
+        plan={plan}
+        onSelectStudent={signedIn ? (studentId) => {
+          const newSelectedIds = plan.studentIds.includes(studentId) ?
+            plan.studentIds.filter((id) => id !== studentId) : [...plan.studentIds, studentId];
+          setPlan((prev) => ({ ...prev, studentIds: newSelectedIds }));
+        } : undefined}
+        onMemoUpdate={signedIn ?
+          (newMemo) => setPlan((prev) => ({ ...prev, memos: { ...prev.memos, ...newMemo } })) :
+          undefined
+        }
       />
 
       {(plan.studentIds.length > 0) && (
