@@ -72,14 +72,6 @@ export default function EditNewParties() {
       return setError("학생은 최대 6명까지만 편성할 수 있어요.");
     }
 
-    // 조력자는 1명까지 편성 가능 (총력전 기준)
-    if (
-      !state.owned &&
-      partyStudents.find((each) => loaderData.states.find((state) => state.student.id === each)?.owned === false)
-    ) {
-      return setError("조력자 학생은 최대 1명까지만 편성할 수 있어요.");
-    }
-
     const { student } = state;
     if (student.role === "striker") {
       // 스트라이커는 최대 4명까지 편성 가능하며 항상 앞의 4자리를 차지

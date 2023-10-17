@@ -47,7 +47,7 @@ export default function PartyEditor(
         </div>
       )}
       <div className="px-6 md:px-8 py-2 md:py-4 bg-neutral-900 bg-opacity-95 rounded-t-lg shadow-lg">
-        <SubTitle className="text-white" text="편성한 학생" />
+        <SubTitle className="text-white" text="선택한 학생" />
         {selectedCount === 0 ?
           <p className="my-4 text-sm text-neutral-300">학생을 선택하여 편성하세요.</p> :
           <div className="my-4 grid grid-cols-6 md:grid-cols-10 gap-1 gap-2">
