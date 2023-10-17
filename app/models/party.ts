@@ -2,7 +2,7 @@ import { Env } from "~/env.server";
 import { Sensei, getSenseiByUsername } from "./sensei";
 
 export type Party = {
-  uid?: string;
+  uid: string;
   name: string;
   studentIds: string[];
 };
@@ -25,17 +25,13 @@ export async function getUserParties(env: Env, username: string): Promise<Party[
   return JSON.parse(rawParties) as Party[];
 }
 
-export async function removePartyByName(env: Env, sensei: Sensei, name: string) {
+export async function removePartyByUid(env: Env, sensei: Sensei, uid: string) {
   const existingParties = await getUserParties(env, sensei.username);
-  const newParties = existingParties.filter((party) => party.name !== name);
+  const newParties = existingParties.filter((party) => party.uid !== uid);
   await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(newParties));
 }
 
 export async function addParty(env: Env, sensei: Sensei, newParty: Party) {
-  if (!newParty.uid) {
-    newParty.uid = Math.random().toString(36).slice(2);
-  }
-
   const existingParties = await getUserParties(env, sensei.username);
   const newParties = [...existingParties, newParty];
   await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(newParties));

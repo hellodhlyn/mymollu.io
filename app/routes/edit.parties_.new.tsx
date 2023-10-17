@@ -1,5 +1,5 @@
 import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
@@ -11,7 +11,7 @@ import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
 export const meta: V2_MetaFunction = () => [
-  { title: "학생 편성 관리 | MolluLog" },
+  { title: "편성 관리 | MolluLog" },
 ];
 
 type LoaderData = {
@@ -43,6 +43,7 @@ export const action: ActionFunction = async ({ context, request }) => {
 
   const formData = await request.formData();
   await addParty(env, sensei, {
+    uid: Math.random().toString(36).slice(2),
     name: formData.get("name") as string,
     studentIds: JSON.parse(formData.get("studentIds") as string),
   });
@@ -108,6 +109,13 @@ export default function EditNewParties() {
 
   return (
     <div className="pb-64">
+      <Link to="/edit/parties">
+        <p className="my-4 text-neutral-500 hover:text-neutral-700 hover:underline transition cursor-pointer">
+          ← 편성 목록으로 돌아가기
+        </p>
+      </Link>
+      <p>학생을 선택하여 편성할 수 있어요.</p>
+
       {StateFilter}
 
       <SubTitle text="모집한 학생" />

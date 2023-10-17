@@ -8,9 +8,10 @@ import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 import { Authenticator } from "remix-auth";
 import { Sensei } from "~/models/sensei";
+import { StudentCards } from "~/components/molecules/student";
 
 export const meta: V2_MetaFunction = () => [
-  { title: "학생 목록 관리 | MolluLog" },
+  { title: "모집 학생 관리 | MolluLog" },
 ];
 
 type LoaderData = {
@@ -52,7 +53,6 @@ export const ErrorBoundary: V2_ErrorBoundaryComponent = () => {
 
 export default function EditPage() {
   const loaderData = useLoaderData<LoaderData>();
-  const { currentUsername } = loaderData;
 
   const [states, setStates] = useState<StudentState[]>(loaderData.states);
   const [StateFilter, filteredStates, setAllStatesToFilter] = useStateFilter(loaderData.states);
@@ -66,19 +66,16 @@ export default function EditPage() {
       {StateFilter}
 
       <div className="my-8">
-        <p className="font-bold text-xl my-4">학생 목록</p>
-        <div className="grid grid-cols-6 md:grid-cols-8 gap-2">
-          {filteredStates.map(({ student, owned }) => (
-            <div
-              key={`edit-students-${student.id}`}
-              className={`hover:scale-105 cursor-pointer transition ${owned ? "grayscale-100" : "opacity-75 grayscale"}`}
-              onClick={() => { setStates(states.map((s) => s.student.id === student.id ? { ...s, owned: !s.owned } : s)); }}
-            >
-              <img className="rounded-lg" src={student.imageUrl} alt={student.name} />
-              <p className="text-center text-sm">{student.name}</p>
-            </div>
-          ))}
-        </div>
+        <p className="font-bold text-xl my-4">모집 학생 관리</p>
+        <StudentCards
+          cardProps={filteredStates.map(({ student, owned }) => ({
+              id: student.id,
+              name: student.name,
+              imageUrl: student.imageUrl,
+              grayscale: !owned,
+          }))}
+          onSelect={(id) => { setStates(states.map((s) => s.student.id === id ? { ...s, owned: !s.owned } : s)); }}
+        />
       </div>
 
       <div className="my-8">
