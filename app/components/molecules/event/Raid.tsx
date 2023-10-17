@@ -32,15 +32,15 @@ export default function TotalAssault(
 
   return (
     <div className="py-2">
-      <p className="my-1 text-sm text-neutral-500">
+      <p className="md:my-1 text-sm text-neutral-500">
         {type === "total-assault" ? "총력전" : "대결전"}
       </p>
       <SubTitle text={name} className="mt-0 mb-2" />
 
       <div className="relative md:w-3/5">
         <img
-          className="rounded-lg bg-gradient-to-b from-neutral-50 to-neutral-200"
-          src={`/assets/images/boss/${boss}`} alt={`총력전 보스 ${name}`}
+          className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
+          src={`/assets/images/boss/${boss}`} alt={`총력전 보스 ${name}`} loading="lazy"
         />
         <div className="absolute bottom-0 right-0 flex gap-x-1 p-1">
           <span className="px-2 py-1 rounded-lg text-white text-sm bg-black bg-opacity-90">

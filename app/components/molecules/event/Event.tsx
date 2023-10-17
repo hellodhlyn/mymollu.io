@@ -8,7 +8,7 @@ type EventProps = {
   id: string;
   type: PickupEvent["type"];
   name: string;
-  rerun: boolean;
+  rerun?: boolean;
   pickups: { student: Student, rerun: boolean, type: PickupEvent["pickups"][0]["type"] }[];
 
   selectedStudentIds: string[];
@@ -21,21 +21,26 @@ export default function Event(event: EventProps) {
   const { selectedStudentIds, onSelect, initialMemo, onMemoUpdate } = event;
 
   const eventLabelTexts = [];
-  eventLabelTexts.push(event.rerun ? "복각" : "신규");
+  if (["event", "pickup"].includes(event.type)) {
+    eventLabelTexts.push(event.rerun ? "복각" : "신규");
+  }
   eventLabelTexts.push({
     "event": "이벤트",
-    "immortal_event": "상설 이벤트",
+    "immortal_event": "이벤트 상설화",
     "mini_event": "미니 이벤트",
     "fes": "페스 이벤트",
     "pickup": "모집",
+    "campaign": "캠페인",
+    "exercise": "종합전술시험",
+    "main_story": "메인 스토리",
   }[event.type]);
 
   return (
     <div className="py-2">
-      <p className="my-1 text-sm text-neutral-500">
+      <p className="md:my-1 text-sm text-neutral-500">
         {eventLabelTexts.join(" ")}
         </p>
-      <SubTitle text={event.name} className="mt-0 mb-2" />
+      <SubTitle text={event.name} className={`mt-0 mb-2`} />
 
       <StudentCards
         mobileGrid={5}

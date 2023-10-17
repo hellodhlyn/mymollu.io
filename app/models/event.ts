@@ -9,10 +9,10 @@ export type Pickup = {
 export type PickupEvent = {
   id: string;
   name: string;
-  type: "event" | "mini_event" | "immortal_event" | "pickup" | "fes";
-  rerun: boolean;
+  type: "event" | "mini_event" | "immortal_event" | "pickup" | "fes" | "campaign" | "exercise" | "main_story";
+  rerun?: boolean;
   since: string;
-  until: string | null;
+  until: string;
   pickups: Pickup[];
 };
 
@@ -21,6 +21,6 @@ export function getFutureEvents(): PickupEvent[] {
     .map((event) => ({
       ...event,
       type: event.type as PickupEvent["type"],
-      pickups: event.pickups as Pickup[],
+      pickups: event.pickups as Pickup[] ?? [],
     }));
 }
