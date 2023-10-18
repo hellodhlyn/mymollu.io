@@ -30,7 +30,7 @@ compatibility_date = "2023-04-20"
   command = "yarn build"
 
 [vars]
-HOST = "https://mollulog.dodam.io"
+HOST = "https://mollulog.net"
 STAGE = "prod"
 
 # [secrets]
