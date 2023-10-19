@@ -24,9 +24,18 @@ export default function StudentCard(
   { name, imageUrl, tier, label, selected, grayscale }: StudentCardProps,
 ) {
   const showInfo = tier !== undefined || label !== undefined;
+  const visibleNames = [];
+  if (name === "하츠네 미쿠") {
+    visibleNames.push("미쿠");
+  } else if (name?.includes("(")) {
+    const splits = name.split("(");
+    visibleNames.push(splits[0], splits[1].replace(")", ""));
+  } else if (name) {
+    visibleNames.push(name);
+  }
 
   return (
-    <div>
+    <div className="my-1">
       <div className="relative">
         <img
           className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale" : ""}`}
@@ -51,16 +60,9 @@ export default function StudentCard(
         )}
       </div>
       {name && (
-        <div className="my-1 text-center leading-tight">
-          {name.includes("(") ? 
-            (
-              <>
-                <p className="text-sm">{name.split("(")[0]}</p>
-                <p className="text-xs">{name.split("(")[1].replace(")", "")}</p>
-              </>
-            ) :
-            (<p className="text-sm">{name}</p>)
-          }
+        <div className="mt-1 text-center leading-tight">
+          <p className="text-sm">{visibleNames[0]}</p>
+          {(visibleNames.length === 2) && <p className="text-xs">{visibleNames[1]}</p>}
         </div>
       )}
     </div>

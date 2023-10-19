@@ -1,15 +1,8 @@
-import { SubTitle } from "~/components/atoms/typography";
-import { RaidEvent } from "~/models/raid";
+import { RaidEvent, raidTerrainText, raidTypeText } from "~/models/raid";
 
 export default function TotalAssault(
   { name, type, boss, terrain, attackType, defenseType }: RaidEvent,
 ) {
-  const terrainText = {
-    "indoor": "실내",
-    "outdoor": "야외",
-    "street": "시가지",
-  }[terrain];
-
   let attackTypeText = "";
   let attackTypeClass = "";
   if (attackType === "explosive") {
@@ -33,9 +26,9 @@ export default function TotalAssault(
   return (
     <div className="py-2">
       <p className="md:my-1 text-sm text-neutral-500">
-        {type === "total-assault" ? "총력전" : "대결전"}
+        {raidTypeText(type)}
       </p>
-      <SubTitle text={name} className="mt-0 mb-2" />
+      <p className="mb-2 font-bold text-lg md:text-xl">{name}</p>
 
       <div className="relative md:w-3/5">
         <img
@@ -44,7 +37,7 @@ export default function TotalAssault(
         />
         <div className="absolute bottom-0 right-0 flex gap-x-1 p-1">
           <span className="px-2 py-1 rounded-lg text-white text-sm bg-black bg-opacity-90">
-            {terrainText}
+            {raidTerrainText(terrain)}
           </span>
           <span className={`px-2 py-1 bg-black rounded-lg text-white text-sm bg-opacity-90 ${attackTypeClass}`}>
             {attackTypeText}

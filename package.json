@@ -20,6 +20,7 @@
     "hangul-js": "^0.2.6",
     "iconoir-react": "^6.11.0",
     "isbot": "^3.6.8",
+    "nanoid": "^5.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-auth": "^3.5.1",

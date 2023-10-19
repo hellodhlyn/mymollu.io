@@ -1,12 +1,10 @@
 import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Form, Link, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { Authenticator } from "remix-auth";
-import { SubTitle } from "~/components/atoms/typography";
-import { StudentCards } from "~/components/molecules/student";
-import { PartyEditor, useStateFilter } from "~/components/organisms/student";
+import { PartyGenerator } from "~/components/organisms/party";
 import { Env } from "~/env.server";
 import { addParty } from "~/models/party";
+import { RaidEvent, getAllTotalAssaults } from "~/models/raid";
 import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
@@ -17,6 +15,7 @@ export const meta: V2_MetaFunction = () => [
 type LoaderData = {
   currentUsername: string;
   states: StudentState[];
+  raids: RaidEvent[];
 }
 
 export const loader: LoaderFunction = async ({ context, request }) => {
@@ -30,6 +29,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   return json<LoaderData>({
     currentUsername: sensei.username,
     states: states!,
+    raids: getAllTotalAssaults(),
   });
 };
 
@@ -42,109 +42,23 @@ export const action: ActionFunction = async ({ context, request }) => {
   }
 
   const formData = await request.formData();
+  const raidId = formData.get("raidId");
   await addParty(env, sensei, {
-    uid: Math.random().toString(36).slice(2),
     name: formData.get("name") as string,
     studentIds: JSON.parse(formData.get("studentIds") as string),
+    raidId: raidId ? raidId as string : null,
   });
-  return redirect(`/@${sensei.username}/parties`);
+  return redirect(`/edit/parties`);
 };
 
 export default function EditNewParties() {
   const loaderData = useLoaderData<LoaderData>();
 
-  const [StateFilter, filteredStates] = useStateFilter(loaderData.states);
-  const [partyStudents, setPartyStudents] = useState<(string | null)[]>(new Array(6).fill(null));
-
-  const [error, setError] = useState<string | null>(null);
-
-  const addPartyStudent = (id: string) => {
-    const state = loaderData.states.find((state) => state.student.id === id);
-    if (!state) {
-      return;
-    }
-
-    // 학생은 최대 6명까지 편성 가능하며, 중복 편성 불가능
-    if (partyStudents.includes(id)) {
-      return setError("학생은 중복해서 편성할 수 없어요.");
-    }
-    if (partyStudents.filter((each) => each !== null).length >= 6) {
-      return setError("학생은 최대 6명까지만 편성할 수 있어요.");
-    }
-
-    const { student } = state;
-    if (student.role === "striker") {
-      // 스트라이커는 최대 4명까지 편성 가능하며 항상 앞의 4자리를 차지
-      const emptyIndex = partyStudents.indexOf(null);
-      if (emptyIndex >= 4) {
-        return setError("스트라이커 학생은 최대 4명까지 편성할 수 있어요.");
-      }
-
-      setPartyStudents((prev) => {
-        const newPartyStudents = [...prev];
-        newPartyStudents[emptyIndex] = student.id;
-        return newPartyStudents;
-      });
-    } else {
-      // 스페셜은 최대 2명까지 편성 가능하며 항상 뒤의 2자리를 차지
-      if (partyStudents[4] !== null && partyStudents[5] !== null) {
-        return setError("스페셜 학생은 최대 2명까지 편성할 수 있어요.");
-      }
-
-      setPartyStudents((prev) => {
-        const newPartyStudents = [...prev];
-        newPartyStudents[prev[4] == null ? 4 : 5] = student.id;
-        return newPartyStudents;
-      });
-    }
-  };
-
   return (
-    <div className="pb-64">
-      <Link to="/edit/parties">
-        <p className="my-4 text-neutral-500 hover:text-neutral-700 hover:underline transition cursor-pointer">
-          ← 편성 목록으로 돌아가기
-        </p>
-      </Link>
-      <p>학생을 선택하여 편성할 수 있어요.</p>
-
-      {StateFilter}
-
-      <SubTitle text="모집한 학생" />
-      <StudentCards
-        cardProps={filteredStates.filter(({ owned }) => owned).map(({ student, tier }) => ({
-          id: student.id,
-          name: student.name,
-          imageUrl: student.imageUrl,
-          tier: tier ?? student.initialTier,
-        }))}
-        onSelect={addPartyStudent}
-      />
-
-      <SubTitle text="조력자 학생" />
-      <StudentCards
-        cardProps={filteredStates.filter(({ owned }) => !owned).map(({ student, tier }) => ({
-          id: student.id,
-          name: student.name,
-          imageUrl: student.imageUrl,
-        }))}
-        onSelect={addPartyStudent}
-      />
-
-      <div className="fixed w-screen bottom-0 left-0">
-        <Form method="post">
-          <PartyEditor
-            states={partyStudents.map((id) => (
-              id === null ? null : loaderData.states.find((state) => state.student.id === id)!
-            ))}
-            errorMessage={error}
-            onErrorDisappear={() => setError(null)}
-            onReset={() => setPartyStudents(new Array(6).fill(null))}
-          />
-          <input type="hidden" name="username" value={loaderData.currentUsername} />
-          <input type="hidden" name="studentIds" value={JSON.stringify(partyStudents)} />
-        </Form>
-      </div>
+    <div className="my-8">
+      <Form method="post">
+        <PartyGenerator raids={loaderData.raids} studentStates={loaderData.states} />
+      </Form>
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import { SubTitle } from "~/components/atoms/typography";
 import { MemoEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
 import { PickupEvent } from "~/models/event";
@@ -39,8 +38,8 @@ export default function Event(event: EventProps) {
     <div className="py-2">
       <p className="md:my-1 text-sm text-neutral-500">
         {eventLabelTexts.join(" ")}
-        </p>
-      <SubTitle text={event.name} className={`mt-0 mb-2`} />
+      </p>
+      <p className="mb-2 font-bold text-lg md:text-xl">{event.name}</p>
 
       <StudentCards
         mobileGrid={5}

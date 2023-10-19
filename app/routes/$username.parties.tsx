@@ -1,7 +1,6 @@
-import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-import { StudentCard } from "~/components/atoms/student";
-import { SubTitle } from "~/components/atoms/typography";
+import { PartyView } from "~/components/organisms/party";
 import { Env } from "~/env.server";
 import { Party, getUserParties } from "~/models/party";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
@@ -41,28 +40,7 @@ export default function UserPartyPage() {
   return (
     <div className="my-8">
       {parties.map((party) => (
-        <div key={`party-${party.studentIds.join("_")}`}>
-          <SubTitle text={party.name} />
-          <div className="grid grid-cols-6 md:grid-cols-8 gap-1 md:gap-2">
-            {party.studentIds.map((studentId) => {
-              const state = states.find(({ student }) => student.id === studentId);
-              if (!state) {
-                return null;
-              }
-
-              const { student } = state;
-              return (
-                <StudentCard
-                  key={`party-students-${student.id}`}
-                  id={student.id}
-                  imageUrl={student.imageUrl}
-                  name={student.name}
-                  tier={state.owned ? (state.tier ?? student.initialTier) : null}
-                />
-              );
-            })}
-          </div>
-        </div>
+        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} />
       ))}
     </div>
   );

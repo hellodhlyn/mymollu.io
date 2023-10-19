@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Student } from "./student";
 import raidData from "~/statics/raids.json";
 
@@ -13,12 +14,33 @@ export type RaidEvent = {
   until: string;
 };
 
-export function getAllTotalAssaults(): RaidEvent[] {
-  return raidData.map((row) => ({
-    ...row,
-    type: row.type as RaidEvent["type"],
-    terrain: row.terrain as RaidEvent["terrain"],
-    attackType: row.attackType as RaidEvent["attackType"],
-    defenseType: row.defenseType as RaidEvent["defenseType"],
-  }));
+export function getAllTotalAssaults(filterPrevious: boolean = true): RaidEvent[] {
+  return raidData
+    .filter(({ until }) => !filterPrevious || dayjs(until).isAfter(dayjs()))
+    .map((row) => ({
+      ...row,
+      type: row.type as RaidEvent["type"],
+      terrain: row.terrain as RaidEvent["terrain"],
+      attackType: row.attackType as RaidEvent["attackType"],
+      defenseType: row.defenseType as RaidEvent["defenseType"],
+    }));
 }
+
+const terrainText = {
+  "indoor": "실내",
+  "outdoor": "야외",
+  "street": "시가지",
+};
+
+export function raidTerrainText(terrain: RaidEvent["terrain"]): string {
+  return terrainText[terrain];
+}
+
+const typeText = {
+  "total-assault": "총력전",
+  "elimination": "대결전",
+};
+
+export function raidTypeText(type: RaidEvent["type"]): string {
+  return typeText[type];
+};

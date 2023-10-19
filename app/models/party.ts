@@ -1,11 +1,16 @@
+import { nanoid } from "nanoid";
 import { Env } from "~/env.server";
 import { Sensei, getSenseiByUsername } from "./sensei";
 
+type PartyFields = {
+  name: string;
+  studentIds: string[] | string[][];
+  raidId?: string | null;
+}
+
 export type Party = {
   uid: string;
-  name: string;
-  studentIds: string[];
-};
+} & PartyFields;
 
 function partyKey(username: string) {
   return `parties:${username}`;
@@ -22,7 +27,7 @@ export async function getUserParties(env: Env, username: string): Promise<Party[
     return [];
   }
 
-  return JSON.parse(rawParties) as Party[];
+  return (JSON.parse(rawParties) as Party[]);
 }
 
 export async function removePartyByUid(env: Env, sensei: Sensei, uid: string) {
@@ -31,9 +36,14 @@ export async function removePartyByUid(env: Env, sensei: Sensei, uid: string) {
   await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(newParties));
 }
 
-export async function addParty(env: Env, sensei: Sensei, newParty: Party) {
+export async function addParty(env: Env, sensei: Sensei, fields: PartyFields) {
+  if (fields.studentIds.length === 0) {
+    // TODO - handle error
+    return;
+  }
   const existingParties = await getUserParties(env, sensei.username);
-  const newParties = [...existingParties, newParty];
+  const newParty: Party = { uid: nanoid(8), ...fields };
+  const newParties = [...existingParties, newParty].filter((party) => party !== null);
   await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(newParties));
 }
 
@@ -47,3 +57,4 @@ export async function migrateParties(env: Env, username: string, id: number) {
     // await env.KV_USERDATA.delete(partyKey(username));
   }
 }
+ 
