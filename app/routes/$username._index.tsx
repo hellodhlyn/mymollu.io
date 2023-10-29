@@ -1,5 +1,5 @@
-import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
-import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
+import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ChatBubbleError } from "iconoir-react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
@@ -9,6 +9,7 @@ import { Env } from "~/env.server";
 import { Relationship, getRelationship } from "~/models/followership";
 import { Sensei, getSenseiByUsername } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
+import { ActionData } from "./api.followerships";
 
 type LoaderData = {
   username: string;
@@ -46,7 +47,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
   });
 };
 
-export const meta: V2_MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ params }) => {
   return [
     { title: `${params.username || ""} - 프로필 | MolluLog`.trim() },
     { name: "description", content: `${params.username} 선생님의 프로필과 최근 활동을 확인해보세요.` },
@@ -63,15 +64,14 @@ export default function UserIndex() {
   }
 
   const [relationship, setRelationship] = useState(loaderData.relationship);
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<ActionData>();
   useEffect(() => {
     if (fetcher.state !== "loading") {
       return;
     }
 
-    const { error } = fetcher.data;
-    if (error) {
-      console.error(error);
+    if (fetcher.data?.error) {
+      console.error(fetcher.data.error);
     } else {
       setRelationship((prev) => ({ ...prev, following: followability === "followable" }));
     }

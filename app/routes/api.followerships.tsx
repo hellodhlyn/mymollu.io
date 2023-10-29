@@ -36,6 +36,10 @@ export const action: ActionFunction = async ({ request, context }) => {
   }
 }
 
+export type ActionData = {
+  error?: { message: string };
+};
+
 function okResponse(status: number): Response {
   return new Response(
     JSON.stringify({}),

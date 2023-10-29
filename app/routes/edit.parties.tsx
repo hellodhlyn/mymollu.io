@@ -1,4 +1,4 @@
-import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { AddCircle } from "iconoir-react";
 import { Authenticator } from "remix-auth";
@@ -9,7 +9,7 @@ import { Party, getUserParties, removePartyByUid } from "~/models/party";
 import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: "편성 관리 | MolluLog" },
 ];
 

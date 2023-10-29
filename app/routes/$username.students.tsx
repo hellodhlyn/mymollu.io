@@ -1,6 +1,5 @@
-import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
+import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
 import { useLoaderData, useRouteError } from "@remix-run/react";
-import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
@@ -26,19 +25,13 @@ export const loader: LoaderFunction = async ({ context, params }) => {
   });
 };
 
-export const meta: V2_MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ params }) => {
   return [
     { title: `${params.username || ""} - 학생부 | MolluLog`.trim() },
     { name: "description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
     { name: "og:title", content: `${params.username || ""} - 학생부 | MolluLog`.trim() },
     { name: "og:description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
   ];
-};
-
-export const ErrorBoundary: V2_ErrorBoundaryComponent = () => {
-  const error = useRouteError() as any;
-  console.error(error);
-  return <p>{error.toString()}</p>
 };
 
 export default function UserPage() {

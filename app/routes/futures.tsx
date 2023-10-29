@@ -1,4 +1,4 @@
-import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
@@ -12,9 +12,9 @@ import { Student, getAllStudents } from "~/models/student";
 import { StudentResource, getStudentResource } from "~/models/student-resource";
 import { RaidEvent, getAllTotalAssaults } from "~/models/raid";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
-    { title: "미래시 - MolluLog" },
+    { title: "미래시 | MolluLog" },
     { name: "description", content: "블루 아카이브 한국 서버의 이벤트 및 픽업 일정을 확인하고 계획해보세요." },
   ];
 };

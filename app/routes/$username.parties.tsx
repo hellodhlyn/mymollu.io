@@ -1,11 +1,11 @@
-import { LoaderFunction, V2_MetaFunction, json } from "@remix-run/cloudflare";
+import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { PartyView } from "~/components/organisms/party";
 import { Env } from "~/env.server";
 import { Party, getUserParties } from "~/models/party";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 
-export const meta: V2_MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ params }) => {
   return [
     { title: `${params.username || ""} - 편성 | MolluLog`.trim() },
     { name: "description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },

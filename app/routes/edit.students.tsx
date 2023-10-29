@@ -1,6 +1,5 @@
-import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Form, useLoaderData, useRouteError } from "@remix-run/react";
-import { V2_ErrorBoundaryComponent } from "@remix-run/react/dist/routeModules";
+import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { Form, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { StudentState, getUserStudentStates, updateStudentStates } from "~/models/studentState";
 import { Button } from "~/components/atoms/form";
@@ -10,7 +9,7 @@ import { Authenticator } from "remix-auth";
 import { Sensei } from "~/models/sensei";
 import { StudentCards } from "~/components/molecules/student";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: "모집 학생 관리 | MolluLog" },
 ];
 
@@ -44,12 +43,6 @@ export const action: ActionFunction = async ({ context, request }) => {
   await updateStudentStates(context.env as Env, sensei, states);
   return redirect(`/@${sensei.username}/students`);
 }
-
-export const ErrorBoundary: V2_ErrorBoundaryComponent = () => {
-  const error = useRouteError() as any;
-  console.error(error);
-  return <p>{error.toString()}</p>
-};
 
 export default function EditPage() {
   const loaderData = useLoaderData<LoaderData>();

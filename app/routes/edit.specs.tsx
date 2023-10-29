@@ -1,4 +1,4 @@
-import { LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
@@ -9,7 +9,7 @@ import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 import { action } from "./edit.students";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: "학생 성장 관리 | MolluLog" },
 ];
 

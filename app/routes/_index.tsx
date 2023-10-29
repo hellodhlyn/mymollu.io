@@ -1,10 +1,10 @@
-import { redirect, type ActionFunction, type V2_MetaFunction } from "@remix-run/cloudflare";
+import { redirect, type ActionFunction, type MetaFunction } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
 import { ChatBubbleError } from "iconoir-react";
 import { Button, Input } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "MolluLog" },
     { name: "description", content: "블루 아카이브 학생 목록과 성장 상태를 공유해보세요." },

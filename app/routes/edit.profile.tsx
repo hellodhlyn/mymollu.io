@@ -1,4 +1,4 @@
-import { ActionFunction, LoaderFunction, V2_MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Authenticator } from "remix-auth";
 import { ProfileEditor } from "~/components/organisms/profile";
@@ -7,7 +7,7 @@ import { sessionStorage } from "~/auth/authenticator.server";
 import { Sensei, updateSensei } from "~/models/sensei";
 import { Student, getAllStudents } from "~/models/student";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   { title: "프로필 관리 | MolluLog" },
 ];
 
