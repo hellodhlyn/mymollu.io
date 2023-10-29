@@ -1,7 +1,7 @@
 import { RaidEvent, raidTerrainText, raidTypeText } from "~/models/raid";
 
 export default function TotalAssault(
-  { name, type, boss, terrain, attackType, defenseType }: RaidEvent,
+  { name, type, terrain, attackType, defenseType, imageUrl }: RaidEvent,
 ) {
   let attackTypeText = "";
   let attackTypeClass = "";
@@ -33,7 +33,7 @@ export default function TotalAssault(
       <div className="relative md:w-3/5">
         <img
           className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
-          src={`/assets/images/boss/${boss}`} alt={`총력전 보스 ${name}`} loading="lazy"
+          src={imageUrl} alt={`총력전 보스 ${name}`} loading="lazy"
         />
         <div className="absolute bottom-0 right-0 flex gap-x-1 p-1">
           <span className="px-2 py-1 rounded-lg text-white text-sm bg-black bg-opacity-90">

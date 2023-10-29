@@ -12,6 +12,7 @@ export type RaidEvent = {
   defenseType: Student["defenseType"] | null;
   since: string;
   until: string;
+  imageUrl: string;
 };
 
 export function getAllTotalAssaults(filterPrevious: boolean = true): RaidEvent[] {
@@ -23,6 +24,7 @@ export function getAllTotalAssaults(filterPrevious: boolean = true): RaidEvent[]
       terrain: row.terrain as RaidEvent["terrain"],
       attackType: row.attackType as RaidEvent["attackType"],
       defenseType: row.defenseType as RaidEvent["defenseType"],
+      imageUrl: `https://assets.mollulog.net/assets/images/boss/${row.boss}`,
     }));
 }
 

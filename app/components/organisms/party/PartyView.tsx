@@ -21,7 +21,7 @@ export default function PartyView({ party, studentStates, deletable }: PartyView
       <SubTitle text={party.name} />
       {raid && (
         <div className="flex my-4 md:my-8 -mx-4 md:-mx-6">
-          <img className="h-12 md:h-24 w-36 md:w-fit object-cover object-left" src={`/assets/images/boss/${raid.boss}`} />
+          <img className="h-12 md:h-24 w-36 md:w-fit object-cover object-left" src={raid.imageUrl} />
           <div className="px-4 md:px-8 w-full flex flex-col justify-center">
             <p className="font-bold">
               {raid.name}

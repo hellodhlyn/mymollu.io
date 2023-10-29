@@ -33,7 +33,7 @@ export default function EventSelector({ raids, onSelectRaid }: EventSelectorProp
                 <EventSelectorItem
                   name={selectedRaid.name}
                   description={raidDescription(selectedRaid)}
-                  imageUrl={`/assets/images/boss/${selectedRaid.boss}`}
+                  imageUrl={selectedRaid.imageUrl}
                   singleCard={true}
                 /> :
                 <EventSelectorItem
@@ -52,7 +52,7 @@ export default function EventSelector({ raids, onSelectRaid }: EventSelectorProp
                   key={raid.id}
                   name={raid.name}
                   description={raidDescription(raid)}
-                  imageUrl={`/assets/images/boss/${raid.boss}`}
+                  imageUrl={raid.imageUrl}
                   onSelect={() => {
                     setSelectedRaid(raid);
                     onSelectRaid(raid.id);

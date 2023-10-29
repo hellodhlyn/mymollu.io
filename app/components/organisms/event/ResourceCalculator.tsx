@@ -56,7 +56,7 @@ export default function ResourceCalculator({ pickups, resources, loading }: Reso
           <ResourceCards
             cardProps={Array.from(skillItems, ([school, count]) => ({
               id: `school-${school}`,
-              imageUrl: `/assets/images/bds/${school}`,
+              imageUrl: `https://assets.mollulog.net/assets/images/bds/${school}`,
               count,
             }))}
           />
@@ -65,7 +65,7 @@ export default function ResourceCalculator({ pickups, resources, loading }: Reso
           <ResourceCards
             cardProps={Array.from(equipments, ([equipment, count]) => ({
               id: `equipment-${equipment}`,
-              imageUrl: `/assets/images/equipments/${equipment}`,
+              imageUrl: `https://assets.mollulog.net/assets/images/equipments/${equipment}`,
               count,
             }))}
           />

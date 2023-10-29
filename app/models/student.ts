@@ -53,7 +53,7 @@ export function getAllStudents(unreleased: boolean = false): Student[] {
     id: row.Id.toString(),
     name: row.Name,
     school: row.School.toLowerCase().replace("etc", "others") as School,
-    imageUrl: `/assets/images/students/${row.Id}`,
+    imageUrl: `https://assets.mollulog.net/assets/images/students/${row.Id}`,
     initialTier: row.StarGrade,
     order: row.DefaultOrder,
     attackType: parseAttackType(row.BulletType),
