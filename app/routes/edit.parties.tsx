@@ -1,6 +1,6 @@
 import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
-import { AddCircle } from "iconoir-react";
+import { PlusCircle } from "iconoir-react";
 import { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
@@ -56,7 +56,7 @@ export default function EditParties() {
           className="my-4 p-4 flex justify-center items-center border border-neutral-200
                      rounded-lg text-neutral-500 hover:bg-neutral-100 transition cursor-pointer"
         >
-          <AddCircle className="h-4 w-4 mr-2" strokeWidth={2} />
+          <PlusCircle className="h-4 w-4 mr-2" strokeWidth={2} />
           <span>새로운 편성 추가하기</span>
         </div>
       </Link>

@@ -1,6 +1,9 @@
+import { Link } from "@remix-run/react";
+import { NavArrowRight } from "iconoir-react";
+import { MultilineText } from "~/components/atoms/typography";
 import { MemoEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
-import { PickupEvent } from "~/models/event";
+import { Pickup, PickupEvent, eventLabelsMap, pickupLabel } from "~/models/event";
 import { Student } from "~/models/student";
 
 type EventProps = {
@@ -8,7 +11,8 @@ type EventProps = {
   type: PickupEvent["type"];
   name: string;
   rerun?: boolean;
-  pickups: { student: Student, rerun: boolean, type: PickupEvent["pickups"][0]["type"] }[];
+  pickups: (Pickup & { student: Student })[];
+  hasDetail: boolean;
 
   selectedStudentIds: string[];
   onSelect?: (studentId: string) => void;
@@ -23,46 +27,37 @@ export default function Event(event: EventProps) {
   if (["event", "pickup"].includes(event.type)) {
     eventLabelTexts.push(event.rerun ? "복각" : "신규");
   }
-  eventLabelTexts.push({
-    "event": "이벤트",
-    "immortal_event": "이벤트 상설화",
-    "mini_event": "미니 이벤트",
-    "fes": "페스 이벤트",
-    "pickup": "모집",
-    "campaign": "캠페인",
-    "exercise": "종합전술시험",
-    "main_story": "메인 스토리",
-  }[event.type]);
+  eventLabelTexts.push(eventLabelsMap[event.type]);
 
   return (
     <div className="py-2">
       <p className="md:my-1 text-sm text-neutral-500">
         {eventLabelTexts.join(" ")}
       </p>
-      <p className="mb-2 font-bold text-lg md:text-xl">{event.name}</p>
+
+      {event.hasDetail ?
+        (
+          <Link to={`/events/${event.id}`} >
+            <div className="mb-2 flex items-center">
+              <MultilineText
+                className="font-bold text-lg md:text-xl hover:underline cursor-pointer"
+                texts={event.name.split("\n")}
+              />
+              <NavArrowRight className="h-4 w-4 -mx-1" strokeWidth={2} />
+            </div>
+          </Link>
+        ) :
+        (
+          <MultilineText className="mb-2 font-bold text-lg md:text-xl" texts={event.name.split("\n")} />
+        )
+      }
 
       <StudentCards
         mobileGrid={5}
         cardProps={event.pickups.map((pickup) => {
           const { student } = pickup;
-          const labelTexts: string[] = [];
-          let colorClass = "text-white";
-          if (pickup.type === "given") {
-            labelTexts.push("배포");
-          } else if (pickup.type === "limited") {
-            labelTexts.push("한정");
-          } else if (pickup.type === "fes") {
-            labelTexts.push("페스");
-          }
-
-          if (pickup.type !== "given") {
-            if (pickup.rerun) {
-              labelTexts.push("복각");
-            } else {
-              labelTexts.push("신규");
-              colorClass = "text-yellow-500";
-            }
-          }
+          const label = pickupLabel(pickup);
+          const colorClass = pickup.rerun ? "text-white" : "text-yellow-500";
 
           return {
             id: student.id,
@@ -70,7 +65,7 @@ export default function Event(event: EventProps) {
             imageUrl: student.imageUrl,
             selected: selectedStudentIds.includes(student.id),
             label: (
-              <span className={`${colorClass}`}>{labelTexts.join(" ")}</span>
+              <span className={`${colorClass}`}>{label}</span>
             ),
           }
         })}

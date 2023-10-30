@@ -1,4 +1,4 @@
-import { CheckCircle, DeleteCircle } from "iconoir-react";
+import { CheckCircle, XmarkCircle } from "iconoir-react";
 import { SmallButton } from "~/components/atoms/form";
 import TierSelector from "~/components/molecules/editor/TierSelector";
 
@@ -20,7 +20,7 @@ export default function SpecEditBulkActions(
         {selectedAny ?
           (
             <SmallButton onClick={() => { onToggleAll(false); }}>
-              <DeleteCircle className="mr-1 w-4 h-4" strokeWidth={2} />
+              <XmarkCircle className="mr-1 w-4 h-4" strokeWidth={2} />
               <span>모두 해제</span>
             </SmallButton>
           ) :

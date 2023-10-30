@@ -1,4 +1,4 @@
-import { AddCircle } from "iconoir-react";
+import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Button, Input, Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
@@ -61,7 +61,7 @@ export default function PartyGenerator({ raids, studentStates }: PartyGeneratorP
                      rounded-lg text-neutral-500 hover:bg-neutral-100 transition cursor-pointer"
           onClick={() => setShowPartyEditor(true)}
         >
-          <AddCircle className="h-4 w-4 mr-2" strokeWidth={2} />
+          <PlusCircle className="h-4 w-4 mr-2" strokeWidth={2} />
           <span>파티 추가하기</span>
         </div>
       }

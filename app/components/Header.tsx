@@ -29,9 +29,14 @@ export default function Header({ currentUsername }: HeaderProps) {
           </>
         )}
         {(currentUsername === null && !pathname.startsWith("/signin")) && (
-          <Link to="/signin">
-            <span>로그인 후 내 정보 관리하기 →</span>
-          </Link>
+          <>
+            <Link to="/futures" className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
+              <span>미래시</span>
+            </Link>
+            <Link to="/signin">
+              <span>로그인 후 내 정보 관리 →</span>
+            </Link>
+          </>
         )}
       </div>
     </div>

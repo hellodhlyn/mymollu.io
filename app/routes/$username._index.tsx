@@ -1,6 +1,6 @@
 import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { ChatBubbleError } from "iconoir-react";
+import { ChatBubbleXmark } from "iconoir-react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
@@ -111,7 +111,7 @@ export default function UserIndex() {
       <div className="md:my-8 my-16">
         <SubTitle text="최근 활동" />
         <div className="my-16 md:my-24 w-full flex flex-col items-center justify-center text-neutral-500">
-          <ChatBubbleError className="my-2 w-16 h-16" strokeWidth={2} />
+          <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
           <p className="my-2 text-sm">최근 활동 내역이 없어요</p>
         </div>
       </div>

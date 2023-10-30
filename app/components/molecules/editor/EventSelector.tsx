@@ -1,6 +1,6 @@
 import { Menu } from "@headlessui/react";
 import dayjs from "dayjs";
-import { AddCircle } from "iconoir-react";
+import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { RaidEvent, raidTerrainText, raidTypeText } from "~/models/raid"
@@ -90,7 +90,7 @@ function EventSelectorItem(
       {imageUrl ?
         <img className={`w-28 md:w-36 h-20 object-cover ${singleCard ? "rounded-l-lg" : ""}`} src={imageUrl} /> :
         <div className="w-28 md:w-36 h-20 bg-neutral-200 flex items-center justify-center rounded-l-lg">
-          <AddCircle className="h-8 w-8 text-neutral-500" strokeWidth={2} />
+          <PlusCircle className="h-8 w-8 text-neutral-500" strokeWidth={2} />
         </div>
       }
       <div className="px-4 text-left">

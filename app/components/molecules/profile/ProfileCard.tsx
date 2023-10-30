@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { AddUser, Group, RefreshDouble, RemoveUser, User } from "iconoir-react";
+import { UserPlus, Group, RefreshDouble, UserXmark, User } from "iconoir-react";
 import { Progress } from "~/components/atoms/profile";
 import { ProgressProps } from "~/components/atoms/profile/Progress";
 
@@ -55,7 +55,7 @@ export function ProfileCard({
             `}
             onClick={onFollow}
           >
-            <AddUser className="h-4 w-4 mr-1" strokeWidth={2} />
+            <UserPlus className="h-4 w-4 mr-1" strokeWidth={2} />
             <span className="text-sm">팔로우</span>
           </div>
         )}
@@ -71,7 +71,7 @@ export function ProfileCard({
           >
             <Group className="h-4 w-4 mr-1 block group-hover:hidden" strokeWidth={2} />
             <span className="text-sm block group-hover:hidden">팔로우 중</span>
-            <RemoveUser className="h-4 w-4 mr-1 hidden group-hover:block" strokeWidth={2} />
+            <UserXmark className="h-4 w-4 mr-1 hidden group-hover:block" strokeWidth={2} />
             <span className="text-sm hidden group-hover:block">팔로우 해제</span>
           </div>
         )}

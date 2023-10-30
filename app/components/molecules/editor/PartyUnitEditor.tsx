@@ -1,5 +1,5 @@
 import { disassemble } from "hangul-js";
-import { AddUser, ChatBubbleError, Search } from "iconoir-react";
+import { UserPlus, ChatBubbleXmark, Search } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
@@ -101,7 +101,7 @@ export default function PartyUnitEditor(
             onSelect={addPartyStudent}
           /> :
           <div className="w-full h-64 md:h-80 flex flex-col items-center justify-center text-neutral-500">
-            <ChatBubbleError className="my-2 w-16 h-16" strokeWidth={2} />
+            <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
             <p className="my-2 text-sm">검색 결과가 없어요</p>
           </div>
         }
@@ -124,7 +124,7 @@ export default function PartyUnitEditor(
                     tier={state.owned ? state.tier : undefined}
                   /> :
                   <div className="w-full h-full flex items-center justify-center">
-                    <AddUser />
+                    <UserPlus />
                   </div>
                 }
               </div>

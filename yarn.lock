@@ -1147,6 +1147,11 @@
     "@supabase/realtime-js" "^2.7.4"
     "@supabase/storage-js" "^2.5.4"
 
+"@tailwindcss/aspect-ratio@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/aspect-ratio/-/aspect-ratio-0.4.2.tgz#9ffd52fee8e3c8b20623ff0dcb29e5c21fb0a9ba"
+  integrity sha512-8QPrypskfBa7QIMuKHg2TA7BqES6vhBrDLOv8Unb6FcFyd3TjKbc6lcmb9UPQHxfl24sXoJ41ux/H7qQQvfaSQ==
+
 "@testing-library/dom@^8.11.1":
   version "8.20.1"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.20.1.tgz#2e52a32e46fc88369eef7eef634ac2a192decd9f"
@@ -3404,10 +3409,10 @@ human-signals@^2.1.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
-iconoir-react@^6.11.0:
-  version "6.11.0"
-  resolved "https://registry.yarnpkg.com/iconoir-react/-/iconoir-react-6.11.0.tgz#a88d896148c8389138ec931ce7367f3abc6a7144"
-  integrity sha512-+1RgmEWh/9H0aYR2e8sDL5elDUYnkyOXO0E+RnwhkjhJY36Lge6r/9nv1n1FvDXoeFY48omkPUl8s/ciA0XOAg==
+iconoir-react@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/iconoir-react/-/iconoir-react-7.0.0.tgz#7e27d60f494411abdf40990107cd3e6af937fb3f"
+  integrity sha512-qw/PfSxAOQ3YbtMPjU4jrivWXPBHrL0OIOyzIK79axLnEWUx6ck5dGSkuoyPTFVeXioR0oklLmA/swRKLH92mg==
 
 iconv-lite@0.4.24:
   version "0.4.24"
@@ -5827,6 +5832,7 @@ string-hash@^1.1.1:
   integrity sha512-kJUvRUFK49aub+a7T1nNE66EJbZBMnBgoC1UbCZ5n6bsZKBRga4KgBRTMn/pFkeCZSYtNeSyMxPDM0AXWELk2A==
 
 "string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
+  name string-width-cjs
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==

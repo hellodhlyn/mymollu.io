@@ -1,6 +1,6 @@
 import { redirect, type ActionFunction, type MetaFunction } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
-import { ChatBubbleError } from "iconoir-react";
+import { ChatBubbleXmark } from "iconoir-react";
 import { Button, Input } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
 
@@ -29,7 +29,7 @@ export default function Index() {
 
       <SubTitle text="타임라인" />
       <div className="my-16 md:my-24 w-full flex flex-col items-center justify-center text-neutral-500">
-        <ChatBubbleError className="my-2 w-16 h-16" strokeWidth={2} />
+        <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
         <p className="my-2 text-sm">팔로워의 최근 활동 내역이 없어요</p>
       </div>
     </>

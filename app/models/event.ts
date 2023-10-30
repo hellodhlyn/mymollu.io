@@ -9,18 +9,67 @@ export type Pickup = {
 export type PickupEvent = {
   id: string;
   name: string;
-  type: "event" | "mini_event" | "immortal_event" | "pickup" | "fes" | "campaign" | "exercise" | "main_story";
+  type: "event" | "mini_event" | "immortal_event" | "pickup" | "fes" | "campaign" | "exercise" | "main_story" | "collab";
   rerun?: boolean;
   since: string;
   until: string;
+  image?: string;
+  videos?: {
+    title: string;
+    youtube: string;
+  }[];
+  tips?: {
+    title: string;
+    link: string;
+    source: string;
+  }[];
   pickups: Pickup[];
+  hasDetail: boolean;
 };
 
-export function getFutureEvents(): PickupEvent[] {
-  return events.filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
-    .map((event) => ({
-      ...event,
-      type: event.type as PickupEvent["type"],
-      pickups: event.pickups as Pickup[] ?? [],
-    }));
+export function getAllEvents(): PickupEvent[] {
+  const detailedTypes = ["event"];
+  return events.map((event) => ({
+    ...event,
+    type: event.type as PickupEvent["type"],
+    pickups: event.pickups as Pickup[] ?? [],
+    hasDetail: detailedTypes.includes(event.type),
+  }));
 }
+
+export function getFutureEvents(): PickupEvent[] {
+  return getAllEvents().filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
+}
+
+export function pickupLabel(pickup: Pickup): string {
+  const labelTexts: string[] = [];
+  if (pickup.type === "given") {
+    labelTexts.push("배포");
+  } else if (pickup.type === "limited") {
+    labelTexts.push("한정");
+  } else if (pickup.type === "fes") {
+    labelTexts.push("페스");
+  }
+
+  if (pickup.type !== "given") {
+    if (pickup.rerun) {
+      labelTexts.push("복각");
+    } else {
+      labelTexts.push("신규");
+    }
+  }
+
+  return labelTexts.join(" ");
+}
+
+export const eventLabelsMap = {
+  "event": "이벤트",
+  "immortal_event": "이벤트 상설화",
+  "mini_event": "미니 이벤트",
+  "collab": "콜라보 이벤트",
+  "fes": "페스 이벤트",
+  "pickup": "모집",
+  "campaign": "캠페인",
+  "exercise": "종합전술시험",
+  "main_story": "메인 스토리",
+};
