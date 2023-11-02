@@ -21,7 +21,7 @@ export async function unfollow(env: Env, followerId: number, followeeId: number)
 export async function getRelationship(env: Env, fromId: number, oppositeId: number): Promise<Relationship> {
   const repo = new FollowershipRepo(env);
   const followingsId = (await repo.findAllBy("followerId", fromId)).map((each) => each.followeeId);
-  const followersId = (await repo.findAllBy("followingId", fromId)).map((each) => each.followerId);
+  const followersId = (await repo.findAllBy("followeeId", fromId)).map((each) => each.followerId);
   return {
     following: followingsId.includes(oppositeId),
     followed: followersId.includes(oppositeId),

@@ -3,7 +3,7 @@ name = "mymollu"
 workers_dev = true
 main = "./build/index.js"
 # https://developers.cloudflare.com/workers/platform/compatibility-dates
-compatibility_date = "2023-04-20"
+compatibility_date = "2023-08-15"
 
 [[kv_namespaces]]
   binding = "KV_USERDATA"

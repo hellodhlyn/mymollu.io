@@ -89,7 +89,7 @@ export default function Futures() {
           studentIds: JSON.stringify(plan.studentIds),
           memos: plan.memos ? JSON.stringify(plan.memos) : null,
         },
-        { method: "post", replace: false },
+        { method: "post", navigate: false },
       );
     }, 500);
 
