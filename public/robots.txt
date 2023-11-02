@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /api/*
+Disallow: /auth/*
+Disallow: /edit/*
+Disallow: /signin
+Disallow: /signout
+Disallow: /register
+
+Sitemap: https://mollulog.net/sitemap.xml
