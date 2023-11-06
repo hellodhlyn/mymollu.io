@@ -1,13 +1,14 @@
 import { LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
-import { Button } from "~/components/atoms/form";
+import { Button, FloatingButton } from "~/components/atoms/form";
 import { SpecEditBulkActions, SpecEditor, useStateFilter } from "~/components/organisms/student";
 import { Env } from "~/env.server";
 import { Sensei } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
-import { action } from "./edit.students";
+import { action, type ActionData } from "./edit.students";
+import { useToast } from "~/components/atoms/notification";
 
 export const meta: MetaFunction = () => [
   { title: "학생 성장 관리 | MolluLog" },
@@ -35,6 +36,24 @@ export { action };
 
 export default function EditSpecs() {
   const loaderData = useLoaderData<LoaderData>();
+  const fetcher = useFetcher<ActionData>();
+  const [Toast, showToast] = useToast({
+    children: (
+      <p>
+        성공적으로 저장했어요.&nbsp;
+        <Link to="/my?path=students">
+          <span className="underline">학생 목록 보러가기 →</span>
+        </Link>
+      </p>
+    ),
+  });
+
+  useEffect(() => {
+    if (fetcher.state === "loading" && !fetcher.data?.error) {
+      showToast();
+    }
+  }, [fetcher]);
+
   const [states, setStates] = useState(loaderData.states);
 
   const [StateFilter, filteredStates] = useStateFilter(states, false, true);
@@ -87,12 +106,12 @@ export default function EditSpecs() {
         }}
       />
 
-      <div className="my-8">
-        <Form method="post">
-          <input type="hidden" name="states" value={JSON.stringify(states.filter(({ owned }) => owned))} />
-          <Button type="submit" text="저장하기" color="primary" />
-        </Form>
-      </div>
+      <fetcher.Form method="post">
+        <input type="hidden" name="states" value={JSON.stringify(states.filter(({ owned }) => owned))} />
+        <FloatingButton state={fetcher.state} />
+      </fetcher.Form>
+
+      {Toast}
     </div>
   );
 }

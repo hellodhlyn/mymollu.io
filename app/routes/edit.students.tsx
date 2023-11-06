@@ -1,13 +1,15 @@
 import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { StudentState, getUserStudentStates, updateStudentStates } from "~/models/studentState";
-import { Button } from "~/components/atoms/form";
+import { FloatingButton } from "~/components/atoms/form";
 import { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 import { Authenticator } from "remix-auth";
 import { Sensei } from "~/models/sensei";
 import { StudentCards } from "~/components/molecules/student";
+import { useFetcher } from "react-router-dom";
+import { useToast } from "~/components/atoms/notification";
 
 export const meta: MetaFunction = () => [
   { title: "모집 학생 관리 | MolluLog" },
@@ -31,6 +33,10 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   });
 };
 
+export type ActionData = {
+  error?: { message: string };
+};
+
 export const action: ActionFunction = async ({ context, request }) => {
   const authenticator = context.authenticator as Authenticator<Sensei>;
   const sensei = await authenticator.isAuthenticated(request);
@@ -41,11 +47,28 @@ export const action: ActionFunction = async ({ context, request }) => {
   const formData = await request.formData();
   const states = JSON.parse(formData.get("states") as string);
   await updateStudentStates(context.env as Env, sensei, states);
-  return redirect(`/@${sensei.username}/students`);
+  return json<ActionData>({});
 }
 
 export default function EditPage() {
   const loaderData = useLoaderData<LoaderData>();
+  const fetcher = useFetcher<ActionData>();
+  const [Toast, showToast] = useToast({
+    children: (
+      <p>
+        성공적으로 저장했어요.&nbsp;
+        <Link to="/my?path=students">
+          <span className="underline">학생 목록 보러가기 →</span>
+        </Link>
+      </p>
+    ),
+  });
+
+  useEffect(() => {
+    if (fetcher.state === "loading" && !fetcher.data?.error) {
+      showToast();
+    }
+  }, [fetcher]);
 
   const [states, setStates] = useState<StudentState[]>(loaderData.states);
   const [StateFilter, filteredStates, setAllStatesToFilter] = useStateFilter(loaderData.states);
@@ -71,12 +94,12 @@ export default function EditPage() {
         />
       </div>
 
-      <div className="my-8">
-        <Form method="post">
-          <input type="hidden" name="states" value={JSON.stringify(states.filter(({ owned }) => owned))} />
-          <Button type="submit" text="저장하기" color="primary" />
-        </Form>
-      </div>
+      <fetcher.Form method="post">
+        <input type="hidden" name="states" value={JSON.stringify(states.filter(({ owned }) => owned))} />
+        <FloatingButton state={fetcher.state} />
+      </fetcher.Form>
+
+      {Toast}
     </>
   );
 };

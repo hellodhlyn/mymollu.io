@@ -62,7 +62,7 @@ export default function EditParties() {
       </Link>
 
       {parties.map((party) => (
-        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} deletable />
+        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} editable />
       ))}
     </div>
   );

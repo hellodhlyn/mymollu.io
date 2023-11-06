@@ -4,9 +4,11 @@ import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { RaidEvent, raidTerrainText, raidTypeText } from "~/models/raid"
+import { sanitizeClassName } from "~/prophandlers";
 
 type EventSelectorProps = {
   raids: RaidEvent[];
+  initialRaidId?: string;
   onSelectRaid(id: string): void;
 };
 
@@ -18,9 +20,12 @@ function raidDescription(raid: RaidEvent): string {
   ].join(" | ");
 }
 
-export default function EventSelector({ raids, onSelectRaid }: EventSelectorProps) {
-  const [selectedRaid, setSelectedRaid] = useState<RaidEvent>();
+export default function EventSelector({ raids, initialRaidId, onSelectRaid }: EventSelectorProps) {
+  const [selectedRaid, setSelectedRaid] = useState<RaidEvent | undefined>(
+    raids.find((raid) => raid.id === initialRaidId),
+  );
 
+  const now = dayjs();
   return (
     <div className="mt-4 mb-8 last:mb-4 mr-1 md:mr-2">
       <Label text="목표 컨텐츠" />
@@ -43,11 +48,8 @@ export default function EventSelector({ raids, onSelectRaid }: EventSelectorProp
                 />
               }
             </Menu.Button>
-            <Menu.Items
-              className="absolute origin-top-left max-h-96 overflow-auto
-                         my-2 bg-white rounded-lg shadow-lg border border-neutral-200"
-            >
-              {raids.map((raid) => (
+            <Menu.Items className="absolute origin-top-left max-h-96 overflow-auto my-2 bg-white rounded-lg shadow-lg border border-neutral-200 z-10">
+              {raids.filter((raid) => dayjs(raid.until).isAfter(now)).map((raid) => (
                 <EventSelectorItem
                   key={raid.id}
                   name={raid.name}
@@ -81,10 +83,10 @@ function EventSelectorItem(
 ) {
   return (
     <div
-      className={`
+      className={sanitizeClassName(`
         my-1 relative flex items-center hover:bg-neutral-100 cursor-pointer transition
         ${singleCard ? "border border-neutral-200 rounded-lg shadow-lg" : ""}
-      `}
+      `)}
       onClick={onSelect}
     >
       {imageUrl ?
