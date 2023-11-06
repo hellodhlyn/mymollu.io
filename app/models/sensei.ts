@@ -40,7 +40,7 @@ export async function updateSensei(env: Env, id: number, values: Partial<Sensei>
   }
 }
 
-class UserRepo {
+export class UserRepo {
   private db: SupabaseClient<SupabaseSchema>;
   private tableName: string;
 
@@ -61,8 +61,15 @@ class UserRepo {
     if (error) {
       throw error;
     }
-
     return (data && data.length > 0) ? data[0] : null;
+  }
+
+  async findAllByIn(field: string, values: any[]): Promise<Sensei[]> {
+    const { data, error } = await this.table().select().in(field, values);
+    if (error) {
+      throw error;
+    }
+    return data;
   }
 
   async update(id: number, values: Partial<Sensei>) {

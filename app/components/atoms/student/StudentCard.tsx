@@ -44,7 +44,7 @@ export default function StudentCard(
     <div className="my-1">
       <div className="relative">
         <img
-          className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale" : ""}`}
+          className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale opacity-75" : ""} transition`}
           src={imageUrl} alt={name} loading="lazy"
         />
         {showInfo && (

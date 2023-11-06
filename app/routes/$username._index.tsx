@@ -4,9 +4,9 @@ import { ChatBubbleXmark } from "iconoir-react";
 import { useEffect, useState } from "react";
 import { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
-import { ProfileCard, ProfileCardProps } from "~/components/molecules/profile/ProfileCard";
+import { ProfileCard, ProfileCardProps } from "~/components/organisms/profile";
 import { Env } from "~/env.server";
-import { Relationship, getRelationship } from "~/models/followership";
+import { Relationship, getFollowers, getFollowing, getRelationship } from "~/models/followership";
 import { Sensei, getSenseiByUsername } from "~/models/sensei";
 import { StudentState, getUserStudentStates } from "~/models/studentState";
 import { ActionData } from "./api.followerships";
@@ -15,6 +15,8 @@ type LoaderData = {
   username: string;
   currentUsername: string | null;
   relationship: Relationship;
+  following: number;
+  followers: number;
   profileStudentId: string | null;
   states: StudentState[] | null;
 };
@@ -27,7 +29,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
 
   const env = context.env as Env;
   const username = usernameParam.replace("@", "");
-  const sensei = await getSenseiByUsername(env, username)
+  const sensei = (await getSenseiByUsername(env, username))!;
 
   // Get a relationship
   const authenticator = context.authenticator as Authenticator<Sensei>;
@@ -42,6 +44,8 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     username,
     currentUsername: currentUser?.username ?? null,
     relationship,
+    following: (await getFollowing(env, sensei.id)).length,
+    followers: (await getFollowers(env, sensei.id)).length,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
   });
@@ -102,6 +106,8 @@ export default function UserIndex() {
           imageUrl={imageUrl}
           tierCounts={tierCounts}
           followability={followability}
+          followers={loaderData.followers}
+          following={loaderData.following}
           loading={fetcher.state === "submitting"}
           onFollow={() => fetcher.submit({ username }, { method: "post", action: "/api/followerships" })}
           onUnfollow={() => fetcher.submit({ username }, { method: "delete", action: "/api/followerships" })}

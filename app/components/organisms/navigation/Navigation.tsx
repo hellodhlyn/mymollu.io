@@ -3,7 +3,7 @@ import { Menu } from "iconoir-react";
 import { NavigationLink } from "~/components/atoms/navigation";
 
 type NavigationProps = {
-  links: { to: string, text: string }[];
+  links: { to: string, text: string, pathAliases?: string[] }[];
   allowPathPrefix?: boolean;
 }
 
@@ -14,12 +14,13 @@ export default function Navigation({ links, allowPathPrefix }: NavigationProps) 
     <div className="-mt-4 flex w-full text-gray-700 items-center gap-x-1">
       <Menu className="flex-none mr-2 my-2 h-5 w-5" strokeWidth={2} />
       <div className="py-2 flex flex-nowrap overflow-x-auto">
-        {links.map(({ to, text }) => (
-          <NavigationLink
-            key={`nav-${to}`} to={to} text={text}
-            active={allowPathPrefix ? pathname.startsWith(to) : pathname === to}
-          />
-        ))}
+        {links.map(({ to, text, pathAliases }) => {
+          const pathsToMatch = [to, ...(pathAliases ?? [])];
+          const active = pathsToMatch.find((path) => allowPathPrefix ? pathname.startsWith(path) : pathname === path) !== undefined;
+          return (
+            <NavigationLink key={`nav-${to}`} to={to} text={text} active={active} />
+          );
+        })}
       </div>
     </div>
   );

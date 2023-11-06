@@ -1,6 +1,7 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Env, getDB } from "~/env.server";
 import { SupabaseSchema } from "~/schema";
+import { Sensei, UserRepo } from "./sensei";
 
 export type Followership = SupabaseSchema["public"]["Tables"]["dev_followerships"]["Row"];
 export type Relationship = {
@@ -26,6 +27,28 @@ export async function getRelationship(env: Env, fromId: number, oppositeId: numb
     following: followingsId.includes(oppositeId),
     followed: followersId.includes(oppositeId),
   };
+}
+
+export async function getFollowers(env: Env, followeeId: number): Promise<Sensei[]> {
+  const followershipRepo = new FollowershipRepo(env); 
+  const followerIds = (await followershipRepo.findAllBy("followeeId", followeeId)).map((each) => each.followerId);
+  if (followerIds.length === 0) {
+    return [];
+  }
+
+  const userRepo = new UserRepo(env);
+  return userRepo.findAllByIn("id", followerIds);
+}
+
+export async function getFollowing(env: Env, followerId: number): Promise<Sensei[]> {
+  const followershipRepo = new FollowershipRepo(env);
+  const followeeIds = (await followershipRepo.findAllBy("followerId", followerId)).map((each) => each.followeeId);
+  if (followeeIds.length === 0) {
+    return [];
+  }
+
+  const userRepo = new UserRepo(env);
+  return userRepo.findAllByIn("id", followeeIds);
 }
 
 class FollowershipRepo {
