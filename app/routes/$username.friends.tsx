@@ -66,7 +66,7 @@ export default function UserFollowing() {
       {senseis.length === 0 && (
         <ErrorPage Icon={ChatBubbleEmpty} message="등록한 친구가 없어요 :(" />
       )}
-      {senseis.map((sensei, index) => {
+      {senseis.map((sensei) => {
         const imageUrl = students.find((student) => student.id === sensei.profileStudentId)?.imageUrl ?? null;
         return (
           <div key={`sensei-${sensei.username}`} className="w-full border-b last:border-0 border-neutral-100">

@@ -45,7 +45,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
                   key={`party-student-${studentId}`}
                   id={state.student.id}
                   imageUrl={state.student.imageUrl}
-                  tier={state.owned ? state.tier : undefined}
+                  tier={state.owned ? (state.tier ?? state.student.initialTier) : undefined}
                 />
               );
             })}

@@ -35,7 +35,7 @@ export default function PartyView({ party, studentStates, editable }: PartyViewP
         </div>
       )}
 
-      {units.map((studentIds, index) => (
+      {units.map((studentIds) => (
         <div key={`unit-${studentIds.join(":")}`}>
           <div className="grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
             {studentIds.map((id) => studentStates.find((state) => state.student.id === id)!).map(({ student, owned, tier }) => (
@@ -44,7 +44,7 @@ export default function PartyView({ party, studentStates, editable }: PartyViewP
                 id={student.id}
                 name={student.name}
                 imageUrl={student.imageUrl}
-                tier={owned ? tier : undefined}
+                tier={owned ? (tier ?? student.initialTier) : undefined}
               />
             ))}
           </div>
