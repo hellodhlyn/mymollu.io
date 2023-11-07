@@ -39,4 +39,4 @@ export interface SupabaseSchema {
     Views: {};
     Functions: {};
   };
-};
+}

@@ -2,9 +2,9 @@ import { Form, Link } from "@remix-run/react";
 import dayjs from "dayjs";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
-import { Party } from "~/models/party"
+import type { Party } from "~/models/party"
 import { getAllTotalAssaults, raidTerrainText, raidTypeText } from "~/models/raid";
-import { StudentState } from "~/models/studentState";
+import type { StudentState } from "~/models/studentState";
 
 type PartyViewProps = {
   party: Party;
@@ -23,6 +23,7 @@ export default function PartyView({ party, studentStates, editable }: PartyViewP
           <img
             className="h-12 md:h-24 w-36 md:w-fit object-cover object-left bg-gradient-to-l from-white rounded-r-lg"
             src={raid.imageUrl}
+            alt={`${raid.name} 이벤트`}
           />
           <div className="px-4 md:px-8 w-full flex flex-col justify-center">
             <p className="font-bold">
@@ -68,4 +69,4 @@ export default function PartyView({ party, studentStates, editable }: PartyViewP
       )}
     </div>
   );
-};
+}

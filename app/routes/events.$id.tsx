@@ -1,13 +1,16 @@
-import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
-import { Link, isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
+import { isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
 import dayjs from "dayjs";
 import { Link as LinkIcon } from "iconoir-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
-import { PickupEvent, eventLabelsMap, getAllEvents } from "~/models/event";
-import { Student, getAllStudents } from "~/models/student";
+import type { PickupEvent } from "~/models/event";
+import { eventLabelsMap, getAllEvents } from "~/models/event";
+import type { Student } from "~/models/student";
+import { getAllStudents } from "~/models/student";
 import { sanitizeClassName } from "~/prophandlers";
 
 type LoaderData = {

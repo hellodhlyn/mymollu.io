@@ -1,5 +1,6 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import dayjs, { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { getAllEvents } from "~/models/event";
 
 type SitemapItem = {

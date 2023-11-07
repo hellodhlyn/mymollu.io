@@ -1,9 +1,12 @@
-import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { PartyView } from "~/components/organisms/party";
-import { Env } from "~/env.server";
-import { Party, getUserParties } from "~/models/party";
-import { StudentState, getUserStudentStates } from "~/models/studentState";
+import type { Env } from "~/env.server";
+import type { Party } from "~/models/party";
+import { getUserParties } from "~/models/party";
+import type { StudentState } from "~/models/studentState";
+import { getUserStudentStates } from "~/models/studentState";
 
 export const meta: MetaFunction = ({ params }) => {
   return [

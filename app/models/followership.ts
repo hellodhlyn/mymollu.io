@@ -1,7 +1,9 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Env, getDB } from "~/env.server";
-import { SupabaseSchema } from "~/schema";
-import { Sensei, UserRepo } from "./sensei";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Env} from "~/env.server";
+import { getDB } from "~/env.server";
+import type { SupabaseSchema } from "~/schema";
+import type { Sensei} from "./sensei";
+import { UserRepo } from "./sensei";
 
 export type Followership = SupabaseSchema["public"]["Tables"]["dev_followerships"]["Row"];
 export type Relationship = {

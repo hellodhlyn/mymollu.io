@@ -1,6 +1,8 @@
-import { Env } from "~/env.server";
-import { Student, getAllStudents } from "./student";
-import { Sensei, getSenseiByUsername } from "./sensei";
+import type { Env } from "~/env.server";
+import type { Student} from "./student";
+import { getAllStudents } from "./student";
+import type { Sensei} from "./sensei";
+import { getSenseiByUsername } from "./sensei";
 
 export type StudentState = {
   student: Student;

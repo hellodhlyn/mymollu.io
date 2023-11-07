@@ -1,4 +1,5 @@
-import { LoaderFunction, json } from "@remix-run/cloudflare";
+import type { LoaderFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import { ChatBubbleEmpty, Group, User } from "iconoir-react";
 import { useEffect, useState } from "react";
@@ -6,10 +7,12 @@ import { Link, useSearchParams } from "react-router-dom";
 import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { getFollowers, getFollowing } from "~/models/followership";
-import { Sensei, getSenseiByUsername } from "~/models/sensei";
-import { Student, getAllStudents } from "~/models/student";
+import type { Sensei} from "~/models/sensei";
+import { getSenseiByUsername } from "~/models/sensei";
+import type { Student } from "~/models/student";
+import { getAllStudents } from "~/models/student";
 
 type LoaderData = {
   following: Sensei[];

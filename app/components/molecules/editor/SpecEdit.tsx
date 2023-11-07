@@ -1,7 +1,6 @@
 import { CheckCircle } from "iconoir-react";
-import { useEffect, useState } from "react";
 import { EditTier, StudentCard } from "~/components/atoms/student";
-import { StudentState } from "~/models/studentState";
+import type { StudentState } from "~/models/studentState";
 
 type StudentSpecEditProps = {
   state: StudentState;

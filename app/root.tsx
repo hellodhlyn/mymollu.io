@@ -11,8 +11,8 @@ import {
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { Header } from "./components";
-import { Authenticator } from "remix-auth";
-import { Sensei } from "./models/sensei";
+import type { Authenticator } from "remix-auth";
+import type { Sensei } from "./models/sensei";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),

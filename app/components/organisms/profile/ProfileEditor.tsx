@@ -2,7 +2,7 @@ import { disassemble } from "hangul-js";
 import { useState } from "react";
 import { Input, Button } from "~/components/atoms/form";
 import { StudentCards } from "~/components/molecules/student";
-import { Student } from "~/models/student";
+import type { Student } from "~/models/student";
 
 type ProfileEditorProps = {
   allStudents: Student[];

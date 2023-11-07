@@ -1,9 +1,9 @@
-import { ActionFunction } from "@remix-run/cloudflare";
+import type { ActionFunction } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
-import { Authenticator } from "remix-auth";
+import type { Authenticator } from "remix-auth";
 import { Button } from "~/components/atoms/form";
 import { Title } from "~/components/atoms/typography";
-import { Sensei } from "~/models/sensei";
+import type { Sensei } from "~/models/sensei";
 
 export const action: ActionFunction = async ({ request, context }) => {
   const authenticator = context.authenticator as Authenticator<Sensei>;

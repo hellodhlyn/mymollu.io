@@ -1,5 +1,6 @@
-import { SupabaseClient, createClient } from "@supabase/supabase-js";
-import { SupabaseSchema } from "./schema";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
+import type { SupabaseSchema } from "./schema";
 
 export interface Env {
   __STATIC_CONTENT: KVNamespace<string>;
@@ -13,7 +14,7 @@ export interface Env {
   GOOGLE_CLIENT_SECRET: string;
   SUPABASE_URL: string;
   SUPABASE_KEY: string;
-};
+}
 
 let _db: SupabaseClient<SupabaseSchema>;
 

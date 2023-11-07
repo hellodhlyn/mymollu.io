@@ -1,4 +1,4 @@
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 
 export type FuturePlan = {
   studentIds: string[];

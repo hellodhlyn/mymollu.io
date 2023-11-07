@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid/non-secure";
-import { Env } from "~/env.server";
-import { Sensei, getSenseiByUsername } from "./sensei";
+import type { Env } from "~/env.server";
+import type { Sensei} from "./sensei";
+import { getSenseiByUsername } from "./sensei";
 
 type PartyFields = {
   name: string;

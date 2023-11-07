@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { StudentCards } from "~/components/molecules/student";
-import { StudentState } from "~/models/studentState";
+import type { StudentState } from "~/models/studentState";
 
 type PartyUnitEditorProps = {
   index: number;
@@ -156,4 +156,4 @@ export default function PartyUnitEditor(
       </div>
     </>
   );
-};
+}

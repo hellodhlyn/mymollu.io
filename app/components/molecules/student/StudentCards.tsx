@@ -1,4 +1,5 @@
-import { StudentCard, StudentCardProps } from "~/components/atoms/student"
+import type { StudentCardProps } from "~/components/atoms/student";
+import { StudentCard } from "~/components/atoms/student"
 
 type StudentCardsProps = {
   cardProps: StudentCardProps[];

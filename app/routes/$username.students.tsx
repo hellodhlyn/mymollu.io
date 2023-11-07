@@ -1,7 +1,9 @@
-import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
-import { useLoaderData, useRouteError } from "@remix-run/react";
-import { StudentState, getUserStudentStates } from "~/models/studentState";
-import { Env } from "~/env.server";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
+import { useLoaderData } from "@remix-run/react";
+import type { StudentState} from "~/models/studentState";
+import { getUserStudentStates } from "~/models/studentState";
+import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 import { StudentCards } from "~/components/molecules/student";
 
@@ -73,4 +75,4 @@ export default function UserPage() {
       </div>
     </>
   );
-};
+}

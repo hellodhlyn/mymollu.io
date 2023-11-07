@@ -1,4 +1,5 @@
-import { RaidEvent, raidTerrainText, raidTypeText } from "~/models/raid";
+import type { RaidEvent} from "~/models/raid";
+import { raidTerrainText, raidTypeText } from "~/models/raid";
 
 export default function TotalAssault(
   { name, type, terrain, attackType, defenseType, imageUrl }: RaidEvent,

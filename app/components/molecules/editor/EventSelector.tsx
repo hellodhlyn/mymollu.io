@@ -3,7 +3,8 @@ import dayjs from "dayjs";
 import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
-import { RaidEvent, raidTerrainText, raidTypeText } from "~/models/raid"
+import type { RaidEvent } from "~/models/raid";
+import { raidTerrainText, raidTypeText } from "~/models/raid"
 import { sanitizeClassName } from "~/prophandlers";
 
 type EventSelectorProps = {
@@ -90,7 +91,7 @@ function EventSelectorItem(
       onClick={onSelect}
     >
       {imageUrl ?
-        <img className={`w-28 md:w-36 h-20 object-cover ${singleCard ? "rounded-l-lg" : ""}`} src={imageUrl} /> :
+        <img className={`w-28 md:w-36 h-20 object-cover ${singleCard ? "rounded-l-lg" : ""}`} src={imageUrl} alt={`${name} 이벤트`} /> :
         <div className="w-28 md:w-36 h-20 bg-neutral-200 flex items-center justify-center rounded-l-lg">
           <PlusCircle className="h-8 w-8 text-neutral-500" strokeWidth={2} />
         </div>

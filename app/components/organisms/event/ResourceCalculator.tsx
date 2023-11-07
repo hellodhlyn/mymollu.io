@@ -2,9 +2,9 @@ import { NavArrowDown, NavArrowUp } from "iconoir-react";
 import { useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { ResourceCards } from "~/components/molecules/student";
-import { Pickup } from "~/models/event";
-import { Student } from "~/models/student";
-import { Equipment, StudentResource } from "~/models/student-resource";
+import type { Pickup } from "~/models/event";
+import type { Student } from "~/models/student";
+import type { Equipment, StudentResource } from "~/models/student-resource";
 
 type ResourceCalculatorProps = {
   pickups: (Pickup & { student: Student })[];

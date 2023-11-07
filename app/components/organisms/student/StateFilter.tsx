@@ -1,8 +1,9 @@
 import { Archery, Running, Sort, Star } from "iconoir-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import type { Dispatch, SetStateAction} from "react";
+import { useEffect, useState } from "react";
 import { FilterButtons } from "~/components/molecules/student";
-import { Student } from "~/models/student";
-import { StudentState } from "~/models/studentState";
+import type { Student } from "~/models/student";
+import type { StudentState } from "~/models/studentState";
 
 type Filter = {
   minimumTier: number;
@@ -77,7 +78,7 @@ export function useStateFilter(
   }, [allStates, filter, sort]);
 
   return [(
-    <div className="my-8">
+    <div className="my-8" key="state-filter">
       <p className="my-2 font-bold text-xl">
         {[
           useFilter ? "필터" : null,

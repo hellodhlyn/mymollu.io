@@ -1,10 +1,13 @@
-import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunction, MetaFunction} from "@remix-run/cloudflare";
+import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import { Authenticator } from "remix-auth";
+import type { Authenticator } from "remix-auth";
 import { Title } from "~/components/atoms/typography";
-import { Sensei, updateSensei } from "~/models/sensei";
-import { Student, getAllStudents } from "~/models/student";
-import { Env } from "~/env.server";
+import type { Sensei } from "~/models/sensei";
+import { updateSensei } from "~/models/sensei";
+import type { Student } from "~/models/student";
+import { getAllStudents } from "~/models/student";
+import type { Env } from "~/env.server";
 import { migrateStates } from "~/models/studentState";
 import { sessionStorage } from "~/auth/authenticator.server";
 import { migrateParties } from "~/models/party";

@@ -1,8 +1,10 @@
-import { SessionStorage, createCookieSessionStorage } from "@remix-run/cloudflare";
+import type { SessionStorage} from "@remix-run/cloudflare";
+import { createCookieSessionStorage } from "@remix-run/cloudflare";
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy } from "remix-auth-google";
-import { Env } from "~/env.server";
-import { Sensei, getSenseiByGoogleId } from "~/models/sensei";
+import type { Env } from "~/env.server";
+import type { Sensei} from "~/models/sensei";
+import { getSenseiByGoogleId } from "~/models/sensei";
 
 let _sessionStorage: SessionStorage;
 let _authenticator: Authenticator<Sensei>;

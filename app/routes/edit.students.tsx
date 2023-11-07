@@ -1,12 +1,14 @@
-import { ActionFunction, LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { StudentState, getUserStudentStates, updateStudentStates } from "~/models/studentState";
+import type { StudentState } from "~/models/studentState";
+import { getUserStudentStates, updateStudentStates } from "~/models/studentState";
 import { FloatingButton } from "~/components/atoms/form";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
-import { Authenticator } from "remix-auth";
-import { Sensei } from "~/models/sensei";
+import type { Authenticator } from "remix-auth";
+import type { Sensei } from "~/models/sensei";
 import { StudentCards } from "~/components/molecules/student";
 import { useFetcher } from "react-router-dom";
 import { useToast } from "~/components/atoms/notification";
@@ -29,7 +31,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
 
   return json<LoaderData>({
     currentUsername: sensei.username,
-    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!!,
+    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!,
   });
 };
 
@@ -102,4 +104,4 @@ export default function EditPage() {
       {Toast}
     </>
   );
-};
+}

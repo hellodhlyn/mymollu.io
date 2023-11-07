@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Student } from "./student";
+import type { Student } from "./student";
 import raidData from "~/statics/raids.json";
 
 export type RaidEvent = {
@@ -45,4 +45,4 @@ const typeText = {
 
 export function raidTypeText(type: RaidEvent["type"]): string {
   return typeText[type];
-};
+}

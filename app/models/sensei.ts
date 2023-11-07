@@ -1,6 +1,7 @@
-import { SupabaseClient } from "@supabase/supabase-js";
-import { SupabaseSchema } from "~/schema";
-import { Env, getDB } from "~/env.server";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseSchema } from "~/schema";
+import type { Env} from "~/env.server";
+import { getDB } from "~/env.server";
 
 export type Sensei = {
   id: number;

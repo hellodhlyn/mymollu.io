@@ -1,5 +1,6 @@
 import EditTier from "./EditTier";
-import StudentCard, { StudentCardProps } from "./StudentCard";
+import type { StudentCardProps } from "./StudentCard";
+import StudentCard from "./StudentCard";
 
 export {
   EditTier,

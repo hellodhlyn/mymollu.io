@@ -1,12 +1,14 @@
-import { LoaderFunction, MetaFunction, json, redirect } from "@remix-run/cloudflare";
-import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json, redirect } from "@remix-run/cloudflare";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Authenticator } from "remix-auth";
-import { Button, FloatingButton } from "~/components/atoms/form";
+import type { Authenticator } from "remix-auth";
+import { FloatingButton } from "~/components/atoms/form";
 import { SpecEditBulkActions, SpecEditor, useStateFilter } from "~/components/organisms/student";
-import { Env } from "~/env.server";
-import { Sensei } from "~/models/sensei";
-import { StudentState, getUserStudentStates } from "~/models/studentState";
+import type { Env } from "~/env.server";
+import type { Sensei } from "~/models/sensei";
+import type { StudentState} from "~/models/studentState";
+import { getUserStudentStates } from "~/models/studentState";
 import { action, type ActionData } from "./edit.students";
 import { useToast } from "~/components/atoms/notification";
 
@@ -28,7 +30,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
 
   return json<LoaderData>({
     currentUsername: sensei.username,
-    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!!,
+    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!,
   });
 };
 

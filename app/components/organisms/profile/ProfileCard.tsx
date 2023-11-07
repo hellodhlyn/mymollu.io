@@ -1,7 +1,6 @@
 import { Link } from "@remix-run/react";
-import { UserPlus, Group, UserXmark, User } from "iconoir-react";
 import { Progress } from "~/components/atoms/profile";
-import { ProgressProps } from "~/components/atoms/profile/Progress";
+import type { ProgressProps } from "~/components/atoms/profile/Progress";
 import { ProfileUsername } from "~/components/molecules/profile";
 
 export type ProfileCardProps = {

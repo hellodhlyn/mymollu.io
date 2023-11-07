@@ -5,9 +5,9 @@ import { Button, Input, Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { EventSelector, PartyUnitEditor } from "~/components/molecules/editor";
-import { Party } from "~/models/party";
-import { RaidEvent } from "~/models/raid";
-import { StudentState } from "~/models/studentState";
+import type { Party } from "~/models/party";
+import type { RaidEvent } from "~/models/raid";
+import type { StudentState } from "~/models/studentState";
 import { sanitizeClassName } from "~/prophandlers";
 
 type PartyGeneratorProps = {

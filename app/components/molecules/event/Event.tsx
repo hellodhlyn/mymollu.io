@@ -3,8 +3,9 @@ import { NavArrowRight } from "iconoir-react";
 import { MultilineText } from "~/components/atoms/typography";
 import { MemoEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
-import { Pickup, PickupEvent, eventLabelsMap, pickupLabel } from "~/models/event";
-import { Student } from "~/models/student";
+import type { Pickup, PickupEvent} from "~/models/event";
+import { eventLabelsMap, pickupLabel } from "~/models/event";
+import type { Student } from "~/models/student";
 
 type EventProps = {
   id: string;

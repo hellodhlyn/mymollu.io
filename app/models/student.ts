@@ -27,7 +27,7 @@ function parseAttackType(attackType: string): Student["attackType"] | null {
   } else {
     return null;
   }
-};
+}
 
 function parseDefenseType(defenseType: string): Student["defenseType"] | null {
   if (defenseType === "LightArmor") {

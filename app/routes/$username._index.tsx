@@ -1,15 +1,20 @@
-import { LoaderFunction, MetaFunction, json } from "@remix-run/cloudflare";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ChatBubbleXmark } from "iconoir-react";
 import { useEffect, useState } from "react";
-import { Authenticator } from "remix-auth";
+import type { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
-import { ProfileCard, ProfileCardProps } from "~/components/organisms/profile";
-import { Env } from "~/env.server";
-import { Relationship, getFollowers, getFollowing, getRelationship } from "~/models/followership";
-import { Sensei, getSenseiByUsername } from "~/models/sensei";
-import { StudentState, getUserStudentStates } from "~/models/studentState";
-import { ActionData } from "./api.followerships";
+import type { ProfileCardProps } from "~/components/organisms/profile";
+import { ProfileCard } from "~/components/organisms/profile";
+import type { Env } from "~/env.server";
+import type { Relationship } from "~/models/followership";
+import { getFollowers, getFollowing, getRelationship } from "~/models/followership";
+import type { Sensei } from "~/models/sensei";
+import { getSenseiByUsername } from "~/models/sensei";
+import type { StudentState } from "~/models/studentState";
+import { getUserStudentStates } from "~/models/studentState";
+import type { ActionData } from "./api.followerships";
 
 type LoaderData = {
   username: string;
@@ -63,11 +68,14 @@ export const meta: MetaFunction = ({ params }) => {
 export default function UserIndex() {
   const loaderData = useLoaderData<LoaderData>();
   const { username, currentUsername, profileStudentId, states } = loaderData;
-  if (!states) {
-    return <p className="my-8">선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
-  }
 
   const [relationship, setRelationship] = useState(loaderData.relationship);
+
+  let followability: ProfileCardProps["followability"] = relationship.following ? "following" : "followable";
+  if (currentUsername === username) {
+    followability = "unable";
+  }
+
   const fetcher = useFetcher<ActionData>();
   useEffect(() => {
     if (fetcher.state !== "loading") {
@@ -79,7 +87,11 @@ export default function UserIndex() {
     } else {
       setRelationship((prev) => ({ ...prev, following: followability === "followable" }));
     }
-  }, [fetcher]);
+  }, [fetcher, followability]);
+
+  if (!states) {
+    return <p className="my-8">선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
+  }
 
   let imageUrl: string | null = null;
   const tierCounts = new Map<number, number>();
@@ -92,11 +104,6 @@ export default function UserIndex() {
       tierCounts.set(studentTier, (tierCounts.get(studentTier) ?? 0) + 1);
     }
   });
-
-  let followability: ProfileCardProps["followability"] = relationship.following ? "following" : "followable";
-  if (currentUsername === username) {
-    followability = "unable";
-  }
 
   return (
     <div className="my-8">

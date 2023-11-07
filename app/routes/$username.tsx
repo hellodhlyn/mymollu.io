@@ -1,4 +1,5 @@
-import { LoaderFunction, json } from "@remix-run/cloudflare";
+import type { LoaderFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 import { Outlet, useLoaderData, useParams } from "@remix-run/react";
 import { Title } from "~/components/atoms/typography";
 import { Navigation } from "~/components/organisms/navigation";

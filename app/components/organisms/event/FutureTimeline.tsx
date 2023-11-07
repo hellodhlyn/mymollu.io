@@ -1,9 +1,10 @@
-import { PickupEvent } from "~/models/event";
+import type { PickupEvent } from "~/models/event";
 import { Event, Raid } from "~/components/molecules/event";
-import { FuturePlan } from "~/models/future";
-import { Student } from "~/models/student";
-import dayjs, { Dayjs } from "dayjs";
-import { RaidEvent } from "~/models/raid";
+import type { FuturePlan } from "~/models/future";
+import type { Student } from "~/models/student";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import type { RaidEvent } from "~/models/raid";
 
 type EventsProps = {
   events: PickupEvent[];
