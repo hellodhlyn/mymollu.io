@@ -41,18 +41,18 @@ export function getFutureEvents(): PickupEvent[] {
   return getAllEvents().filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
 }
 
-export function pickupLabel(pickup: Pickup): string {
+export function pickupLabel({ type, rerun }: Pick<Pickup, "type" | "rerun">): string {
   const labelTexts: string[] = [];
-  if (pickup.type === "given") {
+  if (type === "given") {
     labelTexts.push("배포");
-  } else if (pickup.type === "limited") {
+  } else if (type === "limited") {
     labelTexts.push("한정");
-  } else if (pickup.type === "fes") {
+  } else if (type === "fes") {
     labelTexts.push("페스");
   }
 
-  if (pickup.type !== "given") {
-    if (pickup.rerun) {
+  if (type !== "given") {
+    if (rerun) {
       labelTexts.push("복각");
     } else {
       labelTexts.push("신규");

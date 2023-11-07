@@ -11,7 +11,7 @@ type EventProps = {
   type: PickupEvent["type"];
   name: string;
   rerun?: boolean;
-  pickups: (Pickup & { student: Student })[];
+  pickups: ({ student: Student } & Pick<Pickup, "type" | "rerun">)[];
   hasDetail: boolean;
 
   selectedStudentIds: string[];

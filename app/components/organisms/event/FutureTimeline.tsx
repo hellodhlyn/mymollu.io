@@ -33,6 +33,7 @@ export default function FutureTimeline({
   const lastItem = timelineItems[timelineItems.length - 1];
   const eventUntil = dayjs((lastItem.event ?? lastItem.totalAssault)!.until);
   let prevSince = timelineItems[0].since;
+  const now = dayjs();
   return (
     <>
       <p className="text-neutral-500 -mt-2 my-4">
@@ -50,12 +51,18 @@ export default function FutureTimeline({
         const showMemo = onMemoUpdate && item.event && item.event.pickups.length > 0;
 
         let showDivider = false;
-        if (!prevSince.startOf("day").isSame(item.since.startOf("day"))) {
+        if (item.since.isAfter(now) && !prevSince.startOf("day").isSame(item.since.startOf("day"))) {
           showDivider = true;
           prevSince = item.since;
         }
 
+        const dividerText = [item.since.format("YYYY-MM-DD")];
         const dDay = item.since.startOf("day").diff(dayjs().startOf("day"), "day");
+        if (0 < dDay && dDay <= 30) {
+          dividerText.push(`(D-${dDay})`);
+        } else if (dDay === 0) {
+          dividerText.push("(D-Day)");
+        }
 
         return (
           <div key={item.id} className="relative border-l md:ml-2 border-neutral-200 border-opacity-75">
@@ -63,7 +70,7 @@ export default function FutureTimeline({
               <div className="ml-4 flex items-center pt-4">
                 <div className="absolute w-3 h-3 -left-1.5 border border-1 border-white bg-neutral-500 rounded-full " />
                 <p className="py-2 text-neutral-500 text-sm font-bold">
-                  {item.since.format("YYYY-MM-DD")}{(dDay <= 30) ? ` (D-${dDay})` : null}
+                  {dividerText.join(" ")}
                 </p>
               </div>
             )}
