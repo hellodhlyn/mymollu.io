@@ -1,15 +1,13 @@
 import type { ActionFunction, LoaderFunction, MetaFunction} from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
-import type { Authenticator } from "remix-auth";
 import { Title } from "~/components/atoms/typography";
-import type { Sensei } from "~/models/sensei";
 import { updateSensei } from "~/models/sensei";
 import type { Student } from "~/models/student";
 import { getAllStudents } from "~/models/student";
 import type { Env } from "~/env.server";
 import { migrateStates } from "~/models/studentState";
-import { sessionStorage } from "~/auth/authenticator.server";
+import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
 import { migrateParties } from "~/models/party";
 import { ProfileEditor } from "~/components/organisms/profile";
 
@@ -22,8 +20,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request, context }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   } else if (sensei.active) {
@@ -38,7 +35,8 @@ type ActionData = {
 }
 
 export const action: ActionFunction = async ({ request, context }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
+  const env = context.env as Env;
+  const authenticator = getAuthenticator(env);
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
@@ -54,7 +52,6 @@ export const action: ActionFunction = async ({ request, context }) => {
     return json<ActionData>({ error: { username: "4~20글자의 영숫자 및 _ 기호만 사용 가능합니다." } })
   }
 
-  const env = context.env as Env;
   await Promise.all([
     updateSensei(env, sensei.id, sensei),
     migrateStates(env, sensei.username, sensei.id),

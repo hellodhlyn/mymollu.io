@@ -1,19 +1,17 @@
 import type { ActionFunction } from "@remix-run/cloudflare";
 import { redirect } from "@remix-run/cloudflare";
-import type { Authenticator } from "remix-auth";
+import { getAuthenticator } from "~/auth/authenticator.server";
 import type { Env } from "~/env.server";
 import { follow, unfollow } from "~/models/followership";
-import type { Sensei } from "~/models/sensei";
 import { getSenseiByUsername } from "~/models/sensei";
 
 export const action: ActionFunction = async ({ request, context }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const follower = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const follower = await getAuthenticator(env).isAuthenticated(request);
   if (!follower) {
     return redirect("/signin");
   }
 
-  const env = context.env as Env;
   const formData = await request.formData();
   const followeeName = formData.get("username");
   if (!followeeName) {

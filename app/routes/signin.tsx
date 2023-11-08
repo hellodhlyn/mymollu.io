@@ -1,13 +1,12 @@
 import type { ActionFunction } from "@remix-run/cloudflare";
 import { Form } from "@remix-run/react";
-import type { Authenticator } from "remix-auth";
+import { getAuthenticator } from "~/auth/authenticator.server";
 import { Button } from "~/components/atoms/form";
 import { Title } from "~/components/atoms/typography";
-import type { Sensei } from "~/models/sensei";
+import type { Env } from "~/env.server";
 
 export const action: ActionFunction = async ({ request, context }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  return authenticator.authenticate("google", request);
+  return getAuthenticator(context.env as Env).authenticate("google", request);
 };
 
 export default function SignIn() {

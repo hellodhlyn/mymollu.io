@@ -1,9 +1,9 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import type { Authenticator } from "remix-auth";
+import { getAuthenticator } from "~/auth/authenticator.server";
+import type { Env } from "~/env.server";
 
 export const loader: LoaderFunction = ({ request, context }) => {
-  const authenticator = context.authenticator as Authenticator;
-  return authenticator.authenticate("google", request, {
+  return getAuthenticator(context.env as Env).authenticate("google", request, {
     successRedirect: "/register",
     failureRedirect: "/signin?state=failed",
   });

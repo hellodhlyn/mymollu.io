@@ -3,7 +3,6 @@ import type { AppLoadContext } from "@remix-run/cloudflare";
 import { createRequestHandler, logDevReady } from "@remix-run/cloudflare";
 import * as build from "@remix-run/dev/server-build";
 import __STATIC_CONTENT_MANIFEST from "__STATIC_CONTENT_MANIFEST";
-import { newAuthenticator } from "~/auth/authenticator.server";
 import { Env } from "~/env.server";
 
 const MANIFEST = JSON.parse(__STATIC_CONTENT_MANIFEST);
@@ -37,10 +36,7 @@ export default {
     } catch (error) {}
 
     try {
-      const loadContext: AppLoadContext = {
-        env,
-        authenticator: newAuthenticator(env),
-      };
+      const loadContext: AppLoadContext = { env };
       return await handleRemixRequest(request, loadContext);
     } catch (error) {
       console.log(error);

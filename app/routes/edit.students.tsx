@@ -7,11 +7,10 @@ import { getUserStudentStates, updateStudentStates } from "~/models/studentState
 import { FloatingButton } from "~/components/atoms/form";
 import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
-import type { Authenticator } from "remix-auth";
-import type { Sensei } from "~/models/sensei";
 import { StudentCards } from "~/components/molecules/student";
 import { useFetcher } from "react-router-dom";
 import { useToast } from "~/components/atoms/notification";
+import { getAuthenticator } from "~/auth/authenticator.server";
 
 export const meta: MetaFunction = () => [
   { title: "모집 학생 관리 | MolluLog" },
@@ -23,15 +22,15 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ context, request }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
   return json<LoaderData>({
     currentUsername: sensei.username,
-    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!,
+    states: (await getUserStudentStates(env, sensei.username, true))!,
   });
 };
 
@@ -40,15 +39,15 @@ export type ActionData = {
 };
 
 export const action: ActionFunction = async ({ context, request }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
   const formData = await request.formData();
   const states = JSON.parse(formData.get("states") as string);
-  await updateStudentStates(context.env as Env, sensei, states);
+  await updateStudentStates(env, sensei, states);
   return json<ActionData>({});
 }
 

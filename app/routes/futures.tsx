@@ -2,7 +2,6 @@ import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cl
 import { json, redirect } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { Authenticator } from "remix-auth";
 import { Title } from "~/components/atoms/typography";
 import { FutureTimeline, ResourceCalculator } from "~/components/organisms/event";
 import type { Env } from "~/env.server";
@@ -10,13 +9,13 @@ import type { PickupEvent} from "~/models/event";
 import { getFutureEvents } from "~/models/event";
 import type { FuturePlan } from "~/models/future";
 import { getFuturePlan, setFuturePlan } from "~/models/future";
-import type { Sensei } from "~/models/sensei";
 import type { Student } from "~/models/student";
 import { getAllStudents } from "~/models/student";
 import type { StudentResource } from "~/models/student-resource";
 import { getStudentResource } from "~/models/student-resource";
 import type { RaidEvent } from "~/models/raid";
 import { getAllTotalAssaults } from "~/models/raid";
+import { getAuthenticator } from "~/auth/authenticator.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -35,15 +34,14 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ context, request }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const currentUser = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const currentUser = await getAuthenticator(env).isAuthenticated(request);
 
   const events = getFutureEvents();
   const eventStudentIds = events.flatMap(({ pickups }) => (
     pickups.map((student) => student.studentId)
   ));
 
-  const env = context.env as Env;
   const signedIn = currentUser !== null;
   const futurePlan = signedIn ? await getFuturePlan(env, currentUser.id) : null;
   return json<LoaderData>({
@@ -61,15 +59,15 @@ type ActionData = {
 };
 
 export const action: ActionFunction = async ({ context, request }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const currentUser = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const currentUser = await getAuthenticator(env).isAuthenticated(request);
   if (!currentUser) {
     return redirect("/signin");
   }
 
   const formData = await request.formData();
   const studentIds = JSON.parse(formData.get("studentIds") as string) as string[];
-  await setFuturePlan(context.env as Env, currentUser.id, {
+  await setFuturePlan(env, currentUser.id, {
     studentIds,
     memos: formData.get("memos") ? JSON.parse(formData.get("memos") as string) : undefined,
   });

@@ -1,14 +1,13 @@
 import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
-import type { Authenticator } from "remix-auth";
+import { getAuthenticator } from "~/auth/authenticator.server";
 import { PartyGenerator } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import type { Party } from "~/models/party";
 import { updateOrCreateParty, getUserParties } from "~/models/party";
 import type { RaidEvent} from "~/models/raid";
 import { getAllTotalAssaults } from "~/models/raid";
-import type { Sensei } from "~/models/sensei";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 
@@ -24,9 +23,8 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ context, request, params }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
   const env = context.env as Env;
-  const sensei = await authenticator.isAuthenticated(request);
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
@@ -47,8 +45,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
 
 export const action: ActionFunction = async ({ context, request }) => {
   const env = context.env as Env;
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }

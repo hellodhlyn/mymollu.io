@@ -2,15 +2,14 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { Authenticator } from "remix-auth";
 import { FloatingButton } from "~/components/atoms/form";
 import { SpecEditBulkActions, SpecEditor, useStateFilter } from "~/components/organisms/student";
 import type { Env } from "~/env.server";
-import type { Sensei } from "~/models/sensei";
 import type { StudentState} from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 import { action, type ActionData } from "./edit.students";
 import { useToast } from "~/components/atoms/notification";
+import { getAuthenticator } from "~/auth/authenticator.server";
 
 export const meta: MetaFunction = () => [
   { title: "학생 성장 관리 | MolluLog" },
@@ -22,15 +21,15 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ context, request }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
   return json<LoaderData>({
     currentUsername: sensei.username,
-    states: (await getUserStudentStates(context.env as Env, sensei.username, true))!,
+    states: (await getUserStudentStates(env, sensei.username, true))!,
   });
 };
 

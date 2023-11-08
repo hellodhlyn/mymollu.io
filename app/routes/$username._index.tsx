@@ -3,18 +3,17 @@ import { json } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ChatBubbleXmark } from "iconoir-react";
 import { useEffect, useState } from "react";
-import type { Authenticator } from "remix-auth";
 import { SubTitle } from "~/components/atoms/typography";
 import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
 import type { Env } from "~/env.server";
 import type { Relationship } from "~/models/followership";
 import { getFollowers, getFollowing, getRelationship } from "~/models/followership";
-import type { Sensei } from "~/models/sensei";
 import { getSenseiByUsername } from "~/models/sensei";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 import type { ActionData } from "./api.followerships";
+import { getAuthenticator } from "~/auth/authenticator.server";
 
 type LoaderData = {
   username: string;
@@ -37,8 +36,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
   const sensei = (await getSenseiByUsername(env, username))!;
 
   // Get a relationship
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const currentUser = await authenticator.isAuthenticated(request);
+  const currentUser = await getAuthenticator(env).isAuthenticated(request);
   let relationship: Relationship = { followed: false, following: false };
   if (currentUser && sensei && (currentUser.id !== sensei.id)) {
     relationship = await getRelationship(env, currentUser.id, sensei.id);

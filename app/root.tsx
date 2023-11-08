@@ -11,8 +11,8 @@ import {
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { Header } from "./components";
-import type { Authenticator } from "remix-auth";
-import type { Sensei } from "./models/sensei";
+import { getAuthenticator } from "./auth/authenticator.server";
+import type { Env } from "./env.server";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -25,8 +25,7 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request, context }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
   return json<LoaderData>({ currentUsername: sensei?.username || null });
 };
 

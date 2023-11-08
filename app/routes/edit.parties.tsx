@@ -2,13 +2,12 @@ import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cl
 import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { PlusCircle } from "iconoir-react";
-import type { Authenticator } from "remix-auth";
+import { getAuthenticator } from "~/auth/authenticator.server";
 import { SubTitle } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import type { Party } from "~/models/party";
 import { getUserParties, removePartyByUid } from "~/models/party";
-import type { Sensei } from "~/models/sensei";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 
@@ -22,13 +21,12 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ context, request }) => {
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const env = context.env as Env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
-  const env = context.env as Env;
   return json<LoaderData>({
     states: (await getUserStudentStates(env, sensei.username, true))!,
     parties: await getUserParties(env, sensei.username),
@@ -37,8 +35,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
 
 export const action: ActionFunction = async ({ context, request }) => {
   const env = context.env as Env;
-  const authenticator = context.authenticator as Authenticator<Sensei>;
-  const sensei = await authenticator.isAuthenticated(request);
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }

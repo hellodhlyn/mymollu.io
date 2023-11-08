@@ -3,7 +3,7 @@ import { createCookieSessionStorage } from "@remix-run/cloudflare";
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy } from "remix-auth-google";
 import type { Env } from "~/env.server";
-import type { Sensei} from "~/models/sensei";
+import type { Sensei } from "~/models/sensei";
 import { getSenseiByGoogleId } from "~/models/sensei";
 
 let _sessionStorage: SessionStorage;
@@ -30,7 +30,7 @@ export function sessionStorage(env: Env): SessionStorage {
   return _sessionStorage;
 }
 
-export function newAuthenticator(env: Env): Authenticator<Sensei> {
+export function getAuthenticator(env: Env): Authenticator<Sensei> {
   if (_authenticator) {
     return _authenticator;
   }
