@@ -8,7 +8,7 @@ import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
 import type { Env } from "~/env.server";
 import type { Relationship } from "~/models/followership";
-import { getFollowers, getFollowing, getRelationship } from "~/models/followership";
+import { getFollowers, getFollowing } from "~/models/followership";
 import { getSenseiByUsername } from "~/models/sensei";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
@@ -36,10 +36,16 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
   const sensei = (await getSenseiByUsername(env, username))!;
 
   // Get a relationship
+  const [following, followers] = await Promise.all([
+    getFollowing(env, sensei.id),
+    getFollowers(env, sensei.id),
+  ]);
+
+  const relationship = { followed: false, following: false };
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
-  let relationship: Relationship = { followed: false, following: false };
-  if (currentUser && sensei && (currentUser.id !== sensei.id)) {
-    relationship = await getRelationship(env, currentUser.id, sensei.id);
+  if (currentUser) {
+    relationship.followed = following.find((each) => each.id === currentUser.id) !== undefined;
+    relationship.following = followers.find((each) => each.id === currentUser.id) !== undefined;
   }
 
   const states = await getUserStudentStates(env, username);
@@ -47,8 +53,8 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     username,
     currentUsername: currentUser?.username ?? null,
     relationship,
-    following: (await getFollowing(env, sensei.id)).length,
-    followers: (await getFollowers(env, sensei.id)).length,
+    following: following.length,
+    followers: followers.length,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
   });

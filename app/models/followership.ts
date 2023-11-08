@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Env} from "~/env.server";
+import type { Env } from "~/env.server";
 import { getDB } from "~/env.server";
 import type { SupabaseSchema } from "~/schema";
 import type { Sensei} from "./sensei";
@@ -19,16 +19,6 @@ export async function follow(env: Env, followerId: number, followeeId: number) {
 export async function unfollow(env: Env, followerId: number, followeeId: number) {
   const repo = new FollowershipRepo(env);
   await repo.deleteByFollowerIdAndFolloweeId(followerId, followeeId);
-}
-
-export async function getRelationship(env: Env, fromId: number, oppositeId: number): Promise<Relationship> {
-  const repo = new FollowershipRepo(env);
-  const followingsId = (await repo.findAllBy("followerId", fromId)).map((each) => each.followeeId);
-  const followersId = (await repo.findAllBy("followeeId", fromId)).map((each) => each.followerId);
-  return {
-    following: followingsId.includes(oppositeId),
-    followed: followersId.includes(oppositeId),
-  };
 }
 
 export async function getFollowers(env: Env, followeeId: number): Promise<Sensei[]> {
