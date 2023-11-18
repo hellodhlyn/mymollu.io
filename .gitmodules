@@ -1,0 +1,4 @@
+[submodule "jobs"]
+	path = jobs
+	url = git@github.com:hellodhlyn/mollulog-jobs.git
+	branch = main

@@ -5,21 +5,6 @@ main = "./build/index.js"
 # https://developers.cloudflare.com/workers/platform/compatibility-dates
 compatibility_date = "2023-08-15"
 
-[[kv_namespaces]]
-  binding = "KV_USERDATA"
-  id = "a613bc84ffeb4362b3deaa05c617a7b3"
-  preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
-
-[[kv_namespaces]]
-  binding = "KV_SESSION"
-  id = "757ca5d838364689af06edc372cd4c56"
-  preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
-
-[[r2_buckets]]
-  binding = "ASSETS_BUCKET"
-  bucket_name = "mymollu-assets"
-  preview_bucket_name = "mymollu-assets-preview"
-
 [placement]
   mode = "smart"
 
@@ -38,3 +23,21 @@ STAGE = "prod"
 #   - GOOGLE_CLIENT_SECRET
 #   - SUPABASE_URL
 #   - SUPABASE_KEY
+
+[triggers]
+crons = ["30 * * * *"]
+
+[[kv_namespaces]]
+  binding = "KV_USERDATA"
+  id = "a613bc84ffeb4362b3deaa05c617a7b3"
+  preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
+
+[[kv_namespaces]]
+  binding = "KV_SESSION"
+  id = "757ca5d838364689af06edc372cd4c56"
+  preview_id = "49985f61319e42e6863fe6a66f3fc0fa"
+
+[[kv_namespaces]]
+  binding = "KV_STATIC_DATA"
+  id = "664d618c78334a4b90f1c1ba62e20e31"
+  preview_id = "49985f61319e42e6863fe6a66f3fc0fa"

@@ -9,10 +9,8 @@ import type { PickupEvent} from "~/models/event";
 import { getFutureEvents } from "~/models/event";
 import type { FuturePlan } from "~/models/future";
 import { getFuturePlan, setFuturePlan } from "~/models/future";
-import type { Student } from "~/models/student";
-import { getAllStudents } from "~/models/student";
-import type { StudentResource } from "~/models/student-resource";
-import { getStudentResource } from "~/models/student-resource";
+import type { StudentMap } from "~/models/student";
+import { getStudentsMap } from "~/models/student";
 import type { RaidEvent } from "~/models/raid";
 import { getAllTotalAssaults } from "~/models/raid";
 import { getAuthenticator } from "~/auth/authenticator.server";
@@ -28,9 +26,8 @@ type LoaderData = {
   signedIn: boolean;
   events: PickupEvent[];
   totalAssaults: RaidEvent[];
-  allStudents: Student[];
+  students: StudentMap;
   futurePlan: FuturePlan | null;
-  resources: StudentResource[];
 };
 
 export const loader: LoaderFunction = async ({ context, request }) => {
@@ -41,6 +38,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   const eventStudentIds = events.flatMap(({ pickups }) => (
     pickups.map((student) => student.studentId)
   ));
+  const students = await getStudentsMap(env, true, eventStudentIds);
 
   const signedIn = currentUser !== null;
   const futurePlan = signedIn ? await getFuturePlan(env, currentUser.id) : null;
@@ -48,14 +46,12 @@ export const loader: LoaderFunction = async ({ context, request }) => {
     signedIn,
     events: getFutureEvents(),
     totalAssaults: getAllTotalAssaults(),
-    allStudents: getAllStudents(true).filter(({ id }) => eventStudentIds.includes(id)),
+    students,
     futurePlan,
-    resources: futurePlan?.studentIds?.map((id) => getStudentResource(id)!) ?? [],
   });
 };
 
 type ActionData = {
-  resources: StudentResource[];
 };
 
 export const action: ActionFunction = async ({ context, request }) => {
@@ -72,13 +68,12 @@ export const action: ActionFunction = async ({ context, request }) => {
     memos: formData.get("memos") ? JSON.parse(formData.get("memos") as string) : undefined,
   });
 
-  const resources = studentIds.map((id) => getStudentResource(id)!);
-  return json<ActionData>({ resources });
+  return json<ActionData>({});
 };
 
 export default function Futures() {
   const loaderData = useLoaderData<LoaderData>();
-  const { signedIn, events, totalAssaults, allStudents } = loaderData;
+  const { signedIn, events, totalAssaults, students } = loaderData;
   const fetcher = useFetcher();
 
   const [plan, setPlan] = useState<FuturePlan>(loaderData.futurePlan ?? { studentIds: [] });
@@ -100,15 +95,6 @@ export default function Futures() {
     return () => { clearTimeout(timer); };
   }, [plan]);
 
-  const [resources, setResources] = useState<StudentResource[]>(loaderData.resources);
-  useEffect(() => {
-    if (fetcher.state === "loading" && fetcher.data) {
-      const fetchedData = fetcher.data as ActionData;
-      setResources(fetchedData.resources);
-    }
-  }, [fetcher]);
-
-
   const selectedPickups = events.flatMap((event) => event.pickups)
     .filter((pickup) => plan.studentIds.includes(pickup.studentId));
 
@@ -119,7 +105,7 @@ export default function Futures() {
       <FutureTimeline
         events={events}
         totalAssaults={totalAssaults}
-        allStudents={allStudents}
+        students={students}
         plan={plan}
         onSelectStudent={signedIn ? (studentId) => {
           const newSelectedIds = plan.studentIds.includes(studentId) ?
@@ -135,11 +121,8 @@ export default function Futures() {
       {(plan.studentIds.length > 0) && (
         <div className="fixed w-screen bottom-0 left-0">
           <ResourceCalculator
-            pickups={selectedPickups.map((pickup) => ({
-              ...pickup,
-              student: allStudents.find(({ id }) => id === pickup.studentId)!,
-            }))}
-            resources={resources}
+            pickups={selectedPickups}
+            students={students}
             loading={fetcher.state === "submitting"}
           />
         </div>

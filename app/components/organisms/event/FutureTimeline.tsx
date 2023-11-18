@@ -1,7 +1,7 @@
 import type { PickupEvent } from "~/models/event";
 import { Event, Raid } from "~/components/molecules/event";
 import type { FuturePlan } from "~/models/future";
-import type { Student } from "~/models/student";
+import type { StudentMap } from "~/models/student";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import type { RaidEvent } from "~/models/raid";
@@ -9,7 +9,7 @@ import type { RaidEvent } from "~/models/raid";
 type EventsProps = {
   events: PickupEvent[];
   totalAssaults: RaidEvent[];
-  allStudents: Student[];
+  students: StudentMap;
   plan: FuturePlan;
 
   onSelectStudent?: (studentId: string) => void;
@@ -24,7 +24,7 @@ type TimelineItem = {
 };
 
 export default function FutureTimeline({
-  events, totalAssaults, allStudents, plan, onSelectStudent, onMemoUpdate,
+  events, totalAssaults, students, plan, onSelectStudent, onMemoUpdate,
 }: EventsProps) {
   const timelineItems: TimelineItem[] = [
     ...totalAssaults.map((e) => ({ id: e.id, since: dayjs(e.since), totalAssault: e })),
@@ -81,7 +81,7 @@ export default function FutureTimeline({
                 <Event
                   {...item.event}
                   pickups={item.event.pickups.map((pickup) => ({
-                    student: allStudents.find(({ id }) => pickup.studentId === id)!,
+                    student: students[pickup.studentId],
                     rerun: pickup.rerun,
                     type: pickup.type,
                   }))}

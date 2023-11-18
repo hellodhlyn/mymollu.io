@@ -6,8 +6,7 @@ import type { Env } from "~/env.server";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
 import type { Sensei } from "~/models/sensei";
 import { updateSensei } from "~/models/sensei";
-import type { Student} from "~/models/student";
-import { getAllStudents } from "~/models/student";
+import { getStudents, type Student } from "~/models/student";
 
 export const meta: MetaFunction = () => [
   { title: "프로필 관리 | MolluLog" },
@@ -19,12 +18,13 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ context, request }) => {
-  const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
+  const env = context.env as Env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
-  return json<LoaderData>({ sensei, allStudents: getAllStudents() });
+  return json<LoaderData>({ sensei, allStudents: await getStudents(env, true) });
 }
 
 type ActionData = {

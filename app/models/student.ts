@@ -1,63 +1,53 @@
-import studentsData from "~/statics/students.json";
+import type { Env } from "~/env.server";
 
-type School = "abydos" | "gehenna" | "millennium" | "trinity" | "hyakkiyako"
+export type School = "abydos" | "gehenna" | "millennium" | "trinity" | "hyakkiyako"
   | "shanhaijing" | "redwinter" | "arius" | "srt" | "valkyrie" | "others";
+export type AttackType = "explosive" | "piercing" | "mystic" | "sonic" | null;
+export type DefenseType = "light" | "heavy" | "elastic" | null;
+export type Role = "striker" | "special";
+export type Equipment = "badge" | "bag" | "charm" | "glove" | "hairpin" | "hat" | "neckless" | "shoes" | "watch";
 
 export type Student = {
   id: string;
   name: string;
   school: School;
-  imageUrl: string;
   initialTier: number;
   order: number;
-  attackType: "explosive" | "piercing" | "mystic" | "sonic" | null;
-  defenseType: "light" | "heavy" | "elastic" | null;
-  role: "striker" | "special";
+  attackType: AttackType;
+  defenseType: DefenseType;
+  role: Role;
+  equipments: Equipment[];
+  released: boolean;
 };
 
-function parseAttackType(attackType: string): Student["attackType"] | null {
-  if (attackType === "Explosion") {
-    return "explosive";
-  } else if (attackType === "Pierce") {
-    return "piercing";
-  } else if (attackType === "Mystic") {
-    return "mystic";
-  } else if (attackType === "Sonic") {
-    return "sonic"
+export type StudentMap = { [id: string]: Student };
+
+const studentDataKey = "students.json";
+
+export async function storeStudents(env: Env, students: Student[]) {
+  await env.KV_STATIC_DATA.put(studentDataKey, JSON.stringify(students));
+}
+
+export async function getStudents(env: Env, includeUnreleased: boolean = false): Promise<Student[]> {
+  const all = (JSON.parse(await env.KV_STATIC_DATA.get(studentDataKey) || "[]") as Student[]);
+  if (includeUnreleased) {
+    return all;
   } else {
-    return null;
+    return all.filter(({ released }) => released);
   }
 }
 
-function parseDefenseType(defenseType: string): Student["defenseType"] | null {
-  if (defenseType === "LightArmor") {
-    return "light";
-  } else if (defenseType === "HeavyArmor") {
-    return "heavy";
-  } else if (defenseType === "ElasticArmor") {
-    return "elastic";
-  } else {
-    return null;
+export async function getStudentsMap(env: Env, includeUnreleased: boolean = false, studentIds: string[] = []): Promise<StudentMap> {
+  const students = await getStudents(env, includeUnreleased);
+  const result: StudentMap = {};
+  for (const student of students) {
+    if (studentIds.length === 0 || studentIds.includes(student.id)) {
+      result[student.id] = student;
+    }
   }
+  return result;
 }
 
-function parseRole(role: string): Student["role"] {
-  if (role === "Main") {
-    return "striker";
-  }
-  return "special";
-}
-
-export function getAllStudents(unreleased: boolean = false): Student[] {
-  return studentsData.filter((row) => unreleased || row.IsReleased[1]).map((row) => ({
-    id: row.Id.toString(),
-    name: row.Name,
-    school: row.School.toLowerCase().replace("etc", "others") as School,
-    imageUrl: `https://assets.mollulog.net/assets/images/students/${row.Id}`,
-    initialTier: row.StarGrade,
-    order: row.DefaultOrder,
-    attackType: parseAttackType(row.BulletType),
-    defenseType: parseDefenseType(row.ArmorType),
-    role: parseRole(row.SquadType),
-  }));
+export function studentImageUrl(studentId: string): string {
+  return `https://assets.mollulog.net/assets/images/students/${studentId}`;
 }

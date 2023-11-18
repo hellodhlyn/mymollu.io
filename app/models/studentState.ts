@@ -1,7 +1,7 @@
 import type { Env } from "~/env.server";
-import type { Student} from "./student";
-import { getAllStudents } from "./student";
-import type { Sensei} from "./sensei";
+import { getStudentsMap } from "./student";
+import type { Student } from "./student";
+import type { Sensei } from "./sensei";
 import { getSenseiByUsername } from "./sensei";
 
 export type StudentState = {
@@ -25,10 +25,10 @@ export async function getUserStudentStates(env: Env, username: string, showDefau
     return null;
   }
 
-  const allStudents = getAllStudents();
+  const allStudents = await getStudentsMap(env);
   const states = (rawStates ? JSON.parse(rawStates) : []) as StudentState[];
-  return allStudents.map((student) => {
-    const state = states.find((state) => state.student.id === student.id);
+  return Object.entries(allStudents).map(([studentId, student]) => {
+    const state = states.find((state) => state.student.id === studentId);
     if (state) {
       return { ...state, student };
     } else {

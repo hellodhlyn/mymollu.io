@@ -21,7 +21,7 @@ export default function StudentSpecEdit(
         onClick={() => onSelect(state, !selected)}
       />
       <div className="w-12">
-        <StudentCard id={student.id} imageUrl={student.imageUrl} />
+        <StudentCard id={student.id} />
       </div>
       <div className="mx-4">
         <EditTier

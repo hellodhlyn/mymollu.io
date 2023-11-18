@@ -4,7 +4,7 @@ import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Title } from "~/components/atoms/typography";
 import { updateSensei } from "~/models/sensei";
 import type { Student } from "~/models/student";
-import { getAllStudents } from "~/models/student";
+import { getStudents } from "~/models/student";
 import type { Env } from "~/env.server";
 import { migrateStates } from "~/models/studentState";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
@@ -12,7 +12,7 @@ import { migrateParties } from "~/models/party";
 import { ProfileEditor } from "~/components/organisms/profile";
 
 export const meta: MetaFunction = () => [
-  { title: "학생 편성 관리 | MolluLog" },
+  { title: "선생님 등록 | MolluLog" },
 ];
 
 type LoaderData = {
@@ -20,6 +20,7 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request, context }) => {
+  const env = context.env as Env;
   const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
@@ -27,7 +28,7 @@ export const loader: LoaderFunction = async ({ request, context }) => {
     return redirect(`/@${sensei.username}`);
   }
 
-  return json<LoaderData>({ allStudents: getAllStudents() });
+  return json<LoaderData>({ allStudents: await getStudents(env, true) });
 }
 
 type ActionData = {

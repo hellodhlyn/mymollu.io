@@ -63,7 +63,6 @@ export default function Event(event: EventProps) {
           return {
             id: student.id,
             name: student.name,
-            imageUrl: student.imageUrl,
             selected: selectedStudentIds.includes(student.id),
             label: (
               <span className={`${colorClass}`}>{label}</span>

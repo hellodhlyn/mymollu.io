@@ -14,6 +14,7 @@ import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 import type { ActionData } from "./api.followerships";
 import { getAuthenticator } from "~/auth/authenticator.server";
+import { studentImageUrl } from "~/models/student";
 
 type LoaderData = {
   username: string;
@@ -101,7 +102,7 @@ export default function UserIndex() {
   const tierCounts = new Map<number, number>();
   states!.forEach(({ student, tier, owned }) => {
     if (student.id === profileStudentId) {
-      imageUrl = student.imageUrl;
+      imageUrl = studentImageUrl(student.id);
     }
     if (owned) {
       const studentTier = tier ?? student.initialTier;

@@ -5,7 +5,7 @@ import type { SupabaseSchema } from "./schema";
 export interface Env {
   __STATIC_CONTENT: KVNamespace<string>;
   KV_USERDATA: KVNamespace;
-  ASSETS_BUCKET: R2Bucket;
+  KV_STATIC_DATA: KVNamespace;
 
   HOST: string;
   STAGE: "dev" | "prod";

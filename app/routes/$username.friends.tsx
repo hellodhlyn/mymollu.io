@@ -11,13 +11,11 @@ import type { Env } from "~/env.server";
 import { getFollowers, getFollowing } from "~/models/followership";
 import type { Sensei} from "~/models/sensei";
 import { getSenseiByUsername } from "~/models/sensei";
-import type { Student } from "~/models/student";
-import { getAllStudents } from "~/models/student";
+import { studentImageUrl } from "~/models/student";
 
 type LoaderData = {
   following: Sensei[];
   followers: Sensei[];
-  students: Student[];
 };
 
 export const loader: LoaderFunction = async ({ params, context }) => {
@@ -30,15 +28,19 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const username = usernameParam.replace("@", "");
   const sensei = (await getSenseiByUsername(env, username))!;
 
+  const [following, followers] = await Promise.all([
+    getFollowing(env, sensei.id),
+    getFollowers(env, sensei.id),
+  ]);
+
   return json<LoaderData>({
-    following: await getFollowing(env, sensei.id),
-    followers: await getFollowers(env, sensei.id),
-    students: getAllStudents(),
+    following,
+    followers,
   });
 };
 
 export default function UserFollowing() {
-  const { following, followers, students } = useLoaderData<LoaderData>();
+  const { following, followers } = useLoaderData<LoaderData>();
 
   const [params, setParams] = useSearchParams();
   const [senseis, setSenseis] = useState<Sensei[]>(params.get("tab") === "followers" ? followers : following);
@@ -70,7 +72,7 @@ export default function UserFollowing() {
         <ErrorPage Icon={ChatBubbleEmpty} message="등록한 친구가 없어요 :(" />
       )}
       {senseis.map((sensei) => {
-        const imageUrl = students.find((student) => student.id === sensei.profileStudentId)?.imageUrl ?? null;
+        const imageUrl = sensei.profileStudentId ? studentImageUrl(sensei.profileStudentId) : null;
         return (
           <div key={`sensei-${sensei.username}`} className="w-full border-b last:border-0 border-neutral-100">
             <Link to={`/@${sensei.username}`}>

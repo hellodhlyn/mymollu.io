@@ -2,7 +2,7 @@ import { disassemble } from "hangul-js";
 import { useState } from "react";
 import { Input, Button } from "~/components/atoms/form";
 import { StudentCards } from "~/components/molecules/student";
-import type { Student } from "~/models/student";
+import { studentImageUrl, type Student } from "~/models/student";
 
 type ProfileEditorProps = {
   allStudents: Student[];
@@ -41,11 +41,7 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
       <Input
         name="username" label="닉네임" defaultValue={initialData?.username}
         error={error?.username}
-        placeholder="영숫자 및 _ 기호 (4~20글자)"
-        description={initialData?.username ?
-          "4~20글자의 영숫자 및 _ 기호를 이용할 수 있어요." :
-          "기존에 임시 로그인을 사용한 경우, 해당 아이디와 동일하게 입력해주세요."
-        }
+        description="4~20글자의 영숫자 및 _ 기호를 이용할 수 있어요."
       />
 
       <Input
@@ -68,7 +64,8 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
           <div className="my-8 flex items-center px-4 py-2 bg-neutral-100 rounded-lg">
             <img
               className="h-12 w-12 mr-4 rounded-full"
-              src={profileStudent.imageUrl} alt={profileStudent.name}
+              src={studentImageUrl(profileStudent.id)}
+              alt={profileStudent.name}
             />
             <p><span className="font-bold">{profileStudent.name}</span>를 선택했어요.</p>
           </div>

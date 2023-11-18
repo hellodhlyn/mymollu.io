@@ -88,7 +88,6 @@ export default function EditPage() {
           cardProps={filteredStates.map(({ student, owned }) => ({
               id: student.id,
               name: student.name,
-              imageUrl: student.imageUrl,
               grayscale: !owned,
           }))}
           onSelect={(id) => { setStates(states.map((s) => s.student.id === id ? { ...s, owned: !s.owned } : s)); }}

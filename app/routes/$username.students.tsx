@@ -56,7 +56,6 @@ export default function UserPage() {
           cardProps={filteredStates.filter(({ owned }) => owned).map(({ student, tier }) => ({
             id: student.id,
             name: student.name,
-            imageUrl: student.imageUrl,
             tier: tier ?? student.initialTier,
           }))}
         />
@@ -68,7 +67,6 @@ export default function UserPage() {
           cardProps={filteredStates.filter(({ owned }) => !owned).map(({ student }) => ({
             id: student.id,
             name: student.name,
-            imageUrl: student.imageUrl,
             grayscale: true,
           }))}
         />

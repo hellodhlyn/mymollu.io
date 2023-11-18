@@ -3,30 +3,26 @@ import { useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { ResourceCards } from "~/components/molecules/student";
 import type { Pickup } from "~/models/event";
-import type { Student } from "~/models/student";
-import type { Equipment, StudentResource } from "~/models/student-resource";
+import type { Equipment, Student, StudentMap } from "~/models/student";
 
 type ResourceCalculatorProps = {
-  pickups: (Pickup & { student: Student })[];
-  resources: StudentResource[];
+  pickups: (Pickup)[];
+  students: StudentMap;
   loading: boolean;
 }
 
-export default function ResourceCalculator({ pickups, resources, loading }: ResourceCalculatorProps) {
+export default function ResourceCalculator({ pickups, students, loading }: ResourceCalculatorProps) {
   const [showing, setShowing] = useState(false);
 
   const pickupCounts = new Map<Pickup["type"], number>();
   const skillItems = new Map<Student["school"], number>();
-  pickups.forEach(({ type, student }) => {
+  const equipments = new Map<Equipment, number>();
+  pickups.forEach(({ type, studentId }) => {
+    const student = students[studentId];
     const school = student.school === "srt" ? "valkyrie" : student.school;
     skillItems.set(school, (skillItems.get(school) ?? 0) + 1);
     pickupCounts.set(type, (pickupCounts.get(type) ?? 0) + 1);
-  });
-
-  const equipments = new Map<Equipment, number>();
-  resources.flatMap((each) => each.equipments)
-  resources.forEach((resource) => {
-    resource.equipments.forEach((equipment) => {
+    student.equipments.forEach((equipment) => {
       equipments.set(equipment, (equipments.get(equipment) ?? 0) + 1);
     });
   });

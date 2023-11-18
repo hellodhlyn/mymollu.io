@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
+import { studentImageUrl } from "~/models/student";
 
 export type StudentCardProps = {
   id: string;
-  imageUrl: string;
   name?: string;
 
   tier?: number | null;
@@ -21,7 +21,7 @@ function visibileTier(tier: number): [number, boolean] {
 }
 
 export default function StudentCard(
-  { name, imageUrl, tier, label, selected, grayscale }: StudentCardProps,
+  { id, name, tier, label, selected, grayscale }: StudentCardProps,
 ) {
   const showInfo = tier !== undefined || label !== undefined;
   const visibleNames = [];
@@ -45,12 +45,12 @@ export default function StudentCard(
       <div className="relative">
         <img
           className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale opacity-75" : ""} transition`}
-          src={imageUrl} alt={name} loading="lazy"
+          src={studentImageUrl(id)}
+          alt={name} loading="lazy"
         />
         {showInfo && (
           <div
-            className="absolute bottom-0 right-0 flex flex-col items-center px-2 rounded-lg
-                       bg-black bg-opacity-75 text-center font-extrabold text-xs"
+            className="absolute bottom-0 right-0 flex flex-col items-center px-2 rounded-lg bg-black bg-opacity-75 text-center font-extrabold text-xs"
           >
             {(tier) && (
               <p className={`flex items-center ${visibileTier(tier)[1] ? "text-teal-300" : "text-yellow-300"}`}>

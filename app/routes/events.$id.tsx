@@ -7,18 +7,21 @@ import { useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
+import type { Env } from "~/env.server";
 import type { PickupEvent } from "~/models/event";
 import { eventLabelsMap, getAllEvents } from "~/models/event";
-import type { Student } from "~/models/student";
-import { getAllStudents } from "~/models/student";
+import type { StudentMap } from "~/models/student";
+import { getStudentsMap } from "~/models/student";
 import { sanitizeClassName } from "~/prophandlers";
 
 type LoaderData = {
   event: PickupEvent;
-  pickupStudents: Student[];
+  pickupStudents: StudentMap;
 };
 
-export const loader: LoaderFunction = ({ params }) => {
+export const loader: LoaderFunction = async ({ params, context }) => {
+  const env = context.env as Env;
+
   const allEvent = getAllEvents();
   let event: PickupEvent | undefined;
   if (!params.id || !(event = allEvent.find(({ id }) => id === params.id)) || !event.hasDetail) {
@@ -31,8 +34,7 @@ export const loader: LoaderFunction = ({ params }) => {
     );
   }
 
-  const allStudents = getAllStudents(true);
-  const pickupStudents = event.pickups.map(({ studentId }) => allStudents.find(({ id }) => id === studentId)!);
+  const pickupStudents = await getStudentsMap(env, true, event.pickups.map(({ studentId }) => studentId));
 
   return json<LoaderData>({ event, pickupStudents });
 };
@@ -115,7 +117,7 @@ export default function EventDetail() {
       {pickupStudents && (
         <div className="my-8">
           <SubTitle text="픽업 학생" />
-          <StudentCards cardProps={pickupStudents} mobileGrid={5} />
+          <StudentCards cardProps={Object.values(pickupStudents)} mobileGrid={5} />
         </div>
       )}
 

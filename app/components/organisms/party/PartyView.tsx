@@ -44,7 +44,6 @@ export default function PartyView({ party, studentStates, editable }: PartyViewP
                 key={`student-${student.id}`}
                 id={student.id}
                 name={student.name}
-                imageUrl={student.imageUrl}
                 tier={owned ? (tier ?? student.initialTier) : undefined}
               />
             ))}

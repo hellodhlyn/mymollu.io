@@ -94,7 +94,6 @@ export default function PartyUnitEditor(
           <StudentCards
             cardProps={filteredStates.map(({ student, owned, tier }) => ({
               id: student.id,
-              imageUrl: student.imageUrl,
               name: student.name,
               tier: owned ? tier : undefined,
             }))}
@@ -120,7 +119,6 @@ export default function PartyUnitEditor(
                 {state?.student ?
                   <StudentCard
                     id={state.student.id}
-                    imageUrl={state.student.imageUrl}
                     tier={state.owned ? state.tier : undefined}
                   /> :
                   <div className="w-full h-full flex items-center justify-center">
