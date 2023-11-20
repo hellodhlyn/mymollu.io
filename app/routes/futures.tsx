@@ -16,9 +16,15 @@ import { getAllTotalAssaults } from "~/models/raid";
 import { getAuthenticator } from "~/auth/authenticator.server";
 
 export const meta: MetaFunction = () => {
+  const title = "블루 아카이브 이벤트, 픽업 미래시";
+  const description = "블루 아카이브 한국 서버의 이벤트 및 총력전, 픽업 미래시 정보 모음";
   return [
-    { title: "미래시 | MolluLog" },
-    { name: "description", content: "블루 아카이브 한국 서버의 이벤트 및 픽업 일정을 확인하고 계획해보세요." },
+    { title: `${title} | MolluLog` },
+    { name: "description", content: description },
+    { name: "og:title", content: title },
+    { name: "og:description", content: description },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
   ];
 };
 
@@ -44,7 +50,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   const futurePlan = signedIn ? await getFuturePlan(env, currentUser.id) : null;
   return json<LoaderData>({
     signedIn,
-    events: getFutureEvents(),
+    events,
     totalAssaults: getAllTotalAssaults(),
     students,
     futurePlan,

@@ -1,7 +1,7 @@
 import type { RaidEvent} from "~/models/raid";
 import { raidTerrainText, raidTypeText } from "~/models/raid";
 
-export default function TotalAssault(
+export default function RaidTimelineItem(
   { name, type, terrain, attackType, defenseType, imageUrl }: RaidEvent,
 ) {
   let attackTypeText = "";

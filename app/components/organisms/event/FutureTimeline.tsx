@@ -1,5 +1,5 @@
 import type { PickupEvent } from "~/models/event";
-import { EventTimelineItem, Raid } from "~/components/molecules/event";
+import { EventTimelineItem, RaidTimelineItem } from "~/components/molecules/event";
 import type { FuturePlan } from "~/models/future";
 import type { StudentMap } from "~/models/student";
 import type { Dayjs } from "dayjs";
@@ -10,7 +10,7 @@ type EventsProps = {
   events: PickupEvent[];
   totalAssaults: RaidEvent[];
   students: StudentMap;
-  plan: FuturePlan;
+  plan?: FuturePlan;
 
   onSelectStudent?: (studentId: string) => void;
   onMemoUpdate?: (memo: { [eventId: string]: string }) => void;
@@ -76,20 +76,17 @@ export default function FutureTimeline({
               </div>
             )}
             <div className="ml-4 md:ml-6">
-              {item.totalAssault && <Raid {...item.totalAssault} />}
+              {item.totalAssault && <RaidTimelineItem {...item.totalAssault} />}
               {item.event && (
                 <EventTimelineItem
                   {...item.event}
-                  pickups={item.event.pickups.map((pickup) => ({
-                    student: students[pickup.studentId],
-                    rerun: pickup.rerun,
-                    type: pickup.type,
-                  }))}
+                  pickups={item.event.pickups}
+                  students={students}
 
-                  selectedStudentIds={plan.studentIds}
+                  selectedStudentIds={plan?.studentIds ?? []}
                   onSelect={selectable ? (studentId) => onSelectStudent(studentId) : undefined}
 
-                  initialMemo={plan.memos ? plan.memos[item.id] : undefined}
+                  initialMemo={plan?.memos ? plan.memos[item.id] : undefined}
                   onMemoUpdate={showMemo ? ((text) => onMemoUpdate({ [item.id]: text })) : undefined}
                 />
               )}

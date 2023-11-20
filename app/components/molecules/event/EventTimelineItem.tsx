@@ -5,17 +5,18 @@ import { MemoEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
 import type { Pickup, PickupEvent} from "~/models/event";
 import { eventLabelsMap, pickupLabel } from "~/models/event";
-import type { Student } from "~/models/student";
+import type { StudentMap } from "~/models/student";
 
 type EventProps = {
   id: string;
   type: PickupEvent["type"];
   name: string;
   rerun?: boolean;
-  pickups: ({ student: Student } & Pick<Pickup, "type" | "rerun">)[];
+  pickups: Pickup[];
+  students: StudentMap;
   hasDetail: boolean;
 
-  selectedStudentIds: string[];
+  selectedStudentIds?: string[];
   onSelect?: (studentId: string) => void;
   initialMemo?: string;
   onMemoUpdate?: (text: string) => void;
@@ -56,14 +57,14 @@ export default function EventTimelineItem(event: EventProps) {
       <StudentCards
         mobileGrid={5}
         cardProps={event.pickups.map((pickup) => {
-          const { student } = pickup;
+          const student = event.students[pickup.studentId];
           const label = pickupLabel(pickup);
           const colorClass = pickup.rerun ? "text-white" : "text-yellow-500";
 
           return {
             id: student.id,
             name: student.name,
-            selected: selectedStudentIds.includes(student.id),
+            selected: (selectedStudentIds ?? []).includes(student.id),
             label: (
               <span className={`${colorClass}`}>{label}</span>
             ),
