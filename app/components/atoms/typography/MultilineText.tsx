@@ -2,8 +2,11 @@ export default function MultilineText({ texts, className }: { texts: string[], c
   return (
     <div className={`${className} flex flex-col md:flex-row`}>
       {texts.map((text, index) => (
-        <div key={`${texts.join("")}-${text}`}>
-          <span className="mr-1">{(index === texts.length - 1) ? text : `${text} -`}</span>
+        <div key={text}>
+          <span key={`${texts.join("")}-${text}`}>
+            {text}
+          </span>
+          {(index === texts.length - 1) || <span className="hidden md:inline">&nbsp;-&nbsp;</span>}
         </div>
       ))}
     </div>

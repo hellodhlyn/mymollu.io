@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { useState } from "react";
 import YouTube from "react-youtube";
+import { MultilineText } from "~/components/atoms/typography";
 import type { PickupEvent} from "~/models/event";
 import { eventLabelsMap } from "~/models/event";
 
@@ -22,7 +23,7 @@ export default function EventHeader({ event }: { event: PickupEvent }) {
     return (
       <div>
         <p className="text-sm md:text-base text-neutral-500">{eventLabelsMap[event.type]}</p>
-        <p className="text-lg md:text-2xl font-bold">{event.name}</p>
+        <MultilineText className="text-lg md:text-2xl font-bold" texts={event.name.split("\n")} />
         <div className="flex items-end">
           <p className="grow text-sm md:text-base">
             {dayjs(event.since).format("YYYY-MM-DD")} ~ {dayjs(event.until).format("YYYY-MM-DD")}
@@ -46,12 +47,15 @@ export default function EventHeader({ event }: { event: PickupEvent }) {
                 autoplay: 1, mute: 1, controls: 0, rel: 0, start: event.videos[0].start ?? 0,
               }
             }}
-            onPlay={() => setVideoPlaying(true)}
+            onPlay={(ytEvent) => {
+              setVideoPlaying(true);
+              setTimeout(
+                () => { setVideoPlaying(false); },
+                (ytEvent.target.getDuration() - (event.videos![0].start ?? 0) - 1.0) * 1000,
+              );
+            }}
             onEnd={() => setVideoPlaying(false)}
           />
-        )}
-        {(event.videos && event.videos.length > 0 && !videoPlaying) && (
-          <div className="absolute w-full h-full bg-black md:rounded-xl" />
         )}
         <img
           className={`absolute w-full md:rounded-xl ${videoPlaying ? "opacity-0" : "opacity-100"} ease-in duration-500 transition-opacity`}
@@ -60,7 +64,7 @@ export default function EventHeader({ event }: { event: PickupEvent }) {
       </div>
       <div className="absolute bottom-0 w-full px-4 md:px-6 py-4 text-white bg-gradient-to-t from-neutral-900/75 from-75% md:rounded-b-xl">
         <p className="text-sm md:text-base text-neutral-300">{eventLabelsMap[event.type]}</p>
-        <p className="text-lg md:text-2xl font-bold">{event.name}</p>
+        <MultilineText className="text-lg md:text-2xl font-bold" texts={event.name.split("\n")} />
         <div className="flex items-end">
           <p className="grow text-sm md:text-base">
             {dayjs(event.since).format("YYYY-MM-DD")} ~ {dayjs(event.until).format("YYYY-MM-DD")}
