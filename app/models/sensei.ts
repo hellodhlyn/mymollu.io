@@ -11,6 +11,11 @@ export type Sensei = {
   profileStudentId: string | null;
 };
 
+export async function getSenseiById(env: Env, id: number): Promise<Sensei | null> {
+  const repo = new UserRepo(env);
+  return repo.findBy("id", id);
+}
+
 export async function getSenseiByUsername(env: Env, username: string): Promise<Sensei | null> {
   const repo = new UserRepo(env);
   return repo.findBy("username", username);

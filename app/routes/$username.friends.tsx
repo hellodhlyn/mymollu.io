@@ -1,9 +1,10 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
-import { ChatBubbleEmpty, Group, User } from "iconoir-react";
+import { ChatBubbleEmpty, Group } from "iconoir-react";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { ProfileImage } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
@@ -11,7 +12,6 @@ import type { Env } from "~/env.server";
 import { getFollowers, getFollowing } from "~/models/followership";
 import type { Sensei} from "~/models/sensei";
 import { getSenseiByUsername } from "~/models/sensei";
-import { studentImageUrl } from "~/models/student";
 
 type LoaderData = {
   following: Sensei[];
@@ -72,19 +72,11 @@ export default function UserFollowing() {
         <ErrorPage Icon={ChatBubbleEmpty} message="등록한 친구가 없어요 :(" />
       )}
       {senseis.map((sensei) => {
-        const imageUrl = sensei.profileStudentId ? studentImageUrl(sensei.profileStudentId) : null;
         return (
           <div key={`sensei-${sensei.username}`} className="w-full border-b last:border-0 border-neutral-100">
             <Link to={`/@${sensei.username}`}>
               <div className="p-2 md:p-4 flex items-center hover:bg-neutral-100 rounded-lg transition">
-                {imageUrl ?
-                  <img className="h-8 w-8 rounded-full" src={imageUrl ?? ""} alt={`${sensei.username}의 프로필`} /> :
-                  (
-                    <div className="h-8 w-8 flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700">
-                      <User className="h-6 w-6" strokeWidth={2} />
-                    </div>
-                  )
-                }
+                <ProfileImage studentId={sensei.profileStudentId} />
                 <p className="ml-2">{sensei.username}</p>
               </div>
             </Link>

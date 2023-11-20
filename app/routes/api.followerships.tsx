@@ -29,7 +29,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     } else if (request.method === "DELETE") {
       await unfollow(env, follower.id, followee.id);
     }
-    return okResponse(201);
+    return okResponse(201, { followed: request.method === "POST" });
   } catch (error) {
     console.error(error);
     return errorResponse(500);
@@ -37,12 +37,13 @@ export const action: ActionFunction = async ({ request, context }) => {
 }
 
 export type ActionData = {
+  followed?: boolean;
   error?: { message: string };
 };
 
-function okResponse(status: number): Response {
+function okResponse(status: number, data: ActionData): Response {
   return new Response(
-    JSON.stringify({}),
+    JSON.stringify(data),
     {
       status,
       headers: { "Content-Type": "application/json" },

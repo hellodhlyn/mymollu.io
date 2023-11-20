@@ -1,8 +1,12 @@
-import { redirect, type ActionFunction, type MetaFunction } from "@remix-run/cloudflare";
-import { Form } from "@remix-run/react";
-import { ChatBubbleXmark } from "iconoir-react";
+import { redirect, json } from "@remix-run/cloudflare";
+import type { LoaderFunction, type ActionFunction, type MetaFunction } from "@remix-run/cloudflare";
+import { Form, useLoaderData } from "@remix-run/react";
 import { Button, Input } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
+import { ActivityTimeline } from "~/components/organisms/activity";
+import type { Env } from "~/env.server";
+import type { UserActivity} from "~/models/user-activity";
+import { getUserActivities } from "~/models/user-activity";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,6 +15,17 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+type LoaderData = {
+  userActivities: UserActivity[];
+};
+
+export const loader: LoaderFunction = async ({ context }) => {
+  const env = context.env as Env;
+  return json<LoaderData>({
+    userActivities: await getUserActivities(env),
+  });
+}
+
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const username = formData.get("username") as string;
@@ -18,6 +33,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Index() {
+  const { userActivities } = useLoaderData<LoaderData>();
   return (
     <>
       <SubTitle text="선생님 찾기" />
@@ -28,10 +44,7 @@ export default function Index() {
       </Form>
 
       <SubTitle text="타임라인" />
-      <div className="my-16 md:my-24 w-full flex flex-col items-center justify-center text-neutral-500">
-        <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
-        <p className="my-2 text-sm">팔로워의 최근 활동 내역이 없어요</p>
-      </div>
+      <ActivityTimeline activities={userActivities} showProfile />
     </>
   );
 }

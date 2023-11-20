@@ -2,8 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Env } from "~/env.server";
 import { getDB } from "~/env.server";
 import type { SupabaseSchema } from "~/schema";
-import type { Sensei} from "./sensei";
+import type { Sensei } from "./sensei";
 import { UserRepo } from "./sensei";
+import { createFollowingActivity } from "./user-activity";
 
 export type Followership = SupabaseSchema["public"]["Tables"]["dev_followerships"]["Row"];
 export type Relationship = {
@@ -14,6 +15,7 @@ export type Relationship = {
 export async function follow(env: Env, followerId: number, followeeId: number) {
   const repo = new FollowershipRepo(env);
   await repo.create(followerId, followeeId);
+  await createFollowingActivity(env, followerId, followeeId);
 }
 
 export async function unfollow(env: Env, followerId: number, followeeId: number) {

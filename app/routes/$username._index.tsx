@@ -1,8 +1,6 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { ChatBubbleXmark } from "iconoir-react";
-import { useEffect, useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
@@ -15,6 +13,9 @@ import { getUserStudentStates } from "~/models/studentState";
 import type { ActionData } from "./api.followerships";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { studentImageUrl } from "~/models/student";
+import { getUserActivities } from "~/models/user-activity";
+import type { UserActivity } from "~/models/user-activity";
+import { ActivityTimeline } from "~/components/organisms/activity";
 
 type LoaderData = {
   username: string;
@@ -24,6 +25,7 @@ type LoaderData = {
   followers: number;
   profileStudentId: string | null;
   states: StudentState[] | null;
+  userActivities: UserActivity[];
 };
 
 export const loader: LoaderFunction = async ({ context, request, params }) => {
@@ -49,6 +51,8 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     relationship.following = followers.find((each) => each.id === currentUser.id) !== undefined;
   }
 
+  const userActivities = await getUserActivities(env, sensei.id);
+
   const states = await getUserStudentStates(env, username);
   return json<LoaderData>({
     username,
@@ -58,6 +62,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     followers: followers.length,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
+    userActivities,
   });
 };
 
@@ -72,27 +77,14 @@ export const meta: MetaFunction = ({ params }) => {
 
 export default function UserIndex() {
   const loaderData = useLoaderData<LoaderData>();
-  const { username, currentUsername, profileStudentId, states } = loaderData;
+  const { username, currentUsername, profileStudentId, states, userActivities } = loaderData;
 
-  const [relationship, setRelationship] = useState(loaderData.relationship);
-
-  let followability: ProfileCardProps["followability"] = relationship.following ? "following" : "followable";
+  let followability: ProfileCardProps["followability"] = loaderData.relationship.following ? "following" : "followable";
   if (currentUsername === username) {
     followability = "unable";
   }
 
   const fetcher = useFetcher<ActionData>();
-  useEffect(() => {
-    if (fetcher.state !== "loading") {
-      return;
-    }
-
-    if (fetcher.data?.error) {
-      console.error(fetcher.data.error);
-    } else {
-      setRelationship((prev) => ({ ...prev, following: followability === "followable" }));
-    }
-  }, [fetcher, followability]);
 
   if (!states) {
     return <p className="my-8">선생님을 찾을 수 없어요. 다른 이름으로 검색해보세요.</p>
@@ -120,7 +112,7 @@ export default function UserIndex() {
           followability={followability}
           followers={loaderData.followers}
           following={loaderData.following}
-          loading={fetcher.state === "submitting"}
+          loading={fetcher.state !== "idle"}
           onFollow={() => fetcher.submit({ username }, { method: "post", action: "/api/followerships" })}
           onUnfollow={() => fetcher.submit({ username }, { method: "delete", action: "/api/followerships" })}
         />
@@ -128,10 +120,7 @@ export default function UserIndex() {
 
       <div className="md:my-8 my-16">
         <SubTitle text="최근 활동" />
-        <div className="my-16 md:my-24 w-full flex flex-col items-center justify-center text-neutral-500">
-          <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
-          <p className="my-2 text-sm">최근 활동 내역이 없어요</p>
-        </div>
+        <ActivityTimeline activities={userActivities} />
       </div>
     </div>
   );

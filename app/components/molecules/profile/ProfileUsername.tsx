@@ -1,5 +1,6 @@
 import { User, UserPlus, Group, UserXmark } from "iconoir-react";
 import { Link } from "react-router-dom";
+import { sanitizeClassName } from "~/prophandlers";
 
 type ProfileUsernameProps = {
   imageUrl: string | null;
@@ -39,33 +40,34 @@ export default function ProfileUsername({
         )}
       </div>
       {(followability === "followable" && onFollow) && (
-        <div
-          className={`
-              px-4 py-2 flex items-center text-white border border-2 border-neutral-900 bg-neutral-900
-              ${loading ? "opacity-50" : "hover:bg-neutral-700 cursor-pointer"}
-              rounded-full transition
-            `}
+        <button
+          type="button"
+          className={sanitizeClassName(`
+            px-4 py-2 flex items-center text-white border border-2 border-neutral-900 bg-neutral-900 rounded-full transition
+            disabled:opacity-50 hover:bg-neutral-700
+          `)}
           onClick={onFollow}
+          disabled={loading}
         >
           <UserPlus className="h-4 w-4 mr-1" strokeWidth={2} />
           <span className="text-sm">팔로우</span>
-        </div>
+        </button>
       )}
       {(followability === "following" && onUnfollow) && (
-        <div
-          className={`
-              px-4 py-2 flex items-center border border-2 border-neutral-900
-              hover:border-red-500 hover:bg-red-500
-              ${loading ? "opacity-50" : "hover:text-white cursor-pointer"}
-              rounded-full transition group
-            `}
+        <button
+          type="button"
+          className={sanitizeClassName(`
+            px-4 py-2 flex items-center border border-2 border-neutral-900 rounded-full transition group
+            disabled:opacity-50 hover:border-red-500 hover:bg-red-500 hover:text-white
+          `)}
           onClick={onUnfollow}
+          disabled={loading}
         >
           <Group className="h-4 w-4 mr-1 block group-hover:hidden" strokeWidth={2} />
           <span className="text-sm block group-hover:hidden">팔로우 중</span>
           <UserXmark className="h-4 w-4 mr-1 hidden group-hover:block" strokeWidth={2} />
           <span className="text-sm hidden group-hover:block">팔로우 해제</span>
-        </div>
+        </button>
       )}
     </div>
   );
