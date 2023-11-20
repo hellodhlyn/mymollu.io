@@ -1,5 +1,5 @@
 import type { PickupEvent } from "~/models/event";
-import { Event, Raid } from "~/components/molecules/event";
+import { EventTimelineItem, Raid } from "~/components/molecules/event";
 import type { FuturePlan } from "~/models/future";
 import type { StudentMap } from "~/models/student";
 import type { Dayjs } from "dayjs";
@@ -78,7 +78,7 @@ export default function FutureTimeline({
             <div className="ml-4 md:ml-6">
               {item.totalAssault && <Raid {...item.totalAssault} />}
               {item.event && (
-                <Event
+                <EventTimelineItem
                   {...item.event}
                   pickups={item.event.pickups.map((pickup) => ({
                     student: students[pickup.studentId],

@@ -25,6 +25,7 @@
     "nanoid": "^5.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-youtube": "^10.1.0",
     "remix-auth": "^3.6.0",
     "remix-auth-google": "^2.0.0"
   },

@@ -1,5 +1,5 @@
 import { redirect, json } from "@remix-run/cloudflare";
-import type { LoaderFunction, type ActionFunction, type MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunction, ActionFunction, MetaFunction } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { Button, Input } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";

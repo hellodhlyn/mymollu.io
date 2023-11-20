@@ -17,6 +17,7 @@ export type PickupEvent = {
   videos?: {
     title: string;
     youtube: string;
+    start?: number;
   }[];
   tips?: {
     title: string;
@@ -27,8 +28,9 @@ export type PickupEvent = {
   hasDetail: boolean;
 };
 
+const detailedTypes = ["event", "immortal_event", "main_story"];
+
 export function getAllEvents(): PickupEvent[] {
-  const detailedTypes = ["event"];
   return events.map((event) => ({
     ...event,
     type: event.type as PickupEvent["type"],

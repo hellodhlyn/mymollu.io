@@ -21,7 +21,7 @@ type EventProps = {
   onMemoUpdate?: (text: string) => void;
 };
 
-export default function Event(event: EventProps) {
+export default function EventTimelineItem(event: EventProps) {
   const { selectedStudentIds, onSelect, initialMemo, onMemoUpdate } = event;
 
   const eventLabelTexts = [];
@@ -39,12 +39,12 @@ export default function Event(event: EventProps) {
       {event.hasDetail ?
         (
           <Link to={`/events/${event.id}`} >
-            <div className="mb-2 flex items-center">
+            <div className="mb-2 flex items-end group">
               <MultilineText
-                className="font-bold text-lg md:text-xl hover:underline cursor-pointer"
+                className="font-bold text-lg md:text-xl group-hover:underline cursor-pointer"
                 texts={event.name.split("\n")}
               />
-              <NavArrowRight className="h-4 w-4 -mx-1" strokeWidth={2} />
+              <NavArrowRight className="h-4 w-4 mb-1.5" strokeWidth={2} />
             </div>
           </Link>
         ) :

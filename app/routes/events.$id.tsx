@@ -1,18 +1,16 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
-import dayjs from "dayjs";
 import { Link as LinkIcon } from "iconoir-react";
-import { useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
+import { EventHeader, EventVideos } from "~/components/organisms/event";
 import type { Env } from "~/env.server";
 import type { PickupEvent } from "~/models/event";
-import { eventLabelsMap, getAllEvents } from "~/models/event";
+import { getAllEvents, pickupLabel } from "~/models/event";
 import type { StudentMap } from "~/models/student";
 import { getStudentsMap } from "~/models/student";
-import { sanitizeClassName } from "~/prophandlers";
 
 type LoaderData = {
   event: PickupEvent;
@@ -71,53 +69,23 @@ export const ErrorBoundary = () => {
 export default function EventDetail() {
   const { event, pickupStudents } = useLoaderData<LoaderData>();
 
-  const [videoId, setVideoId] = useState(event.videos ? event.videos[0].youtube : null);
-
-  let dDayText = "";
-  const [now, since, until] = [dayjs(), dayjs(event.since), dayjs(event.until)];
-  if (now.isAfter(until)) {
-    dDayText = "개최 종료";
-  } else if (now.isAfter(since)) {
-    dDayText = "개최중";
-  } else {
-    const daysDiff = since.startOf("day").diff(now.startOf("day"), "day");
-    dDayText = (daysDiff === 0) ? "오늘" : `D-${daysDiff}`;
-  }
-
   return (
     <>
       <div className="my-8">
-        {event.image ?
-          <div className="relative w-screen md:w-full -mx-4 md:mx-0">
-            <img className="w-full md:rounded-xl" src={event.image} alt={`${event.name} 이벤트 이미지`} />
-            <div className="absolute bottom-0 w-full px-4 md:px-6 py-4 text-white bg-gradient-to-t from-neutral-900/75 from-75% md:rounded-b-xl">
-              <p className="text-sm md:text-base text-neutral-300">{eventLabelsMap[event.type]}</p>
-              <p className="text-lg md:text-2xl font-bold">{event.name}</p>
-              <div className="flex items-end">
-                <p className="my-1 grow text-sm md:text-base">
-                  {dayjs(event.since).format("YYYY-MM-DD")} ~ {dayjs(event.until).format("YYYY-MM-DD")}
-                </p>
-                <p className="py-1 px-4 flex-none bg-neutral-900 bg-opacity-75 text-xs md:text-sm rounded-full">{dDayText}</p>
-              </div>
-            </div>
-          </div> :
-          <div>
-            <p className="text-sm md:text-base text-neutral-500">{eventLabelsMap[event.type]}</p>
-            <p className="text-lg md:text-2xl font-bold">{event.name}</p>
-            <div className="flex items-end">
-              <p className="my-1 grow text-sm md:text-base">
-                {dayjs(event.since).format("YYYY-MM-DD")} ~ {dayjs(event.until).format("YYYY-MM-DD")}
-              </p>
-              <p className="py-1 px-4 flex-none bg-neutral-900 text-white text-xs md:text-sm rounded-full">{dDayText}</p>
-            </div>
-          </div>
-        }
+        <EventHeader event={event} />
       </div>
 
       {pickupStudents && (
         <div className="my-8">
           <SubTitle text="픽업 학생" />
-          <StudentCards cardProps={Object.values(pickupStudents)} mobileGrid={5} />
+          <StudentCards
+            cardProps={event.pickups.map((pickup) => ({
+              id: pickup.studentId,
+              label: (<span className={pickup.rerun ? "text-white" : "text-yellow-500"}>{pickupLabel(pickup)}</span>),
+              name: pickupStudents[pickup.studentId]!.name,
+            }))}
+            mobileGrid={5}
+          />
         </div>
       )}
 
@@ -138,36 +106,7 @@ export default function EventDetail() {
         </div>
       )}
 
-      {event.videos && (
-        <div className="my-8">
-          <SubTitle text="이벤트 영상" />
-          <div className="w-full flex flex-col-reverse md:flex-row border border-neutral-300 rounded-xl">
-            <div className="w-full md:w-56 md:border-r md:flex-none flex flex-row md:flex-col overflow-auto">
-              {event.videos.map((video) => (
-                <div
-                  key={`video-${video.youtube}`}
-                  className={sanitizeClassName(`
-                    m-1 p-3 md:w-54 text-sm md:text-base hover:bg-neutral-100
-                    cursor-pointer transition rounded-xl
-                    ${video.youtube === videoId ? "bg-gray-100 font-bold" : ""}
-                  `)}
-                  onClick={() => setVideoId(video.youtube)}
-                >
-                  <p className="whitespace-nowrap">{video.title}</p>
-                </div>
-              ))}
-            </div>
-            <div className="flex-auto">
-              <iframe
-                className="w-full aspect-video rounded-t-xl md:rounded-tl-none md:rounded-r-xl"
-                src={`https://www.youtube.com/embed/${videoId}`} 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      {(event.videos && event.videos.length > 0) && <EventVideos videos={event.videos} />}
     </>
   );
 }

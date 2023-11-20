@@ -1,7 +1,7 @@
-import Event from "./Event";
+import EventTimelineItem from "./EventTimelineItem";
 import Raid from "./Raid";
 
 export {
-  Event,
+  EventTimelineItem,
   Raid,
 };
