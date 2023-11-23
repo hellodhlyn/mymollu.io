@@ -16,5 +16,8 @@
 - Terraform (or OpenTofu)
 
 ```bash
-tofu -chdir=deploy/assets apply
+tofu -chdir=deploy/assets init
+yarn build:assets
+yarn plan:assets
+yarn deploy:assets
 ```

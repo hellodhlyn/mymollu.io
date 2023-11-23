@@ -3,10 +3,15 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
-    "deploy": "wrangler deploy",
-    "dev": "remix dev --manual -c \"yarn start\"",
-    "start": "wrangler dev --test-scheduled ./build/index.js",
+    "dev:web": "remix dev --manual -c \"yarn start\"",
+    "start:web": "wrangler dev --test-scheduled ./build/index.js",
+    "build:web": "remix build",
+    "deploy:web": "wrangler deploy",
+
+    "build:assets": "cd functions && GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o build/bootstrap ./assets-metadata",
+    "plan:assets": "tofu -chdir=deploy/assets plan",
+    "deploy:assets": "tofu -chdir=deploy/assets apply",
+
     "typecheck": "tsc",
     "lint": "eslint app/"
   },
