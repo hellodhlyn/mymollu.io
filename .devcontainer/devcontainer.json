@@ -1,0 +1,11 @@
+{
+  "customizations": {
+    "codespaces": {
+      "repositories": {
+        "hellodhlyn/mollulog-jobs": {
+          "permissions": "write-all"
+        }
+      }
+    }
+  }
+}

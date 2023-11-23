@@ -7,7 +7,7 @@ node_modules
 .env
 .dev.vars
 
-**/*.json
+app/**/*.json
 **/*.log
 
 ### Terraform or OpenTofu
