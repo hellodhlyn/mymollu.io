@@ -3,7 +3,7 @@ import type { Env } from "~/env.server";
 export type School = "abydos" | "gehenna" | "millennium" | "trinity" | "hyakkiyako"
   | "shanhaijing" | "redwinter" | "arius" | "srt" | "valkyrie" | "others";
 export type AttackType = "explosive" | "piercing" | "mystic" | "sonic" | null;
-export type DefenseType = "light" | "heavy" | "elastic" | null;
+export type DefenseType = "light" | "heavy" | "special" | "elastic" |  null;
 export type Role = "striker" | "special";
 export type Equipment = "badge" | "bag" | "charm" | "glove" | "hairpin" | "hat" | "neckless" | "shoes" | "watch";
 

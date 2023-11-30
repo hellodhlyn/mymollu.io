@@ -18,14 +18,14 @@ export function userStateKeyById(id: number) {
   return `student-states:id:${id}`;
 }
 
-export async function getUserStudentStates(env: Env, username: string, showDefault: boolean = false): Promise<StudentState[] | null> {
+export async function getUserStudentStates(env: Env, username: string, includeUnreleased: boolean = false): Promise<StudentState[] | null> {
   const sensei = await getSenseiByUsername(env, username);
   const rawStates = await env.KV_USERDATA.get(sensei ? userStateKeyById(sensei.id) : userStateKey(username));
-  if (!rawStates && !showDefault) {
+  if (!rawStates && !includeUnreleased) {
     return null;
   }
 
-  const allStudents = await getStudentsMap(env);
+  const allStudents = await getStudentsMap(env, includeUnreleased);
   const states = (rawStates ? JSON.parse(rawStates) : []) as StudentState[];
   return Object.entries(allStudents).map(([studentId, student]) => {
     const state = states.find((state) => state.student.id === studentId);

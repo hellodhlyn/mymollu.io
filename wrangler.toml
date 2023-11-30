@@ -12,7 +12,7 @@ compatibility_date = "2023-08-15"
   bucket = "./public"
 
 [build]
-  command = "yarn build"
+  command = "yarn worker:build"
 
 [vars]
 HOST = "https://mollulog.net"

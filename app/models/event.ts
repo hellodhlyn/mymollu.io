@@ -9,7 +9,7 @@ export type Pickup = {
 export type PickupEvent = {
   id: string;
   name: string;
-  type: "event" | "mini_event" | "immortal_event" | "pickup" | "fes" | "campaign" | "exercise" | "main_story" | "collab";
+  type: "event" | "mini_event" | "guide_mission" | "immortal_event" | "pickup" | "fes" | "campaign" | "exercise" | "main_story" | "collab";
   rerun?: boolean;
   since: string;
   until: string;
@@ -68,6 +68,7 @@ export const eventLabelsMap = {
   "event": "이벤트",
   "immortal_event": "이벤트 상설화",
   "mini_event": "미니 이벤트",
+  "guide_mission": "가이드 미션",
   "collab": "콜라보 이벤트",
   "fes": "페스 이벤트",
   "pickup": "모집",
