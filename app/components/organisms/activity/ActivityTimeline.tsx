@@ -18,7 +18,7 @@ function ActivityItem({ activity }: { activity: UserActivity }) {
   if (activity.activityType === "following") {
     const { followee } = activity.following!;
     return (
-      <div className="p-4 bg-neutral-100 rounded-lg">
+      <div className="my-2 p-4 bg-neutral-100 rounded-lg">
         <div className="flex items-center">
           <ProfileImage studentId={followee.profileStudentId} />
           <p className="ml-2">
@@ -44,13 +44,17 @@ export default function ActivityTimeline({ activities, showProfile }: ActivityTi
     )
   }
 
+  let previousUsername = "";
   return (
     <>
       {activities.map((activity) => {
         const eventAt = dayjs(activity.eventAt).fromNow();
+        const repeatedUser = previousUsername === activity.user.username;
+        previousUsername = activity.user.username;
+
         return (
-          <div key={`activity-${activity.uid}`} className="my-4">
-            {showProfile && (
+          <div key={`activity-${activity.uid}`}>
+            {(showProfile && !repeatedUser) && (
               <div className="mt-8 mb-2 px-2 flex items-center">
                 <Link to={`/@${activity.user.username}`}>
                   <div className="flex items-center hover:underline cursor-pointer">
