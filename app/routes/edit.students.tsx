@@ -30,7 +30,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
 
   return json<LoaderData>({
     currentUsername: sensei.username,
-    states: (await getUserStudentStates(env, sensei.username, true))!,
+    states: (await getUserStudentStates(env, sensei.username))!,
   });
 };
 
