@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({ context, params }) => {
   const states = await getUserStudentStates(env, username, true);
   return json<LoaderData>({
     states: states!,
-    parties: await getUserParties(env, username),
+    parties: (await getUserParties(env, username)).reverse(),
   });
 };
 

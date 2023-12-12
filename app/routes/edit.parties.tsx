@@ -29,7 +29,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
 
   return json<LoaderData>({
     states: (await getUserStudentStates(env, sensei.username, true))!,
-    parties: await getUserParties(env, sensei.username),
+    parties: (await getUserParties(env, sensei.username)).reverse(),
   });
 };
 
