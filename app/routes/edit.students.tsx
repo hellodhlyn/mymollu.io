@@ -11,6 +11,7 @@ import { StudentCards } from "~/components/molecules/student";
 import { useFetcher } from "react-router-dom";
 import { useToast } from "~/components/atoms/notification";
 import { getAuthenticator } from "~/auth/authenticator.server";
+import { Callout } from "~/components/atoms/typography";
 
 export const meta: MetaFunction = () => [
   { title: "모집 학생 관리 | MolluLog" },
@@ -78,12 +79,19 @@ export default function EditPage() {
     setAllStatesToFilter(states);
   }, [states])
 
+  const noOwned = states.every(({ owned }) => !owned);
+
   return (
     <>
       {StateFilter}
 
       <div className="my-8">
         <p className="font-bold text-xl my-4">모집 학생 관리</p>
+        {noOwned && (
+          <Callout className="my-4">
+            <p>학생을 클릭하여 모집한 학생을 등록할 수 있어요</p>
+          </Callout>
+        )}
         <StudentCards
           cardProps={filteredStates.map(({ student, owned }) => ({
               id: student.id,

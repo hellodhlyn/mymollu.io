@@ -61,15 +61,3 @@ export async function updateOrCreateParty(env: Env, sensei: Sensei, fields: Part
   updatedParties = updatedParties.filter((party) => party !== null);
   await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(updatedParties));
 }
-
-export async function migrateParties(env: Env, username: string, id: number) {
-  const rawStates = await env.KV_USERDATA.get(partyKey(username));
-  if (rawStates && !(await env.KV_USERDATA.get(partyKeyById(id)))) {
-    const states = JSON.parse(rawStates) as Party[];
-    const newStates = states.map((state) => ({ ...state, uid: Math.random().toString(36).slice(2) }));
-    await env.KV_USERDATA.put(partyKeyById(id), JSON.stringify(newStates));
-    // TODO: active when code become stable
-    // await env.KV_USERDATA.delete(partyKey(username));
-  }
-}
- 

@@ -34,7 +34,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     party = (await getUserParties(env, sensei.username)).find((p) => p.uid === params.id) ?? null;
   }
 
-  let states = await getUserStudentStates(env, sensei.username, true);
+  let states = await getUserStudentStates(env, sensei.username);
   return json<LoaderData>({
     currentUsername: sensei.username,
     states: states!,

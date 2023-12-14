@@ -1,7 +1,7 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
-import { useFetcher, useLoaderData } from "@remix-run/react";
-import { SubTitle } from "~/components/atoms/typography";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { Callout, SubTitle } from "~/components/atoms/typography";
 import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
 import type { Env } from "~/env.server";
@@ -102,8 +102,17 @@ export default function UserIndex() {
     }
   });
 
+  const isNewbee = username === currentUsername && states.every(({ owned }) => !owned);
+
   return (
     <div className="my-8">
+      {isNewbee && (
+        <Callout className="my-4 flex">
+          <span className="grow">✨ 모집한 학생을 등록해보세요.</span>
+          <Link to="/edit/students" className="ml-1 underline">등록하러 가기 →</Link>
+        </Callout>
+      )}
+
       <div className="my-8">
         <ProfileCard
           username={username}

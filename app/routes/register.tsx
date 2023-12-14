@@ -6,9 +6,7 @@ import { updateSensei } from "~/models/sensei";
 import type { Student } from "~/models/student";
 import { getStudents } from "~/models/student";
 import type { Env } from "~/env.server";
-import { migrateStates } from "~/models/studentState";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
-import { migrateParties } from "~/models/party";
 import { ProfileEditor } from "~/components/organisms/profile";
 
 export const meta: MetaFunction = () => [
@@ -53,11 +51,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     return json<ActionData>({ error: { username: "4~20글자의 영숫자 및 _ 기호만 사용 가능합니다." } })
   }
 
-  await Promise.all([
-    updateSensei(env, sensei.id, sensei),
-    migrateStates(env, sensei.username, sensei.id),
-    migrateParties(env, sensei.username, sensei.id),
-  ]);
+  await updateSensei(env, sensei.id, sensei);
 
   const { getSession, commitSession } = sessionStorage(env);
   const session = await getSession(request.headers.get("cookie"));
