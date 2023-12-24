@@ -17,7 +17,7 @@
 
 ```bash
 tofu -chdir=deploy/assets init
-yarn assets:build
-yarn assets:plan
-yarn assets:deploy
+npm run assets:build
+npm run assets:plan
+npm run assets:deploy
 ```
