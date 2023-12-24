@@ -7,6 +7,7 @@ import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import type { Party } from "~/models/party";
 import { getUserParties } from "~/models/party";
+import { RaidEvent, getRaids } from "~/models/raid";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 
@@ -23,6 +24,7 @@ type LoaderData = {
   me: boolean;
   states: StudentState[];
   parties: Party[];
+  raids: RaidEvent[];
 }
 
 export const loader: LoaderFunction = async ({ context, request, params }) => {
@@ -36,15 +38,17 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
   const currentUsername = await getAuthenticator(env).isAuthenticated(request);
   const parties = (await getUserParties(env, username)).reverse();
   const states = await getUserStudentStates(env, username, true);
+  const raids = await getRaids(env, false);
   return json<LoaderData>({
     me: username === currentUsername?.username,
     states: states!,
     parties,
+    raids,
   });
 };
 
 export default function UserPartyPage() {
-  const { me, states, parties } = useLoaderData<LoaderData>();
+  const { me, states, parties, raids } = useLoaderData<LoaderData>();
   const isNewbee = me && parties.length === 0;
 
   return (
@@ -61,7 +65,7 @@ export default function UserPartyPage() {
         </p>
       )}
       {parties.map((party) => (
-        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} />
+        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} raids={raids} />
       ))}
     </div>
   );

@@ -20,7 +20,7 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ params, context }) => {
   const env = context.env as Env;
 
-  const allEvent = getAllEvents();
+  const allEvent = await getAllEvents(env);
   let event: PickupEvent | undefined;
   if (!params.id || !(event = allEvent.find(({ id }) => id === params.id)) || !event.hasDetail) {
     throw new Response(

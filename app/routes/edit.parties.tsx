@@ -8,6 +8,7 @@ import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import type { Party } from "~/models/party";
 import { getUserParties, removePartyByUid } from "~/models/party";
+import { RaidEvent, getRaids } from "~/models/raid";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 
@@ -18,6 +19,7 @@ export const meta: MetaFunction = () => [
 type LoaderData = {
   states: StudentState[];
   parties: Party[];
+  raids: RaidEvent[];
 }
 
 export const loader: LoaderFunction = async ({ context, request }) => {
@@ -30,6 +32,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   return json<LoaderData>({
     states: (await getUserStudentStates(env, sensei.username, true))!,
     parties: (await getUserParties(env, sensei.username)).reverse(),
+    raids: await getRaids(env, false),
   });
 };
 
@@ -46,7 +49,7 @@ export const action: ActionFunction = async ({ context, request }) => {
 };
 
 export default function EditParties() {
-  const { states, parties } = useLoaderData<LoaderData>();
+  const { states, parties, raids } = useLoaderData<LoaderData>();
   return (
     <div className="my-8">
       <SubTitle text="편성 관리" />
@@ -62,7 +65,7 @@ export default function EditParties() {
       </Link>
 
       {parties.map((party) => (
-        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} editable />
+        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} raids={raids} editable />
       ))}
     </div>
   );

@@ -1,6 +1,7 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import { Env } from "~/env.server";
 import { getAllEvents } from "~/models/event";
 
 type SitemapItem = {
@@ -12,8 +13,10 @@ type SitemapItem = {
 
 const HOST = "https://mollulog.net";
 
-export const loader: LoaderFunction = async () => {
-  const events = getAllEvents().filter((event) => event.hasDetail).reverse();
+export const loader: LoaderFunction = async ({ context }) => {
+  const env = context.env as Env;
+
+  const events = (await getAllEvents(env)).filter((event) => event.hasDetail).reverse();
   const now = dayjs();
   const items: SitemapItem[] = events.map((event) => {
     const until = dayjs(event.until);

@@ -12,7 +12,7 @@ import { getFuturePlan, setFuturePlan } from "~/models/future";
 import type { StudentMap } from "~/models/student";
 import { getStudentsMap } from "~/models/student";
 import type { RaidEvent } from "~/models/raid";
-import { getAllTotalAssaults } from "~/models/raid";
+import { getRaids } from "~/models/raid";
 import { getAuthenticator } from "~/auth/authenticator.server";
 
 export const meta: MetaFunction = () => {
@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   const env = context.env as Env;
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
 
-  const events = getFutureEvents();
+  const events = await getFutureEvents(env);
   const eventStudentIds = events.flatMap(({ pickups }) => (
     pickups.map((student) => student.studentId)
   ));
@@ -51,7 +51,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   return json<LoaderData>({
     signedIn,
     events,
-    totalAssaults: getAllTotalAssaults(),
+    totalAssaults: await getRaids(env),
     students,
     futurePlan,
   });

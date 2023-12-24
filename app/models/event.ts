@@ -1,4 +1,5 @@
-import events from "~/statics/events.json";
+import { Env } from "~/env.server";
+import { fetchStaticData } from "./statics";
 
 export type Pickup = {
   studentId: string;
@@ -30,7 +31,8 @@ export type PickupEvent = {
 
 const detailedTypes = ["event", "immortal_event", "main_story"];
 
-export function getAllEvents(): PickupEvent[] {
+export async function getAllEvents(env: Env): Promise<PickupEvent[]> {
+  const events = await fetchStaticData<PickupEvent[]>(env, "events.json") || [];
   return events.map((event) => ({
     ...event,
     type: event.type as PickupEvent["type"],
@@ -39,8 +41,9 @@ export function getAllEvents(): PickupEvent[] {
   }));
 }
 
-export function getFutureEvents(): PickupEvent[] {
-  return getAllEvents().filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
+export async function getFutureEvents(env: Env): Promise<PickupEvent[]> {
+  const allEvents = await getAllEvents(env);
+  return allEvents.filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
 }
 
 export function pickupLabel({ type, rerun }: Pick<Pickup, "type" | "rerun">): string {

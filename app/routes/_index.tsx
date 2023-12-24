@@ -10,7 +10,7 @@ import type { Env } from "~/env.server";
 import type { PickupEvent } from "~/models/event";
 import { getFutureEvents } from "~/models/event";
 import type { RaidEvent } from "~/models/raid";
-import { getAllTotalAssaults } from "~/models/raid";
+import { getRaids } from "~/models/raid";
 import type { StudentMap } from "~/models/student";
 import { getStudentsMap } from "~/models/student";
 import type { UserActivity } from "~/models/user-activity";
@@ -37,8 +37,8 @@ export const loader: LoaderFunction = async ({ context }) => {
   const filterActiveEvent: (({ since, until }: { since: string, until: string }) => boolean) =
     ({ since, until }) => (dayjs(since).isBefore(now) && dayjs(until).isAfter(now));
 
-  const events = getFutureEvents().filter(filterActiveEvent);
-  const raids = getAllTotalAssaults().filter(filterActiveEvent);
+  const events = (await getFutureEvents(env)).filter(filterActiveEvent);
+  const raids = (await getRaids(env)).filter(filterActiveEvent);
   const pickupStudentIds = events.flatMap((event) => event.pickups.map((pickup) => pickup.studentId));
   const students = await getStudentsMap(env, true, pickupStudentIds);
 

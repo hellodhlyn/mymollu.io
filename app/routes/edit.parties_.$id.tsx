@@ -7,7 +7,7 @@ import type { Env } from "~/env.server";
 import type { Party } from "~/models/party";
 import { updateOrCreateParty, getUserParties } from "~/models/party";
 import type { RaidEvent} from "~/models/raid";
-import { getAllTotalAssaults } from "~/models/raid";
+import { getRaids } from "~/models/raid";
 import type { StudentState } from "~/models/studentState";
 import { getUserStudentStates } from "~/models/studentState";
 
@@ -38,7 +38,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
   return json<LoaderData>({
     currentUsername: sensei.username,
     states: states!,
-    raids: getAllTotalAssaults(false),
+    raids: await getRaids(env, false),
     party,
   });
 };

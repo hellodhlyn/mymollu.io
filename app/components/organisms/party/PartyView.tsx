@@ -3,18 +3,19 @@ import dayjs from "dayjs";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import type { Party } from "~/models/party"
-import { getAllTotalAssaults, raidTerrainText, raidTypeText } from "~/models/raid";
+import { RaidEvent, getRaids, raidTerrainText, raidTypeText } from "~/models/raid";
 import type { StudentState } from "~/models/studentState";
 
 type PartyViewProps = {
   party: Party;
   studentStates: StudentState[];
   editable?: boolean;
+  raids: RaidEvent[];
 };
 
-export default function PartyView({ party, studentStates, editable }: PartyViewProps) {
+export default function PartyView({ party, studentStates, editable, raids }: PartyViewProps) {
   const units = Array.isArray(party.studentIds[0]) ? (party.studentIds as string[][]) : [party.studentIds as string[]];
-  const raid = party.raidId ? getAllTotalAssaults(false).find(({ id }) => party.raidId === id) : null;
+  const raid = party.raidId ? raids.find(({ id }) => party.raidId === id) : null;
   return (
     <div className="my-4 px-4 md:px-6 py-2 rounded-lg bg-neutral-100">
       <SubTitle text={party.name} />

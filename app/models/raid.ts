@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import type { Student } from "./student";
-import raidData from "~/statics/raids.json";
+import { Env } from "~/env.server";
+import { fetchStaticData } from "./statics";
 
 export type RaidEvent = {
   id: string;
@@ -15,7 +16,8 @@ export type RaidEvent = {
   imageUrl: string;
 };
 
-export function getAllTotalAssaults(filterPrevious: boolean = true): RaidEvent[] {
+export async function getRaids(env: Env, filterPrevious: boolean = true): Promise<RaidEvent[]> {
+  const raidData = await fetchStaticData<RaidEvent[]>(env, "raids.json") || [];
   return raidData
     .filter(({ until }) => !filterPrevious || dayjs(until).isAfter(dayjs()))
     .map((row) => ({

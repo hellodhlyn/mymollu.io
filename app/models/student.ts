@@ -1,4 +1,5 @@
 import type { Env } from "~/env.server";
+import { fetchStaticData, storeStaticData } from "./statics";
 
 export type School = "abydos" | "gehenna" | "millennium" | "trinity" | "hyakkiyako"
   | "shanhaijing" | "redwinter" | "arius" | "srt" | "valkyrie" | "others";
@@ -25,11 +26,11 @@ export type StudentMap = { [id: string]: Student };
 const studentDataKey = "students.json";
 
 export async function storeStudents(env: Env, students: Student[]) {
-  await env.KV_STATIC_DATA.put(studentDataKey, JSON.stringify(students));
+  await storeStaticData(env, studentDataKey, students);
 }
 
 export async function getStudents(env: Env, includeUnreleased: boolean = false): Promise<Student[]> {
-  const all = (JSON.parse(await env.KV_STATIC_DATA.get(studentDataKey) || "[]") as Student[]);
+  const all = await fetchStaticData<Student[]>(env, studentDataKey) || [];
   if (includeUnreleased) {
     return all;
   } else {
