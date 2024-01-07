@@ -1,4 +1,4 @@
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { fetchStaticData } from "./statics";
 
 export type Pickup = {

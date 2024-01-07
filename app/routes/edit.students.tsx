@@ -2,8 +2,8 @@ import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cl
 import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { StudentState } from "~/models/studentState";
-import { getUserStudentStates, updateStudentStates } from "~/models/studentState";
+import type { StudentState } from "~/models/student-state";
+import { getUserStudentStates, updateStudentStates } from "~/models/student-state";
 import { FloatingButton } from "~/components/atoms/form";
 import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";

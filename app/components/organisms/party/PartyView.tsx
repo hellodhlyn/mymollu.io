@@ -3,8 +3,9 @@ import dayjs from "dayjs";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import type { Party } from "~/models/party"
-import { RaidEvent, getRaids, raidTerrainText, raidTypeText } from "~/models/raid";
-import type { StudentState } from "~/models/studentState";
+import type { RaidEvent} from "~/models/raid";
+import { raidTerrainText, raidTypeText } from "~/models/raid";
+import type { StudentState } from "~/models/student-state";
 
 type PartyViewProps = {
   party: Party;

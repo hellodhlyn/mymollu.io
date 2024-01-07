@@ -7,9 +7,10 @@ import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import type { Party } from "~/models/party";
 import { getUserParties } from "~/models/party";
-import { RaidEvent, getRaids } from "~/models/raid";
-import type { StudentState } from "~/models/studentState";
-import { getUserStudentStates } from "~/models/studentState";
+import type { RaidEvent } from "~/models/raid";
+import { getRaids } from "~/models/raid";
+import type { StudentState } from "~/models/student-state";
+import { getUserStudentStates } from "~/models/student-state";
 
 export const meta: MetaFunction = ({ params }) => {
   return [

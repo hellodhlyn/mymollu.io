@@ -8,8 +8,8 @@ import type { Party } from "~/models/party";
 import { updateOrCreateParty, getUserParties } from "~/models/party";
 import type { RaidEvent} from "~/models/raid";
 import { getRaids } from "~/models/raid";
-import type { StudentState } from "~/models/studentState";
-import { getUserStudentStates } from "~/models/studentState";
+import type { StudentState } from "~/models/student-state";
+import { getUserStudentStates } from "~/models/student-state";
 
 export const meta: MetaFunction = () => [
   { title: "편성 관리 | MolluLog" },

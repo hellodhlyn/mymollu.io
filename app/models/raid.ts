@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import type { Student } from "./student";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { fetchStaticData } from "./statics";
 
 export type RaidEvent = {

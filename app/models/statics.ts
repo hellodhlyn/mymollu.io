@@ -1,4 +1,4 @@
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 
 export async function fetchStaticData<T>(env: Env, name: string): Promise<T | null> {
   const body = await env.KV_STATIC_DATA.get(name);

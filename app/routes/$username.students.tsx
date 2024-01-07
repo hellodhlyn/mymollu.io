@@ -1,8 +1,8 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
-import type { StudentState} from "~/models/studentState";
-import { getUserStudentStates } from "~/models/studentState";
+import type { StudentState } from "~/models/student-state";
+import { getUserStudentStates } from "~/models/student-state";
 import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 import { StudentCards } from "~/components/molecules/student";

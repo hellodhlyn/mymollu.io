@@ -1,5 +1,5 @@
 import { SpecEdit } from "~/components/molecules/editor";
-import type { StudentState } from "~/models/studentState";
+import type { StudentState } from "~/models/student-state";
 
 type SpecEditorProps = {
   states: StudentState[];

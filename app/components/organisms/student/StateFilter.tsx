@@ -3,7 +3,7 @@ import type { Dispatch, SetStateAction} from "react";
 import { useEffect, useState } from "react";
 import { FilterButtons } from "~/components/molecules/student";
 import type { Student } from "~/models/student";
-import type { StudentState } from "~/models/studentState";
+import type { StudentState } from "~/models/student-state";
 
 type Filter = {
   minimumTier: number;

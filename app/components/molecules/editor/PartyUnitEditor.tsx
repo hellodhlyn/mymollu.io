@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { StudentCards } from "~/components/molecules/student";
-import type { StudentState } from "~/models/studentState";
+import type { StudentState } from "~/models/student-state";
 
 type PartyUnitEditorProps = {
   index: number;

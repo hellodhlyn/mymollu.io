@@ -14,7 +14,7 @@
     "static:push": "find ./app/statics -type f -exec sh -c 'echo {} && wrangler kv:key put --binding KV_STATIC_DATA --path {} $(basename {})' \\;",
     "static:push:dev": "find ./app/statics -type f -exec sh -c 'echo {} && wrangler kv:key put --binding KV_STATIC_DATA --local --path {} $(basename {})' \\;",
     "typecheck": "tsc",
-    "lint": "eslint app/"
+    "lint": "eslint --fix app/"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.0",
