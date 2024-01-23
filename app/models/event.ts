@@ -3,6 +3,7 @@ import { fetchStaticData } from "./statics";
 
 export type Pickup = {
   studentId: string;
+  name?: string;
   rerun: boolean;
   type: "usual" | "limited" | "given" | "fes";
 };

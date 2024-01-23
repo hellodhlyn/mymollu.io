@@ -20,7 +20,7 @@ export default function StudentCards({ cardProps, mobileGrid, onSelect }: Studen
     <div className={`grid ${gridClass} md:grid-cols-8 gap-1 sm:gap-2`}>
       {cardProps.map((prop) => (
         <div
-          key={`student-card-${prop.id}`}
+          key={`student-card-${prop.id}${prop.name ? `-${prop.name}` : ""}`}
           className={selectable ? "hover:scale-105 cursor-pointer transition" : ""}
           onClick={() => { if (selectable) { onSelect(prop.id); } } }
         >

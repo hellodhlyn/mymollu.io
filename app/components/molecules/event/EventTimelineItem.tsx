@@ -57,10 +57,18 @@ export default function EventTimelineItem(event: EventProps) {
       <StudentCards
         mobileGrid={5}
         cardProps={event.pickups.map((pickup) => {
-          const student = event.students[pickup.studentId];
           const label = pickupLabel(pickup);
           const colorClass = pickup.rerun ? "text-white" : "text-yellow-500";
+          if (pickup.studentId === "-1") {
+            return {
+              id: pickup.studentId,
+              name: pickup.name,
+              selected: false,
+              label: <span className={`${colorClass}`}>{label}</span>,
+            };
+          }
 
+          const student = event.students[pickup.studentId];
           return {
             id: student.id,
             name: student.name,

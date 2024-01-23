@@ -79,11 +79,21 @@ export default function EventDetail() {
         <div className="my-8">
           <SubTitle text="픽업 학생" />
           <StudentCards
-            cardProps={event.pickups.map((pickup) => ({
-              id: pickup.studentId,
-              label: (<span className={pickup.rerun ? "text-white" : "text-yellow-500"}>{pickupLabel(pickup)}</span>),
-              name: pickupStudents[pickup.studentId]!.name,
-            }))}
+            cardProps={event.pickups.map((pickup) => {
+              if (pickup.studentId === "-1") {
+                return {
+                  id: pickup.studentId,
+                  label: (<span className={pickup.rerun ? "text-white" : "text-yellow-500"}>{pickupLabel(pickup)}</span>),
+                  name: pickup.name,
+                };
+              } else {
+                return {
+                  id: pickup.studentId,
+                  label: (<span className={pickup.rerun ? "text-white" : "text-yellow-500"}>{pickupLabel(pickup)}</span>),
+                  name: pickupStudents[pickup.studentId]!.name,
+                };
+              }
+            })}
             mobileGrid={5}
           />
         </div>
