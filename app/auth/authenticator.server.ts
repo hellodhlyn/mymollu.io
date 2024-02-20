@@ -24,7 +24,7 @@ export function sessionStorage(env: Env): SessionStorage {
       secure: true,
       secrets: [env.SESSION_SECRET],
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 30 * 24 * 60 * 60,
     },
   });
   return _sessionStorage;
