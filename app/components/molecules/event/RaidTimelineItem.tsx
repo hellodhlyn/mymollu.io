@@ -1,8 +1,10 @@
 import type { RaidEvent} from "~/models/raid";
 import { raidTerrainText, raidTypeText } from "~/models/raid";
+import { TimelineItemHeader } from "./TimelineItemHeader";
+import dayjs from "dayjs";
 
 export default function RaidTimelineItem(
-  { name, type, terrain, attackType, defenseType, imageUrl }: RaidEvent,
+  { name, type, terrain, attackType, defenseType, imageUrl, until }: RaidEvent,
 ) {
   let attackTypeText = "";
   let attackTypeClass = "";
@@ -30,10 +32,11 @@ export default function RaidTimelineItem(
 
   return (
     <div className="py-2">
-      <p className="md:my-1 text-sm text-neutral-500">
-        {raidTypeText(type)}
-      </p>
-      <p className="mb-2 font-bold text-lg md:text-xl">{name}</p>
+      <TimelineItemHeader
+        title={name}
+        label={raidTypeText(type)}
+        remainingDays={dayjs(until).diff(dayjs(), "day")}
+      />
 
       <div className="relative md:w-3/5">
         <img

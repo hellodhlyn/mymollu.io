@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import dayjs from "dayjs";
 import { NavArrowRight } from "iconoir-react";
 import { MultilineText } from "~/components/atoms/typography";
 import { MemoEditor } from "~/components/molecules/editor";
@@ -6,6 +7,7 @@ import { StudentCards } from "~/components/molecules/student";
 import type { Pickup, PickupEvent} from "~/models/event";
 import { eventLabelsMap, pickupLabel } from "~/models/event";
 import type { StudentMap } from "~/models/student";
+import { TimelineItemHeader } from "./TimelineItemHeader";
 
 type EventProps = {
   id: string;
@@ -15,6 +17,7 @@ type EventProps = {
   pickups: Pickup[];
   students: StudentMap;
   hasDetail: boolean;
+  until: string;
 
   selectedStudentIds?: string[];
   onSelect?: (studentId: string) => void;
@@ -31,28 +34,15 @@ export default function EventTimelineItem(event: EventProps) {
   }
   eventLabelTexts.push(eventLabelsMap[event.type]);
 
+
   return (
     <div className="py-2">
-      <p className="md:my-1 text-sm text-neutral-500">
-        {eventLabelTexts.join(" ")}
-      </p>
-
-      {event.hasDetail ?
-        (
-          <Link to={`/events/${event.id}`} >
-            <div className="mb-2 flex items-end group">
-              <MultilineText
-                className="font-bold text-lg md:text-xl group-hover:underline cursor-pointer"
-                texts={event.name.split("\n")}
-              />
-              <NavArrowRight className="h-4 w-4 mb-1.5" strokeWidth={2} />
-            </div>
-          </Link>
-        ) :
-        (
-          <MultilineText className="mb-2 font-bold text-lg md:text-xl" texts={event.name.split("\n")} />
-        )
-      }
+     <TimelineItemHeader
+        title={event.name}
+        label={eventLabelTexts.join(" ")}
+        remainingDays={dayjs(event.until).diff(dayjs(), "day")}
+        link={event.hasDetail ? `/events/${event.id}` : undefined}
+     />
 
       <StudentCards
         mobileGrid={5}

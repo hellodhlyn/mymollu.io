@@ -68,7 +68,7 @@ export default function FutureTimeline({
         return (
           <div key={item.id} className="relative border-l md:ml-2 border-neutral-200 border-opacity-75">
             {showDivider && (
-              <div className="ml-4 flex items-center pt-4">
+              <div className="ml-4 flex items-center pt-8">
                 <div className="absolute w-3 h-3 -left-1.5 border border-1 border-white bg-neutral-500 rounded-full " />
                 <p className="py-2 text-neutral-500 text-sm font-bold">
                   {dividerText.join(" ")}
