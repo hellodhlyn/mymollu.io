@@ -31,7 +31,7 @@ export const meta: MetaFunction = () => {
 type LoaderData = {
   signedIn: boolean;
   events: PickupEvent[];
-  totalAssaults: RaidEvent[];
+  raids: RaidEvent[];
   students: StudentMap;
   futurePlan: FuturePlan | null;
 };
@@ -51,7 +51,7 @@ export const loader: LoaderFunction = async ({ context, request }) => {
   return json<LoaderData>({
     signedIn,
     events,
-    totalAssaults: await getRaids(env),
+    raids: await getRaids(env),
     students,
     futurePlan,
   });
@@ -79,7 +79,7 @@ export const action: ActionFunction = async ({ context, request }) => {
 
 export default function Futures() {
   const loaderData = useLoaderData<LoaderData>();
-  const { signedIn, events, totalAssaults, students } = loaderData;
+  const { signedIn, events, raids, students } = loaderData;
   const fetcher = useFetcher();
 
   const [plan, setPlan] = useState<FuturePlan>(loaderData.futurePlan ?? { studentIds: [] });
@@ -110,7 +110,7 @@ export default function Futures() {
 
       <FutureTimeline
         events={events}
-        totalAssaults={totalAssaults}
+        raids={raids}
         students={students}
         plan={plan}
         onSelectStudent={signedIn ? (studentId) => {

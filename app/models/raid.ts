@@ -5,12 +5,12 @@ import { fetchStaticData } from "./statics";
 
 export type RaidEvent = {
   id: string;
-  type: "total-assault" | "elimination";
+  type: "total-assault" | "elimination" | "unlimit";
   name: string;
   boss: string;
-  terrain: "indoor" | "outdoor" | "street";
-  attackType: Student["attackType"];
-  defenseType: Student["defenseType"] | null;
+  terrain?: "indoor" | "outdoor" | "street";
+  attackType?: Student["attackType"];
+  defenseType?: Student["defenseType"] | null;
   since: string;
   until: string;
   imageUrl: string;
@@ -36,15 +36,16 @@ const terrainText = {
   "street": "시가지",
 };
 
-export function raidTerrainText(terrain: RaidEvent["terrain"]): string {
+export function raidTerrainText(terrain: NonNullable<RaidEvent["terrain"]>): string {
   return terrainText[terrain];
 }
 
 const typeText = {
   "total-assault": "총력전",
   "elimination": "대결전",
+  "unlimit": "제약해제결전",
 };
 
-export function raidTypeText(type: RaidEvent["type"]): string {
+export function raidTypeText(type: NonNullable<RaidEvent["type"]>): string {
   return typeText[type];
 }

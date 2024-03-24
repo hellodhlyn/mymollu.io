@@ -8,7 +8,7 @@ import type { RaidEvent } from "~/models/raid";
 
 type EventsProps = {
   events: PickupEvent[];
-  totalAssaults: RaidEvent[];
+  raids: RaidEvent[];
   students: StudentMap;
   plan?: FuturePlan;
 
@@ -19,20 +19,21 @@ type EventsProps = {
 type TimelineItem = {
   id: string;
   since: Dayjs;
+  until: Dayjs;
   event?: PickupEvent;
-  totalAssault?: RaidEvent;
+  raid?: RaidEvent;
 };
 
 export default function FutureTimeline({
-  events, totalAssaults, students, plan, onSelectStudent, onMemoUpdate,
+  events, raids, students, plan, onSelectStudent, onMemoUpdate,
 }: EventsProps) {
   const timelineItems: TimelineItem[] = [
-    ...totalAssaults.map((e) => ({ id: e.id, since: dayjs(e.since), totalAssault: e })),
-    ...events.map((e) => ({ id: e.id, since: dayjs(e.since), event: e })),
+    ...raids.map((e) => ({ id: e.id, since: dayjs(e.since), until: dayjs(e.until), raid: e })),
+    ...events.map((e) => ({ id: e.id, since: dayjs(e.since), until: dayjs(e.until), event: e })),
   ].sort((a, b) => dayjs(a.since).diff(b.since));
 
   const lastItem = timelineItems[timelineItems.length - 1];
-  const eventUntil = dayjs((lastItem.event ?? lastItem.totalAssault)!.until);
+  const eventUntil = dayjs((lastItem.event ?? lastItem.raid)!.until);
   let prevSince = timelineItems[0].since;
   const now = dayjs();
   return (
@@ -76,7 +77,7 @@ export default function FutureTimeline({
               </div>
             )}
             <div className="ml-4 md:ml-6">
-              {item.totalAssault && <RaidTimelineItem {...item.totalAssault} />}
+              {item.raid && <RaidTimelineItem {...item.raid} />}
               {item.event && (
                 <EventTimelineItem
                   {...item.event}
