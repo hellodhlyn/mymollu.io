@@ -31,6 +31,17 @@ type Filter = {
   raid: boolean;
 };
 
+function dividerText(since: Dayjs): string {
+  const texts = [since.format("YYYY-MM-DD")];
+  const dDay = since.startOf("day").diff(dayjs().startOf("day"), "day");
+  if (0 < dDay && dDay <= 30) {
+    texts.push(`(D-${dDay})`);
+  } else if (dDay === 0) {
+    texts.push("(D-Day)");
+  }
+  return texts.join(" ");
+}
+
 export default function FutureTimeline({
   events, raids, students, plan, onSelectStudent, onMemoUpdate,
 }: EventsProps) {
@@ -89,8 +100,8 @@ export default function FutureTimeline({
         </div>
       ) : (
         <div className="relative md:ml-2 flex items-center">
-          <div className="absolute w-3 h-3 bg-neutral-500 rounded-full -left-1.5 border border-1 border-white" />
-          <p className="ml-4 text-neutral-500 font-bold">진행 예정</p>
+          <div className="absolute w-3 h-3 -left-1.5 border border-1 border-white bg-neutral-500 rounded-full" />
+          <p className="ml-4 text-neutral-500 text-sm font-bold">{dividerText(timelineItems[0].since)}</p>
         </div>
       )}
       <div className="h-2 border-l md:ml-2 border-neutral-200 border-opacity-75" />
@@ -105,21 +116,13 @@ export default function FutureTimeline({
           prevSince = item.since;
         }
 
-        const dividerText = [item.since.format("YYYY-MM-DD")];
-        const dDay = item.since.startOf("day").diff(dayjs().startOf("day"), "day");
-        if (0 < dDay && dDay <= 30) {
-          dividerText.push(`(D-${dDay})`);
-        } else if (dDay === 0) {
-          dividerText.push("(D-Day)");
-        }
-
         return (
           <div key={item.id} className="relative border-l md:ml-2 border-neutral-200 border-opacity-75">
             {showDivider && (
               <div className="ml-4 flex items-center pt-8">
-                <div className="absolute w-3 h-3 -left-1.5 border border-1 border-white bg-neutral-500 rounded-full " />
+                <div className="absolute w-3 h-3 -left-1.5 border border-1 border-white bg-neutral-500 rounded-full" />
                 <p className="py-2 text-neutral-500 text-sm font-bold">
-                  {dividerText.join(" ")}
+                  {dividerText(item.since)}
                 </p>
               </div>
             )}
