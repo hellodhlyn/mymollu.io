@@ -4,7 +4,7 @@ import { TimelineItemHeader } from "./TimelineItemHeader";
 import dayjs from "dayjs";
 
 export default function RaidTimelineItem(
-  { name, type, terrain, attackType, defenseType, imageUrl, until }: RaidEvent,
+  { name, type, terrain, attackType, defenseType, imageUrl, since, until }: RaidEvent,
 ) {
   let attackTypeText = "";
   let attackTypeClass = "";
@@ -35,15 +35,16 @@ export default function RaidTimelineItem(
       <TimelineItemHeader
         title={name}
         label={raidTypeText(type)}
-        remainingDays={dayjs(until).diff(dayjs(), "day")}
+        eventSince={dayjs(since)}
+        eventUntil={dayjs(until)}
       />
 
-      {(type === "total-assault" || type === "elimination") && (
-        <div className="relative md:w-3/5">
-          <img
-            className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
-            src={imageUrl} alt={`총력전 보스 ${name}`} loading="lazy"
-          />
+      <div className="relative md:w-3/5">
+        <img
+          className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
+          src={imageUrl} alt={`총력전 보스 ${name}`} loading="lazy"
+        />
+        {(type === "total-assault" || type === "elimination") && (
           <div className="absolute bottom-0 right-0 flex gap-x-1 p-1 text-white text-sm">
             <span className="px-2 py-1 rounded-lg shadow-lg bg-gradient-to-r from-neutral-900 to-neutral-700">
               {raidTerrainText(terrain!)}
@@ -57,8 +58,8 @@ export default function RaidTimelineItem(
               </span>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

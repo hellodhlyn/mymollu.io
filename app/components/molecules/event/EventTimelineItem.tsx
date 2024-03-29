@@ -17,6 +17,7 @@ type EventProps = {
   pickups: Pickup[];
   students: StudentMap;
   hasDetail: boolean;
+  since: string;
   until: string;
 
   selectedStudentIds?: string[];
@@ -40,7 +41,8 @@ export default function EventTimelineItem(event: EventProps) {
      <TimelineItemHeader
         title={event.name}
         label={eventLabelTexts.join(" ")}
-        remainingDays={dayjs(event.until).diff(dayjs(), "day")}
+        eventSince={dayjs(event.since)}
+        eventUntil={dayjs(event.until)}
         link={event.hasDetail ? `/events/${event.id}` : undefined}
      />
 

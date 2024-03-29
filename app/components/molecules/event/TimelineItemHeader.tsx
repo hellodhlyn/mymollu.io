@@ -1,22 +1,27 @@
 import { Link } from "@remix-run/react";
+import dayjs, { Dayjs } from "dayjs";
 import { NavArrowRight } from "iconoir-react";
 import { MultilineText } from "~/components/atoms/typography";
 
 type TimelineItemHeaderProps = {
   title: string;
   label: string;
-  remainingDays: number;
+  eventSince: Dayjs;
+  eventUntil: Dayjs;
   link?: string;
 };
 
-export function TimelineItemHeader({ title, label, remainingDays, link }: TimelineItemHeaderProps) {
+export function TimelineItemHeader({ title, label, eventSince, eventUntil, link }: TimelineItemHeaderProps) {
+  const remainingDays = eventUntil.diff(dayjs(), "day");
   let remainingDaysText = "";
-  if (1 < remainingDays && remainingDays <= 7) {
-    remainingDaysText = `${remainingDays}일 남음`;
-  } else if (remainingDays === 1) {
-    remainingDaysText = "내일 종료";
-  } else if (remainingDays === 0) {
-    remainingDaysText = "오늘 종료";
+  if (eventSince.isBefore(dayjs())) {
+    if (remainingDays === 1) {
+      remainingDaysText = "내일 종료";
+    } else if (remainingDays === 0) {
+      remainingDaysText = "오늘 종료";
+    } else {
+      remainingDaysText = `${remainingDays}일 남음`;
+    }
   }
 
   return (
