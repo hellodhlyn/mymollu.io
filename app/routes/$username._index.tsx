@@ -1,34 +1,21 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { defer } from "@remix-run/cloudflare";
+import { Await, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { Callout, SubTitle } from "~/components/atoms/typography";
 import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
 import type { Env } from "~/env.server";
-import type { Relationship } from "~/models/followership";
 import { getFollowers, getFollowing } from "~/models/followership";
 import { getSenseiByUsername } from "~/models/sensei";
-import type { StudentState } from "~/models/student-state";
 import { getUserStudentStates } from "~/models/student-state";
 import type { ActionData } from "./api.followerships";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { studentImageUrl } from "~/models/student";
 import { getUserActivities } from "~/models/user-activity";
-import type { UserActivity } from "~/models/user-activity";
-import { ActivityTimeline } from "~/components/organisms/activity";
+import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
+import { Suspense } from "react";
 
-type LoaderData = {
-  username: string;
-  currentUsername: string | null;
-  relationship: Relationship;
-  following: number;
-  followers: number;
-  profileStudentId: string | null;
-  states: StudentState[] | null;
-  userActivities: UserActivity[];
-};
-
-export const loader: LoaderFunction = async ({ context, request, params }) => {
+export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
@@ -51,10 +38,8 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     relationship.following = followers.find((each) => each.id === currentUser.id) !== undefined;
   }
 
-  const userActivities = await getUserActivities(env, sensei.id);
-
   const states = await getUserStudentStates(env, username);
-  return json<LoaderData>({
+  return defer({
     username,
     currentUsername: currentUser?.username ?? null,
     relationship,
@@ -62,7 +47,7 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     followers: followers.length,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
-    userActivities,
+    userActivities: getUserActivities(env, sensei.id),
   });
 };
 
@@ -76,7 +61,7 @@ export const meta: MetaFunction = ({ params }) => {
 };
 
 export default function UserIndex() {
-  const loaderData = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<typeof loader>();
   const { username, currentUsername, profileStudentId, states, userActivities } = loaderData;
 
   let followability: ProfileCardProps["followability"] = loaderData.relationship.following ? "following" : "followable";
@@ -91,11 +76,12 @@ export default function UserIndex() {
   }
 
   let imageUrl: string | null = null;
+  if (profileStudentId !== null) {
+    imageUrl = studentImageUrl(profileStudentId);
+  }
+
   const tierCounts = new Map<number, number>();
   states!.forEach(({ student, tier, owned }) => {
-    if (student.id === profileStudentId) {
-      imageUrl = studentImageUrl(student.id);
-    }
     if (owned) {
       const studentTier = tier ?? student.initialTier;
       tierCounts.set(studentTier, (tierCounts.get(studentTier) ?? 0) + 1);
@@ -129,7 +115,11 @@ export default function UserIndex() {
 
       <div className="md:my-8 my-16">
         <SubTitle text="최근 활동" />
-        <ActivityTimeline activities={userActivities} />
+        <Suspense fallback={<TimelinePlaceholder />}>
+          <Await resolve={userActivities}>
+            {(userActivities) => <Timeline activities={userActivities} />}
+          </Await>
+        </Suspense>
       </div>
     </div>
   );

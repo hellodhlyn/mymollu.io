@@ -1,19 +1,16 @@
-import { redirect, json } from "@remix-run/cloudflare";
-import type { LoaderFunction, ActionFunction, MetaFunction } from "@remix-run/cloudflare";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { redirect, defer } from "@remix-run/cloudflare";
+import type { ActionFunction, MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { Await, Form, Link, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
+import { Suspense } from "react";
 import { Button, Input } from "~/components/atoms/form";
-import { SubTitle, Title } from "~/components/atoms/typography";
+import { SubTitle } from "~/components/atoms/typography";
 import { EventTimelineItem, RaidTimelineItem } from "~/components/molecules/event";
-import { ActivityTimeline } from "~/components/organisms/activity";
+import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
 import type { Env } from "~/env.server";
-import type { PickupEvent } from "~/models/event";
 import { getFutureEvents } from "~/models/event";
-import type { RaidEvent } from "~/models/raid";
 import { getRaids } from "~/models/raid";
-import type { StudentMap } from "~/models/student";
 import { getStudentsMap } from "~/models/student";
-import type { UserActivity } from "~/models/user-activity";
 import { getUserActivities } from "~/models/user-activity";
 
 export const meta: MetaFunction = () => {
@@ -23,14 +20,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-type LoaderData = {
-  userActivities: UserActivity[];
-  events: PickupEvent[];
-  raids: RaidEvent[];
-  students: StudentMap;
-};
-
-export const loader: LoaderFunction = async ({ context }) => {
+export const loader = async ({ context }: LoaderFunctionArgs) => {
   const env = context.env as Env;
 
   const now = dayjs();
@@ -42,8 +32,8 @@ export const loader: LoaderFunction = async ({ context }) => {
   const pickupStudentIds = events.flatMap((event) => event.pickups.map((pickup) => pickup.studentId));
   const students = await getStudentsMap(env, true, pickupStudentIds);
 
-  return json<LoaderData>({
-    userActivities: await getUserActivities(env),
+  return defer({
+    userActivities: getUserActivities(env),
     events, raids, students,
   });
 }
@@ -55,11 +45,9 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function Index() {
-  const { userActivities, events, raids, students } = useLoaderData<LoaderData>();
+  const { userActivities, events, raids, students } = useLoaderData<typeof loader>();
   return (
     <>
-      <Title text="몰루로그" />
-
       <div className="p-4 md:px-6 md:py-4 border border-neutral-100 rounded-xl">
         <div className="my-2 flex items-center">
           <div className="w-3 h-3 bg-red-600 border border-1 border-white rounded-full animate-pulse" />
@@ -84,7 +72,11 @@ export default function Index() {
       </Form>
 
       <SubTitle text="타임라인" />
-      <ActivityTimeline activities={userActivities} showProfile />
+      <Suspense fallback={<TimelinePlaceholder />}>
+        <Await resolve={userActivities}>
+          {(userActivities) => <Timeline activities={userActivities} showProfile />}
+        </Await>
+      </Suspense>
     </>
   );
 }

@@ -16,33 +16,57 @@ export async function follow(env: Env, followerId: number, followeeId: number) {
   const repo = new FollowershipRepo(env);
   await repo.create(followerId, followeeId);
   await createFollowingActivity(env, followerId, followeeId);
+  await env.KV_USERDATA.delete(followersCacheKey(followeeId));
+  await env.KV_USERDATA.delete(followingCacheKey(followerId));
 }
 
 export async function unfollow(env: Env, followerId: number, followeeId: number) {
   const repo = new FollowershipRepo(env);
   await repo.deleteByFollowerIdAndFolloweeId(followerId, followeeId);
+  await env.KV_USERDATA.delete(followersCacheKey(followeeId));
+  await env.KV_USERDATA.delete(followingCacheKey(followerId));
 }
 
 export async function getFollowers(env: Env, followeeId: number): Promise<Sensei[]> {
-  const followershipRepo = new FollowershipRepo(env); 
-  const followerIds = (await followershipRepo.findAllBy("followeeId", followeeId)).map((each) => each.followerId);
-  if (followerIds.length === 0) {
-    return [];
+  const cacheKey = followersCacheKey(followeeId);
+  const cached = await env.KV_USERDATA.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached) as Sensei[];
   }
 
+  const followershipRepo = new FollowershipRepo(env); 
+  const followerIds = (await followershipRepo.findAllBy("followeeId", followeeId)).map((each) => each.followerId);
+
   const userRepo = new UserRepo(env);
-  return userRepo.findAllByIn("id", followerIds);
+  const followers = await userRepo.findAllByIn("id", followerIds);
+  env.KV_USERDATA.put(cacheKey, JSON.stringify(followers));
+
+  return followers;
 }
 
 export async function getFollowing(env: Env, followerId: number): Promise<Sensei[]> {
-  const followershipRepo = new FollowershipRepo(env);
-  const followeeIds = (await followershipRepo.findAllBy("followerId", followerId)).map((each) => each.followeeId);
-  if (followeeIds.length === 0) {
-    return [];
+  const cacheKey = followingCacheKey(followerId);
+  const cached = await env.KV_USERDATA.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached) as Sensei[];
   }
 
+  const followershipRepo = new FollowershipRepo(env);
+  const followeeIds = (await followershipRepo.findAllBy("followerId", followerId)).map((each) => each.followeeId);
+
   const userRepo = new UserRepo(env);
-  return userRepo.findAllByIn("id", followeeIds);
+  const followees = await userRepo.findAllByIn("id", followeeIds);
+  env.KV_USERDATA.put(cacheKey, JSON.stringify(followees));
+
+  return followees;
+}
+
+function followersCacheKey(followeeId: number) {
+  return `followerships:followers:${followeeId}`;
+}
+
+function followingCacheKey(followerId: number) {
+  return `followerships:following:${followerId}`;
 }
 
 class FollowershipRepo {
