@@ -23,6 +23,7 @@ STAGE = "prod"
 #   - GOOGLE_CLIENT_SECRET
 #   - SUPABASE_URL
 #   - SUPABASE_KEY
+#   - SUPERUSER_NAME
 
 [triggers]
 crons = ["30 * * * *"]

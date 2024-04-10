@@ -4,7 +4,7 @@ import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import type { Party } from "~/models/party"
 import type { RaidEvent} from "~/models/raid";
-import { raidTerrainText, raidTypeText } from "~/models/raid";
+import { bossImageUrl, raidTerrainText, raidTypeText } from "~/models/raid";
 import type { StudentState } from "~/models/student-state";
 
 type PartyViewProps = {
@@ -17,6 +17,15 @@ type PartyViewProps = {
 export default function PartyView({ party, studentStates, editable, raids }: PartyViewProps) {
   const units = Array.isArray(party.studentIds[0]) ? (party.studentIds as string[][]) : [party.studentIds as string[]];
   const raid = party.raidId ? raids.find(({ id }) => party.raidId === id) : null;
+  let raidText;
+  if (raid) {
+    [
+      raidTypeText(raid.type),
+      raid.terrain ? raidTerrainText(raid.terrain) : null,
+      dayjs(raid.since).format("YYYY-MM-DD"),
+    ].filter((text) => text).join(" | ");
+  }
+
   return (
     <div className="my-4 px-4 md:px-6 py-2 rounded-lg bg-neutral-100">
       <SubTitle text={party.name} />
@@ -24,7 +33,7 @@ export default function PartyView({ party, studentStates, editable, raids }: Par
         <div className="flex my-4 md:my-8 -mx-4 md:-mx-6">
           <img
             className="h-12 md:h-24 w-36 md:w-fit object-cover object-left bg-gradient-to-l from-white rounded-r-lg"
-            src={raid.imageUrl}
+            src={bossImageUrl(raid.boss)}
             alt={`${raid.name} 이벤트`}
           />
           <div className="px-4 md:px-8 w-full flex flex-col justify-center">
@@ -32,7 +41,7 @@ export default function PartyView({ party, studentStates, editable, raids }: Par
               {raid.name}
             </p>
             <p className="text-xs md:text-sm text-neutral-500">
-              {raidTypeText(raid.type)} | {raidTerrainText(raid.terrain)} | {dayjs(raid.since).format("YYYY-MM-DD")}
+              {raidText}
             </p>
           </div>
         </div>

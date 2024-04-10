@@ -4,7 +4,7 @@ import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import type { RaidEvent } from "~/models/raid";
-import { raidTerrainText, raidTypeText } from "~/models/raid"
+import { bossImageUrl, raidTerrainText, raidTypeText } from "~/models/raid"
 import { sanitizeClassName } from "~/prophandlers";
 
 type EventSelectorProps = {
@@ -17,8 +17,8 @@ function raidDescription(raid: RaidEvent): string {
   return [
     dayjs(raid.since).format("YYYY-MM-DD"),
     raidTypeText(raid.type),
-    raidTerrainText(raid.terrain),
-  ].join(" | ");
+    raid.terrain ? raidTerrainText(raid.terrain) : null,
+  ].filter((text) => text).join(" | ");
 }
 
 export default function EventSelector({ raids, initialRaidId, onSelectRaid }: EventSelectorProps) {
@@ -39,7 +39,7 @@ export default function EventSelector({ raids, initialRaidId, onSelectRaid }: Ev
                 <EventSelectorItem
                   name={selectedRaid.name}
                   description={raidDescription(selectedRaid)}
-                  imageUrl={selectedRaid.imageUrl}
+                  imageUrl={bossImageUrl(selectedRaid.boss)}
                   singleCard={true}
                 /> :
                 <EventSelectorItem
@@ -55,7 +55,7 @@ export default function EventSelector({ raids, initialRaidId, onSelectRaid }: Ev
                   key={raid.id}
                   name={raid.name}
                   description={raidDescription(raid)}
-                  imageUrl={raid.imageUrl}
+                  imageUrl={bossImageUrl(raid.boss)}
                   onSelect={() => {
                     setSelectedRaid(raid);
                     onSelectRaid(raid.id);

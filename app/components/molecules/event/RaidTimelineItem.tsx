@@ -1,10 +1,10 @@
 import type { RaidEvent} from "~/models/raid";
-import { raidTerrainText, raidTypeText } from "~/models/raid";
+import { bossImageUrl, raidTerrainText, raidTypeText } from "~/models/raid";
 import { TimelineItemHeader } from "./TimelineItemHeader";
 import dayjs from "dayjs";
 
 export default function RaidTimelineItem(
-  { name, type, terrain, attackType, defenseType, imageUrl, since, until }: RaidEvent,
+  { name, type, boss, terrain, attackType, defenseType, since, until }: RaidEvent,
 ) {
   let attackTypeText = "";
   let attackTypeClass = "";
@@ -42,7 +42,7 @@ export default function RaidTimelineItem(
       <div className="relative md:w-3/5">
         <img
           className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
-          src={imageUrl} alt={`총력전 보스 ${name}`} loading="lazy"
+          src={bossImageUrl(boss)} alt={`총력전 보스 ${name}`} loading="lazy"
         />
         {(type === "total-assault" || type === "elimination") && (
           <div className="absolute bottom-0 right-0 flex gap-x-1 p-1 text-white text-sm">

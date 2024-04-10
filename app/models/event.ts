@@ -1,5 +1,5 @@
-import type { Env } from "~/env.server";
-import { fetchStaticData } from "./statics";
+import { getDB, type Env } from "~/env.server";
+import { fetchCached } from "./base";
 
 export type Pickup = {
   studentId: string;
@@ -15,28 +15,40 @@ export type GameEvent = {
   rerun?: boolean;
   since: string;
   until: string;
-  image?: string;
-  videos?: {
+  image: string | null;
+  videos: {
     title: string;
     youtube: string;
-    start?: number;
-  }[];
-  tips?: {
+    start: number | null;
+  }[] | null;
+  tips: {
     title: string;
     link: string;
     source: string;
-  }[];
+  }[] | null;
   pickups: Pickup[];
 };
 
+const allEventKey = "cache:all-events";
 const detailedTypes = ["event", "immortal_event", "main_story"];
 
 export async function getAllEvents(env: Env): Promise<GameEvent[]> {
-  const events = await fetchStaticData<GameEvent[]>(env, "events.json") || [];
-  return events.map((event) => ({
-    ...event,
-    pickups: event.pickups as Pickup[] ?? [],
-  }));
+  return fetchCached(env, allEventKey, async () => {
+    const db = getDB(env);
+    const { data, error } = await db.from("events").select("*");
+    if (error || !data) {
+      throw error ?? "failed to fetch events";
+    }
+
+    return data.filter((event) => ((env.STAGE === "dev") || event.visible)).map((event) => ({
+      ...event,
+      id: event.eventId,
+      type: event.type as GameEvent["type"],
+      videos: event.videos as GameEvent["videos"] ?? [],
+      tips: event.tips as GameEvent["tips"] ?? [],
+      pickups: event.pickups as Pickup[] ?? [],
+    }));
+  }, 5 * 60);
 }
 
 export async function getFutureEvents(env: Env): Promise<GameEvent[]> {

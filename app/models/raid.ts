@@ -1,33 +1,42 @@
 import dayjs from "dayjs";
 import type { Student } from "./student";
-import type { Env } from "~/env.server";
-import { fetchStaticData } from "./statics";
+import { getDB, type Env } from "~/env.server";
+import { fetchCached } from "./base";
 
 export type RaidEvent = {
   id: string;
   type: "total-assault" | "elimination" | "unlimit";
   name: string;
   boss: string;
-  terrain?: "indoor" | "outdoor" | "street";
-  attackType?: Student["attackType"];
-  defenseType?: Student["defenseType"] | null;
+  terrain: "indoor" | "outdoor" | "street" | null;
+  attackType: Student["attackType"] | null;
+  defenseType: Student["defenseType"] | null;
   since: string;
   until: string;
-  imageUrl: string;
 };
 
+const allRaidsKey = "cache:all-raids";
+
 export async function getRaids(env: Env, filterPrevious: boolean = true): Promise<RaidEvent[]> {
-  const raidData = await fetchStaticData<RaidEvent[]>(env, "raids.json") || [];
-  return raidData
-    .filter(({ until }) => !filterPrevious || dayjs(until).isAfter(dayjs()))
-    .map((row) => ({
-      ...row,
-      type: row.type as RaidEvent["type"],
-      terrain: row.terrain as RaidEvent["terrain"],
-      attackType: row.attackType as RaidEvent["attackType"],
-      defenseType: row.defenseType as RaidEvent["defenseType"],
-      imageUrl: `https://assets.mollulog.net/assets/images/boss/${row.boss}`,
+  const allRaids = await fetchCached(env, allRaidsKey, async () => {
+    const db = getDB(env);
+    const { data, error } = await db.from("raids").select("*");
+    if (error || !data) {
+      throw error ?? "failed to fetch raids";
+    }
+
+    return data.filter((raid) => ((env.STAGE === "dev") || raid.visible)).map((raid) => ({
+      ...raid,
+      id: raid.raidId,
+      type: raid.type as RaidEvent["type"],
+      terrain: raid.terrain as RaidEvent["terrain"] ?? null,
+      attackType: raid.attackType as Student["attackType"] ?? null,
+      defenseType: raid.defenseType as Student["defenseType"] ?? null,
     }));
+  }, 5 * 60);
+
+  const now = dayjs();
+  return allRaids.filter(({ until }) => !filterPrevious || dayjs(until).isAfter(now));
 }
 
 const terrainText = {
@@ -48,4 +57,8 @@ const typeText = {
 
 export function raidTypeText(type: NonNullable<RaidEvent["type"]>): string {
   return typeText[type];
+}
+
+export function bossImageUrl(boss: string): string {
+  return `https://assets.mollulog.net/assets/images/boss/${boss}`;
 }

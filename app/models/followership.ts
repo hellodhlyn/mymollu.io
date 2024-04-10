@@ -1,12 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Env } from "~/env.server";
 import { getDB } from "~/env.server";
-import type { SupabaseSchema } from "~/schema";
+import type { Database } from "~/schema";
 import type { Sensei } from "./sensei";
 import { UserRepo } from "./sensei";
 import { createFollowingActivity } from "./user-activity";
+import { deleteCache, fetchCached } from "./base";
 
-export type Followership = SupabaseSchema["public"]["Tables"]["dev_followerships"]["Row"];
+export type Followership = Database["public"]["Tables"]["dev_followerships"]["Row"];
 export type Relationship = {
   followed: boolean;
   following: boolean;
@@ -16,49 +17,33 @@ export async function follow(env: Env, followerId: number, followeeId: number) {
   const repo = new FollowershipRepo(env);
   await repo.create(followerId, followeeId);
   await createFollowingActivity(env, followerId, followeeId);
-  await env.KV_USERDATA.delete(followersCacheKey(followeeId));
-  await env.KV_USERDATA.delete(followingCacheKey(followerId));
+  await deleteCache(env, followersCacheKey(followeeId), followingCacheKey(followerId));
 }
 
 export async function unfollow(env: Env, followerId: number, followeeId: number) {
   const repo = new FollowershipRepo(env);
   await repo.deleteByFollowerIdAndFolloweeId(followerId, followeeId);
-  await env.KV_USERDATA.delete(followersCacheKey(followeeId));
-  await env.KV_USERDATA.delete(followingCacheKey(followerId));
+  await deleteCache(env, followersCacheKey(followeeId), followingCacheKey(followerId));
 }
 
 export async function getFollowers(env: Env, followeeId: number): Promise<Sensei[]> {
-  const cacheKey = followersCacheKey(followeeId);
-  const cached = await env.KV_USERDATA.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached) as Sensei[];
-  }
+  return fetchCached(env, followersCacheKey(followeeId), async () => {
+    const followershipRepo = new FollowershipRepo(env);
+    const followerIds = (await followershipRepo.findAllBy("followeeId", followeeId)).map((each) => each.followerId);
 
-  const followershipRepo = new FollowershipRepo(env); 
-  const followerIds = (await followershipRepo.findAllBy("followeeId", followeeId)).map((each) => each.followerId);
-
-  const userRepo = new UserRepo(env);
-  const followers = await userRepo.findAllByIn("id", followerIds);
-  env.KV_USERDATA.put(cacheKey, JSON.stringify(followers));
-
-  return followers;
+    const userRepo = new UserRepo(env);
+    return await userRepo.findAllByIn("id", followerIds);
+  });
 }
 
 export async function getFollowing(env: Env, followerId: number): Promise<Sensei[]> {
-  const cacheKey = followingCacheKey(followerId);
-  const cached = await env.KV_USERDATA.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached) as Sensei[];
-  }
+  return fetchCached(env, followingCacheKey(followerId), async () => {
+    const followershipRepo = new FollowershipRepo(env);
+    const followeeIds = (await followershipRepo.findAllBy("followerId", followerId)).map((each) => each.followeeId);
 
-  const followershipRepo = new FollowershipRepo(env);
-  const followeeIds = (await followershipRepo.findAllBy("followerId", followerId)).map((each) => each.followeeId);
-
-  const userRepo = new UserRepo(env);
-  const followees = await userRepo.findAllByIn("id", followeeIds);
-  env.KV_USERDATA.put(cacheKey, JSON.stringify(followees));
-
-  return followees;
+    const userRepo = new UserRepo(env);
+    return await userRepo.findAllByIn("id", followeeIds);
+  });
 }
 
 function followersCacheKey(followeeId: number) {
@@ -70,7 +55,7 @@ function followingCacheKey(followerId: number) {
 }
 
 class FollowershipRepo {
-  private db: SupabaseClient<SupabaseSchema>;
+  private db: SupabaseClient<Database>;
   private tableName: string;
 
   constructor(env: Env) {

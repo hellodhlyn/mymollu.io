@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@supabase/supabase-js";
-import type { SupabaseSchema } from "./schema";
+import { Database } from "./schema";
 
 export interface Env {
   __STATIC_CONTENT: KVNamespace<string>;
@@ -14,15 +14,16 @@ export interface Env {
   GOOGLE_CLIENT_SECRET: string;
   SUPABASE_URL: string;
   SUPABASE_KEY: string;
+  SUPERUSER_NAME: string;
 }
 
-let _db: SupabaseClient<SupabaseSchema>;
+let _db: SupabaseClient<Database>;
 
 export function getDB(env: Env) {
   if (_db) {
     return _db;
   }
 
-  _db = createClient<SupabaseSchema>(env.SUPABASE_URL, env.SUPABASE_KEY);
+  _db = createClient<Database>(env.SUPABASE_URL, env.SUPABASE_KEY);
   return _db;
 }

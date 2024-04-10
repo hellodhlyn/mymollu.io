@@ -6,6 +6,12 @@
 
 ## 개발
 
+### 데이터베이스 스키마 동기화
+
+```bash
+supabase gen types typescript --project-id {project-id} > app/schema.ts
+```
+
 ### 웹 서버 배포하기
 
 - NodeJS (>= 18)
