@@ -7,13 +7,13 @@ import { StudentCards } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
 import { EventHeader, EventVideos } from "~/components/organisms/event";
 import type { Env } from "~/env.server";
-import type { PickupEvent } from "~/models/event";
-import { getAllEvents, pickupLabel } from "~/models/event";
+import type { GameEvent } from "~/models/event";
+import { detailedEvent, getAllEvents, pickupLabel } from "~/models/event";
 import type { StudentMap } from "~/models/student";
 import { getStudentsMap } from "~/models/student";
 
 type LoaderData = {
-  event: PickupEvent;
+  event: GameEvent;
   pickupStudents: StudentMap;
 };
 
@@ -21,8 +21,8 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const env = context.env as Env;
 
   const allEvent = await getAllEvents(env);
-  let event: PickupEvent | undefined;
-  if (!params.id || !(event = allEvent.find(({ id }) => id === params.id)) || !event.hasDetail) {
+  let event: GameEvent | undefined;
+  if (!params.id || !(event = allEvent.find(({ id }) => id === params.id)) || !detailedEvent(event.type)) {
     throw new Response(
       JSON.stringify({ error: { message: "이벤트 정보를 찾을 수 없어요" } }),
       {

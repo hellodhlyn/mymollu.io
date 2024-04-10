@@ -8,7 +8,7 @@ export type Pickup = {
   type: "usual" | "limited" | "given" | "fes";
 };
 
-export type PickupEvent = {
+export type GameEvent = {
   id: string;
   name: string;
   type: "event" | "mini_event" | "guide_mission" | "immortal_event" | "pickup" | "fes" | "campaign" | "exercise" | "main_story" | "collab";
@@ -27,24 +27,25 @@ export type PickupEvent = {
     source: string;
   }[];
   pickups: Pickup[];
-  hasDetail: boolean;
 };
 
 const detailedTypes = ["event", "immortal_event", "main_story"];
 
-export async function getAllEvents(env: Env): Promise<PickupEvent[]> {
-  const events = await fetchStaticData<PickupEvent[]>(env, "events.json") || [];
+export async function getAllEvents(env: Env): Promise<GameEvent[]> {
+  const events = await fetchStaticData<GameEvent[]>(env, "events.json") || [];
   return events.map((event) => ({
     ...event,
-    type: event.type as PickupEvent["type"],
     pickups: event.pickups as Pickup[] ?? [],
-    hasDetail: detailedTypes.includes(event.type),
   }));
 }
 
-export async function getFutureEvents(env: Env): Promise<PickupEvent[]> {
+export async function getFutureEvents(env: Env): Promise<GameEvent[]> {
   const allEvents = await getAllEvents(env);
   return allEvents.filter(({ until }) => !until || Date.parse(until) > new Date().getTime())
+}
+
+export function detailedEvent(eventType: GameEvent["type"]): boolean {
+  return detailedTypes.includes(eventType);
 }
 
 export function pickupLabel({ type, rerun }: Pick<Pickup, "type" | "rerun">): string {
@@ -68,7 +69,7 @@ export function pickupLabel({ type, rerun }: Pick<Pickup, "type" | "rerun">): st
   return labelTexts.join(" ");
 }
 
-export const eventLabelsMap = {
+export const eventLabelsMap: { [key in GameEvent["type"]]: string } = {
   "event": "이벤트",
   "immortal_event": "이벤트 상설화",
   "mini_event": "미니 이벤트",

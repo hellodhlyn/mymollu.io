@@ -1,4 +1,4 @@
-import type { PickupEvent } from "~/models/event";
+import type { GameEvent } from "~/models/event";
 import { EventTimelineItem, RaidTimelineItem } from "~/components/molecules/event";
 import type { FuturePlan } from "~/models/future";
 import type { StudentMap } from "~/models/student";
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { FilterButtons } from "~/components/molecules/student";
 
 type EventsProps = {
-  events: PickupEvent[];
+  events: GameEvent[];
   raids: RaidEvent[];
   students: StudentMap;
   plan?: FuturePlan;
@@ -22,12 +22,12 @@ type TimelineItem = {
   id: string;
   since: Dayjs;
   until: Dayjs;
-  event?: PickupEvent;
+  event?: GameEvent;
   raid?: RaidEvent;
 };
 
 type Filter = {
-  eventTypes: PickupEvent["type"][];
+  eventTypes: GameEvent["type"][];
   raid: boolean;
 };
 
@@ -50,7 +50,7 @@ export default function FutureTimeline({
     raid: false,
   });
 
-  const onToggleEvents = (activated: boolean, eventTypes: PickupEvent["type"][]) => {
+  const onToggleEvents = (activated: boolean, eventTypes: GameEvent["type"][]) => {
     setFilter((prev) => {
       if (activated) {
         return { ...prev, eventTypes: [...prev.eventTypes, ...eventTypes] };

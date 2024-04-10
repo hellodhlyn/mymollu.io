@@ -1,22 +1,18 @@
-import { Link } from "@remix-run/react";
 import dayjs from "dayjs";
-import { NavArrowRight } from "iconoir-react";
-import { MultilineText } from "~/components/atoms/typography";
 import { MemoEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
-import type { Pickup, PickupEvent} from "~/models/event";
-import { eventLabelsMap, pickupLabel } from "~/models/event";
+import type { Pickup, GameEvent} from "~/models/event";
+import { detailedEvent, eventLabelsMap, pickupLabel } from "~/models/event";
 import type { StudentMap } from "~/models/student";
 import { TimelineItemHeader } from "./TimelineItemHeader";
 
 type EventProps = {
   id: string;
-  type: PickupEvent["type"];
+  type: GameEvent["type"];
   name: string;
   rerun?: boolean;
   pickups: Pickup[];
   students: StudentMap;
-  hasDetail: boolean;
   since: string;
   until: string;
 
@@ -43,7 +39,7 @@ export default function EventTimelineItem(event: EventProps) {
         label={eventLabelTexts.join(" ")}
         eventSince={dayjs(event.since)}
         eventUntil={dayjs(event.until)}
-        link={event.hasDetail ? `/events/${event.id}` : undefined}
+        link={detailedEvent(event.type) ? `/events/${event.id}` : undefined}
      />
 
       <StudentCards

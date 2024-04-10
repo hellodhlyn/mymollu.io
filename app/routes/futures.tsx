@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Title } from "~/components/atoms/typography";
 import { FutureTimeline, ResourceCalculator } from "~/components/organisms/event";
 import type { Env } from "~/env.server";
-import type { PickupEvent } from "~/models/event";
+import type { GameEvent } from "~/models/event";
 import { getFutureEvents } from "~/models/event";
 import type { FuturePlan } from "~/models/future";
 import { getFuturePlan, setFuturePlan } from "~/models/future";
@@ -30,7 +30,7 @@ export const meta: MetaFunction = () => {
 
 type LoaderData = {
   signedIn: boolean;
-  events: PickupEvent[];
+  events: GameEvent[];
   raids: RaidEvent[];
   students: StudentMap;
   futurePlan: FuturePlan | null;

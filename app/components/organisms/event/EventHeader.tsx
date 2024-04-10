@@ -2,10 +2,10 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import YouTube from "react-youtube";
 import { MultilineText } from "~/components/atoms/typography";
-import type { PickupEvent} from "~/models/event";
+import type { GameEvent} from "~/models/event";
 import { eventLabelsMap } from "~/models/event";
 
-export default function EventHeader({ event }: { event: PickupEvent }) {
+export default function EventHeader({ event }: { event: GameEvent }) {
   const [videoPlaying, setVideoPlaying] = useState(false);
 
   let dDayText = "";
