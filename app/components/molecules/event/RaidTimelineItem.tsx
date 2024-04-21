@@ -44,21 +44,23 @@ export default function RaidTimelineItem(
           className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
           src={bossImageUrl(boss)} alt={`총력전 보스 ${name}`} loading="lazy"
         />
-        {(type === "total-assault" || type === "elimination") && (
-          <div className="absolute bottom-0 right-0 flex gap-x-1 p-1 text-white text-sm">
+        <div className="absolute bottom-0 right-0 flex gap-x-1 p-1 text-white text-sm">
+          {terrain && (
             <span className="px-2 py-1 rounded-lg shadow-lg bg-gradient-to-r from-neutral-900 to-neutral-700">
               {raidTerrainText(terrain!)}
             </span>
+          )}
+          {attackType && (
             <span className={`px-2 py-1 rounded-lg shadow-lg ${attackTypeClass}`}>
               {attackTypeText}
             </span>
-            {defenseTypeText && (
-              <span className={`px-2 py-1 rounded-lg shadow-lg ${defenseTypeClass}`}>
-                {defenseTypeText}
-              </span>
-            )}
-          </div>
-        )}
+          )}
+          {defenseType && (
+            <span className={`px-2 py-1 rounded-lg shadow-lg ${defenseTypeClass}`}>
+              {defenseTypeText}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
