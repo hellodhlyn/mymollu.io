@@ -41,7 +41,7 @@ export default function FilterButtons({ Icon, buttonProps, exclusive }: FilterBu
         <FilterButton
           key={`filter-${prop.text}`}
           text={prop.text}
-          color={prop.color}
+          color={prop.color ?? "bg-gradient-to-r from-blue-500 to-sky-400"}
           active={actives[index]}
           onToggle={(activated) => {
             if (exclusive) {

@@ -1,6 +1,8 @@
-import { Archery, Running, Sort, Star } from "iconoir-react";
+import { disassemble, search } from "hangul-js";
+import { Archery, Running, Search, Sort, Star } from "iconoir-react";
 import type { Dispatch, SetStateAction} from "react";
 import { useEffect, useState } from "react";
+import { Input } from "~/components/atoms/form";
 import { FilterButtons } from "~/components/molecules/student";
 import type { Student } from "~/models/student";
 import type { StudentState } from "~/models/student-state";
@@ -15,10 +17,18 @@ type Sort = {
   by: "tier" | "name" | null;
 }
 
+const buttonColors = {
+  "red": "bg-gradient-to-r from-red-500 to-orange-400",
+  "yellow": "bg-gradient-to-r from-amber-500 to-yellow-400",
+  "blue": "bg-gradient-to-r from-blue-500 to-sky-400",
+  "purple": "bg-gradient-to-r from-purple-500 to-fuchsia-400",
+};
+
 export function useStateFilter(
   initStates: StudentState[],
   useFilter: boolean = true,
   useSort: boolean = true,
+  useSearch: boolean = false,
 ): [JSX.Element, StudentState[], Dispatch<SetStateAction<StudentState[]>>] {
   const [allStates, setAllStates] = useState(initStates);
   const [filter, setFilter] = useState<Filter>({
@@ -29,6 +39,7 @@ export function useStateFilter(
   const [sort, setSort] = useState<Sort>({
     by: null,
   });
+  const [keyword, setKeyword] = useState<string>("");
 
   const toggleAttackType = (attackType: Student["attackType"]): (activated: boolean) => void => {
     return (activated: boolean) => {
@@ -47,6 +58,7 @@ export function useStateFilter(
   const [filteredStates, setFilteredStates] = useState(allStates);
   useEffect(() => {
     const newFilteredStates = allStates.filter(({ student }) => {
+      // 학생 능력치로 필터
       if (student.initialTier < filter.minimumTier) {
         return false;
       }
@@ -56,6 +68,12 @@ export function useStateFilter(
       if (filter.role && student.role !== filter.role) {
         return false;
       }
+
+      // 학생 이름으로 필터
+      if (useSearch && disassemble(keyword).length > 1 && search(student.name, keyword) < 0) {
+        return false;
+      }
+
       return true;
     });
 
@@ -75,13 +93,13 @@ export function useStateFilter(
     });
 
     setFilteredStates(newFilteredStates);
-  }, [allStates, filter, sort]);
+  }, [allStates, filter, sort, keyword]);
 
   return [(
     <div className="my-8" key="state-filter">
       <p className="my-2 font-bold text-xl">
         {[
-          useFilter ? "필터" : null,
+          (useFilter || useSearch) ? "필터" : null,
           useSort ? "정렬" : null,
         ].filter((text) => text).join(" 및 ")}
       </p>
@@ -94,27 +112,36 @@ export function useStateFilter(
             },
           ]} />
           <FilterButtons Icon={Archery} buttonProps={[
-            { text: "폭발", color: "bg-red-500", onToggle: toggleAttackType("explosive") },
-            { text: "관통", color: "bg-yellow-500", onToggle: toggleAttackType("piercing") },
-            { text: "신비", color: "bg-blue-500", onToggle: toggleAttackType("mystic") },
+            { text: "폭발", color: buttonColors["red"], onToggle: toggleAttackType("explosive") },
+            { text: "관통", color: buttonColors["yellow"], onToggle: toggleAttackType("piercing") },
+            { text: "신비", color: buttonColors["blue"], onToggle: toggleAttackType("mystic") },
+            { text: "진동", color: buttonColors["purple"], onToggle: toggleAttackType("sonic") },
           ]} />
           <FilterButtons Icon={Running} exclusive={true} buttonProps={[
             {
-              text: "스트라이커", color: "bg-red-500",
+              text: "스트라이커", color: buttonColors["red"],
               onToggle: (activated) => { setFilter((prev) => ({ ...prev, role: activated ? "striker" : null })) },
             },
             {
-              text: "스페셜", color: "bg-blue-500",
+              text: "스페셜", color: buttonColors["blue"],
               onToggle: (activated) => { setFilter((prev) => ({ ...prev, role: activated ? "special" : null })) },
             },
           ]} />
         </>
       )}
+
       {useSort && (
         <FilterButtons Icon={Sort} exclusive={true} buttonProps={[
           { text: "★ 등급", onToggle: (activated) => { setSort({ by: activated ? "tier" : null }) } },
           { text: "이름", onToggle: (activated) => { setSort({ by: activated ? "name" : null }) } },
         ]} />
+      )}
+
+      {useSearch && (
+        <div className="flex items-center">
+          <Search className="h-5 w-5 mr-2" strokeWidth={2} />
+          <Input placeholder="이름으로 찾기" className="-my-4 text-sm" onChange={setKeyword} />
+        </div>
       )}
     </div>
   ), filteredStates, setAllStates];

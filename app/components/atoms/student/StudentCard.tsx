@@ -4,6 +4,7 @@ import { studentImageUrl } from "~/models/student";
 export type StudentCardProps = {
   id: string;
   name?: string;
+  nameSize?: "small" | "normal";
 
   tier?: number | null;
   label?: ReactNode;
@@ -21,7 +22,7 @@ function visibileTier(tier: number): [number, boolean] {
 }
 
 export default function StudentCard(
-  { id, name, tier, label, selected, grayscale }: StudentCardProps,
+  { id, name, nameSize, tier, label, selected, grayscale }: StudentCardProps,
 ) {
   const showInfo = tier !== undefined || label !== undefined;
   const visibleNames = [];
@@ -67,7 +68,7 @@ export default function StudentCard(
       </div>
       {name && (
         <div className="mt-1 text-center leading-tight">
-          <p className="text-sm">{visibleNames[0]}</p>
+          <p className={nameSize === "small" ? "text-xs" : "text-sm"}>{visibleNames[0]}</p>
           {(visibleNames.length === 2) && <p className="text-xs">{visibleNames[1]}</p>}
         </div>
       )}

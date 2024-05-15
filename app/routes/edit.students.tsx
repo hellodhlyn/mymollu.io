@@ -72,10 +72,10 @@ export default function EditPage() {
   }, [fetcher]);
 
   const [states, setStates] = useState<StudentState[]>(loaderData.states);
-  const [StateFilter, filteredStates, setAllStatesToFilter] = useStateFilter(loaderData.states);
+  const [StateFilter, filteredStates, updateStatesToFilter] = useStateFilter(loaderData.states, false, true, true);
 
   useEffect(() => {
-    setAllStatesToFilter(states);
+    updateStatesToFilter(states);
   }, [states])
 
   const noOwned = states.every(({ owned }) => !owned);

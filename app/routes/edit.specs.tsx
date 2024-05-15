@@ -57,14 +57,11 @@ export default function EditSpecs() {
 
   const [states, setStates] = useState(loaderData.states);
 
-  const [StateFilter, filteredStates] = useStateFilter(states, false, true);
+  const [StateFilter, filteredStates, updateStatesToFilter] = useStateFilter(states, false, true, true);
+
   useEffect(() => {
-    const orders = new Map();
-    filteredStates.forEach((state, index) => orders.set(state.student.id, index));
-    setStates((prev) => [
-      ...prev.sort((a, b) => orders.get(a.student.id) - orders.get(b.student.id))
-    ]);
-  }, [filteredStates]);
+    updateStatesToFilter(states);
+  }, [states])
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const setStatesBulkAction = (action: (prevState: StudentState) => StudentState) => {
@@ -93,7 +90,7 @@ export default function EditSpecs() {
       />
 
       <SpecEditor
-        states={states.filter(({ owned }) => owned)}
+        states={filteredStates.filter(({ owned }) => owned)}
         selectedIds={selectedIds}
         onUpdate={(state) => {
           setStates((prev) => prev.map((prevState) => prevState.student.id === state.student.id ? state : prevState));

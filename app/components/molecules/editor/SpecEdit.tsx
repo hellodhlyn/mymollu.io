@@ -14,14 +14,14 @@ export default function StudentSpecEdit(
 ) {
   const { student } = state;
   return (
-    <div className="flex p-1 md:px-0 hover:bg-gray-100 transition items-center rounded-lg">
+    <div className="flex p-1 md:px-0 hover:bg-neutral-100 transition items-center rounded-lg">
       <CheckCircle
-        className={`px-1 md:px-2 py-4 mr-1 h-14 w-8 md:w-10 ${selected ? "text-blue-500" : "text-gray-300"} transition cursor-pointer`}
+        className={`px-1 md:px-2 py-4 mr-1 h-14 w-8 md:w-10 ${selected ? "text-blue-500" : "text-neutral-300"} transition cursor-pointer`}
         strokeWidth={selected ? 2 : 1}
         onClick={() => onSelect(state, !selected)}
       />
-      <div className="w-12">
-        <StudentCard id={student.id} />
+      <div className="w-14">
+        <StudentCard id={student.id} name={student.name} />
       </div>
       <div className="mx-4">
         <EditTier

@@ -2,6 +2,7 @@ import { disassemble } from "hangul-js";
 import { useState } from "react";
 import { Input, Button } from "~/components/atoms/form";
 import { StudentCards } from "~/components/molecules/student";
+import { filterStudentByName } from "~/filters/student";
 import { studentImageUrl, type Student } from "~/models/student";
 
 type ProfileEditorProps = {
@@ -26,14 +27,10 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
       return setSearchedStudents([]);
     }
 
-    const disassembledSearch = disassemble(search).join();
-    if (disassembledSearch.length <= 1) {
+    if (disassemble(search).length <= 1) {
       return setSearchedStudents([]);
     }
-
-    setSearchedStudents(allStudents.filter((student) => (
-      disassemble(student.name).join().includes(disassembledSearch)
-    )).slice(0, 6));
+    setSearchedStudents(filterStudentByName(search, allStudents).slice(0, 6));
   };
 
   return (

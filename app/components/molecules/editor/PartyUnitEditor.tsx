@@ -1,9 +1,9 @@
-import { disassemble } from "hangul-js";
 import { UserPlus, ChatBubbleXmark, Search } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { StudentCards } from "~/components/molecules/student";
+import { filterStatesByName } from "~/filters/student";
 import type { StudentState } from "~/models/student-state";
 
 type PartyUnitEditorProps = {
@@ -25,11 +25,7 @@ export default function PartyUnitEditor(
     if (search.length === 0) {
       return setFilteredStates(studentStates);
     }
-
-    const disassembledSearch = disassemble(search).join();
-    setFilteredStates(studentStates.filter((state) => (
-      disassemble(state.student.name).join().includes(disassembledSearch)
-    )));
+    setFilteredStates(filterStatesByName(search, studentStates));
   };
 
   const addPartyStudent = (id: string) => {
