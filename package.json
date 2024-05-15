@@ -3,7 +3,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "worker:dev": "remix dev --manual -c \"npm run worker:start\"",
+    "worker:dev": "remix dev --manual -c \"pnpm run worker:start\"",
     "worker:start": "wrangler dev --test-scheduled ./build/index.js",
     "worker:build": "remix build",
     "worker:deploy": "wrangler deploy",

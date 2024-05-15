@@ -1,9 +1,8 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { ChatBubbleEmpty, Group } from "iconoir-react";
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
 import { ProfileImage } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";

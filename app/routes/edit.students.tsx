@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import type { StudentState } from "~/models/student-state";
 import { getUserStudentStates, updateStudentStates } from "~/models/student-state";
@@ -8,7 +8,6 @@ import { FloatingButton } from "~/components/atoms/form";
 import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 import { StudentCards } from "~/components/molecules/student";
-import { useFetcher } from "react-router-dom";
 import { useToast } from "~/components/atoms/notification";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";

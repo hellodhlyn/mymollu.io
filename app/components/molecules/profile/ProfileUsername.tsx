@@ -1,5 +1,5 @@
+import { Link } from "@remix-run/react";
 import { User, UserPlus, Group, UserXmark } from "iconoir-react";
-import { Link } from "react-router-dom";
 import { sanitizeClassName } from "~/prophandlers";
 
 type ProfileUsernameProps = {
