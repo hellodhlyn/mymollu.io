@@ -12,7 +12,7 @@ type TimelineItemHeaderProps = {
 };
 
 export function TimelineItemHeader({ title, label, eventSince, eventUntil, link }: TimelineItemHeaderProps) {
-  const remainingDays = eventUntil.diff(dayjs(), "day");
+  const remainingDays = eventUntil.endOf("day").diff(dayjs().endOf("day"), "day");
   let remainingDaysText = "";
   if (eventSince.isBefore(dayjs())) {
     if (remainingDays === 1) {
