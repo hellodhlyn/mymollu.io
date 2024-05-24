@@ -19,7 +19,7 @@ export default function ProfileUsername({
   return (
     <div className="m-4 md:m-6 pb-4 md:pb-6 flex items-center">
       {imageUrl ?
-        <img className="h-12 w-12 md:w-16 md:h-16 rounded-full" src={imageUrl ?? ""} alt={`${username}의 프로필`} /> :
+        <img className="h-12 w-12 md:w-16 md:h-16 rounded-full object-cover" src={imageUrl ?? ""} alt={`${username}의 프로필`} /> :
         (
           <div className="h-12 w-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700">
             <User className="h-8 w-8" strokeWidth={2} />

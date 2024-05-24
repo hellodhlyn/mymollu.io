@@ -60,7 +60,7 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
         <>
           <div className="my-8 flex items-center px-4 py-2 bg-neutral-100 rounded-lg">
             <img
-              className="h-12 w-12 mr-4 rounded-full"
+              className="h-12 w-12 mr-4 rounded-full object-cover"
               src={studentImageUrl(profileStudent.id)}
               alt={profileStudent.name}
             />
