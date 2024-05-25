@@ -1,4 +1,4 @@
-name = "mymollu"
+name = "mollulog"
 
 workers_dev = true
 main = "./build/index.js"
