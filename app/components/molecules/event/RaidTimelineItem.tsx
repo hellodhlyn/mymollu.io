@@ -4,7 +4,7 @@ import { TimelineItemHeader } from "./TimelineItemHeader";
 import dayjs from "dayjs";
 
 export default function RaidTimelineItem(
-  { name, type, boss, terrain, attackType, defenseType, since, until }: RaidEvent,
+  { id, name, type, boss, terrain, attackType, defenseType, since, until }: RaidEvent,
 ) {
   let attackTypeText = "";
   let attackTypeClass = "";
@@ -37,6 +37,7 @@ export default function RaidTimelineItem(
         label={raidTypeText(type)}
         eventSince={dayjs(since)}
         eventUntil={dayjs(until)}
+        link={`/raids/${id}`}
       />
 
       <div className="relative md:w-3/5">

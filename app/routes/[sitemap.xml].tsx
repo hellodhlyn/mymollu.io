@@ -3,6 +3,7 @@ import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import type { Env } from "~/env.server";
 import { detailedEvent, getAllEvents } from "~/models/event";
+import { getRaids } from "~/models/raid";
 
 type SitemapItem = {
   link: string;
@@ -16,22 +17,34 @@ const HOST = "https://mollulog.net";
 export const loader: LoaderFunction = async ({ context }) => {
   const env = context.env as Env;
 
-  const events = (await getAllEvents(env)).filter((event) => detailedEvent(event.type)).reverse();
+  const items: SitemapItem[] = [
+    { link: `${HOST}/events`, lastmod: dayjs(), changefreq: "daily", priority: 1.0 },
+  ];
+
   const now = dayjs();
-  const items: SitemapItem[] = events.map((event) => {
+  const events = (await getAllEvents(env)).filter((event) => detailedEvent(event.type)).reverse();
+  events.forEach((event) => {
     const until = dayjs(event.until);
-    const isOutdated = dayjs(event.until).isBefore(now);
-    return {
+    const isOutdated = until.isBefore(now);
+    items.push({
       link: `${HOST}/events/${event.id}`,
       lastmod: isOutdated ? until : now,
       changefreq: isOutdated ? "yearly" : "daily",
       priority: isOutdated ? 0.3 : 1.0,
-    };
+    });
   });
 
-  items.push(
-    { link: `${HOST}/events`, lastmod: dayjs(), changefreq: "daily", priority: 1.0 },
-  );
+  const raids = await getRaids(env, false);
+  raids.forEach((raid) => {
+    const until = dayjs(raid.until);
+    const isOutdated = until.isBefore(now);
+    items.push({
+      link: `${HOST}/raids/${raid.id}`,
+      lastmod: isOutdated ? until : now,
+      changefreq: isOutdated ? "yearly" : "daily",
+      priority: isOutdated ? 0.3 : 1.0,
+    });
+  });
 
   const xmlUrls = items.map((item) => {
     return `

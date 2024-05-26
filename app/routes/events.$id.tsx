@@ -1,14 +1,16 @@
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
+import dayjs from "dayjs";
 import { Link as LinkIcon } from "iconoir-react";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
+import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
-import { EventHeader, EventVideos } from "~/components/organisms/event";
+import { EventVideos } from "~/components/organisms/event";
 import type { Env } from "~/env.server";
 import type { GameEvent } from "~/models/event";
-import { detailedEvent, getAllEvents, pickupLabel } from "~/models/event";
+import { detailedEvent, eventLabelsMap, getAllEvents, pickupLabel } from "~/models/event";
 import type { StudentMap } from "~/models/student";
 import { getStudentsMap } from "~/models/student";
 
@@ -72,7 +74,14 @@ export default function EventDetail() {
   return (
     <>
       <div className="my-8">
-        <EventHeader event={event} />
+        <ContentHeader
+          name={event.name}
+          type={eventLabelsMap[event.type]}
+          since={dayjs(event.since)}
+          until={dayjs(event.until)}
+          image={event.image}
+          videos={event.videos}
+        />
       </div>
 
       {pickupStudents && (
@@ -99,7 +108,7 @@ export default function EventDetail() {
         </div>
       )}
 
-      {event.tips && (
+      {event.tips && event.tips.length > 0 && (
         <div className="my-8">
           <SubTitle text="공략 및 정보" />
           {event.tips.map((tip) => (

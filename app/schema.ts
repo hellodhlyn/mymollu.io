@@ -30,6 +30,42 @@ export type Database = {
         }
         Relationships: []
       }
+      dev_raid_tips: {
+        Row: {
+          createdAt: string
+          description: string | null
+          id: number
+          parties: Json | null
+          raidId: string
+          sourceUrl: string | null
+          title: string
+          updatedAt: string | null
+          userId: number | null
+        }
+        Insert: {
+          createdAt?: string
+          description?: string | null
+          id?: number
+          parties?: Json | null
+          raidId: string
+          sourceUrl?: string | null
+          title: string
+          updatedAt?: string | null
+          userId?: number | null
+        }
+        Update: {
+          createdAt?: string
+          description?: string | null
+          id?: number
+          parties?: Json | null
+          raidId?: string
+          sourceUrl?: string | null
+          title?: string
+          updatedAt?: string | null
+          userId?: number | null
+        }
+        Relationships: []
+      }
       dev_user_activities: {
         Row: {
           activityType: string | null
@@ -150,6 +186,42 @@ export type Database = {
           followeeId?: number
           followerId?: number
           id?: number
+        }
+        Relationships: []
+      }
+      prod_raid_tips: {
+        Row: {
+          createdAt: string
+          description: string | null
+          id: number
+          parties: Json | null
+          raidId: string
+          sourceUrl: string | null
+          title: string
+          updatedAt: string | null
+          userId: number | null
+        }
+        Insert: {
+          createdAt?: string
+          description?: string | null
+          id?: number
+          parties?: Json | null
+          raidId: string
+          sourceUrl?: string | null
+          title: string
+          updatedAt?: string | null
+          userId?: number | null
+        }
+        Update: {
+          createdAt?: string
+          description?: string | null
+          id?: number
+          parties?: Json | null
+          raidId?: string
+          sourceUrl?: string | null
+          title?: string
+          updatedAt?: string | null
+          userId?: number | null
         }
         Relationships: []
       }
