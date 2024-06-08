@@ -1,28 +1,28 @@
-import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { PartyGenerator } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
-import type { Party } from "~/models/party";
+import { graphql } from "~/graphql";
+import { RaidForPartyEditQuery } from "~/graphql/graphql";
+import { runQuery } from "~/lib/baql";
 import { updateOrCreateParty, getUserParties } from "~/models/party";
-import type { RaidEvent} from "~/models/raid";
-import { getRaids } from "~/models/raid";
-import type { StudentState } from "~/models/student-state";
 import { getUserStudentStates } from "~/models/student-state";
+
+const raidForPartyEditQuery = graphql(`
+  query RaidForPartyEdit {
+    raids {
+      nodes { raidId name type boss terrain since until }
+    }
+  }
+`);
 
 export const meta: MetaFunction = () => [
   { title: "편성 관리 | MolluLog" },
 ];
 
-type LoaderData = {
-  currentUsername: string;
-  states: StudentState[];
-  raids: RaidEvent[];
-  party: Party | null;
-}
-
-export const loader: LoaderFunction = async ({ context, request, params }) => {
+export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
   const env = context.env as Env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
@@ -34,11 +34,15 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
     party = (await getUserParties(env, sensei.username)).find((p) => p.uid === params.id) ?? null;
   }
 
+  const { data } = await runQuery<RaidForPartyEditQuery>(raidForPartyEditQuery, {});
+  if (!data) {
+    throw "failed to load data";
+  }
+
   let states = await getUserStudentStates(env, sensei.username);
-  return json<LoaderData>({
-    currentUsername: sensei.username,
+  return json({
     states: states!,
-    raids: await getRaids(env, false),
+    raids: data.raids.nodes,
     party,
   });
 };
@@ -61,14 +65,18 @@ export const action: ActionFunction = async ({ context, request }) => {
   return redirect(`/edit/parties`);
 };
 
-export default function EditNewParties() {
-  const loaderData = useLoaderData<LoaderData>();
+export default function EditParties() {
+  const loaderData = useLoaderData<typeof loader>();
 
   return (
     <div className="my-8">
       <Form method="post">
-        {loaderData.party && <input type="hidden" name="uid" value={loaderData.party?.uid} />}
-        <PartyGenerator party={loaderData.party ?? undefined} raids={loaderData.raids} studentStates={loaderData.states} />
+        {loaderData.party && <input type="hidden" name="uid" value={loaderData.party.uid} />}
+        <PartyGenerator 
+          party={loaderData.party ?? undefined}
+          raids={loaderData.raids.map((raid) => ({ ...raid, since: new Date(raid.since), until: new Date(raid.until)}))}
+          studentStates={loaderData.states}
+        />
       </Form>
     </div>
   );

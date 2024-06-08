@@ -1,19 +1,47 @@
-import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Title } from "~/components/atoms/typography";
-import { FutureTimeline, ResourceCalculator } from "~/components/organisms/event";
+import { FutureTimeline } from "~/components/templates/future";
 import type { Env } from "~/env.server";
-import type { GameEvent } from "~/models/event";
-import { getFutureEvents } from "~/models/event";
 import type { FuturePlan } from "~/models/future";
 import { getFuturePlan, setFuturePlan } from "~/models/future";
-import type { StudentMap } from "~/models/student";
-import { getStudentsMap } from "~/models/student";
-import type { RaidEvent } from "~/models/raid";
-import { getRaids } from "~/models/raid";
 import { getAuthenticator } from "~/auth/authenticator.server";
+import { graphql } from "~/graphql";
+import { runQuery } from "~/lib/baql";
+import { FutureContentsQuery } from "~/graphql/graphql";
+
+const futureContentsQuery = graphql(`
+  query FutureContents($now: ISO8601DateTime!) {
+    contents(untilAfter: $now, first: 9999) {
+      nodes {
+        __typename
+        name
+        since
+        until
+        ... on Event {
+          eventId
+          eventType : type
+          rerun
+          pickups {
+            type
+            rerun
+            student { studentId name }
+          }
+        }
+        ... on Raid {
+          raidId
+          raidType: type
+          boss
+          terrain
+          attackType
+          defenseType
+        }
+      }
+    }
+  }
+`);
 
 export const meta: MetaFunction = () => {
   const title = "블루 아카이브 이벤트, 픽업 미래시";
@@ -28,31 +56,20 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-type LoaderData = {
-  signedIn: boolean;
-  events: GameEvent[];
-  raids: RaidEvent[];
-  students: StudentMap;
-  futurePlan: FuturePlan | null;
-};
-
-export const loader: LoaderFunction = async ({ context, request }) => {
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
   const env = context.env as Env;
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
 
-  const events = await getFutureEvents(env);
-  const eventStudentIds = events.flatMap(({ pickups }) => (
-    pickups.map((student) => student.studentId)
-  ));
-  const students = await getStudentsMap(env, true, eventStudentIds);
+  const { data, error } = await runQuery<FutureContentsQuery>(futureContentsQuery, { now: new Date().toISOString() });
+  if (error || !data) {
+    throw error ?? "failed to fetch events";
+  }
 
   const signedIn = currentUser !== null;
   const futurePlan = signedIn ? await getFuturePlan(env, currentUser.id) : null;
-  return json<LoaderData>({
+  return json({
     signedIn,
-    events,
-    raids: await getRaids(env),
-    students,
+    contents: data.contents.nodes,
     futurePlan,
   });
 };
@@ -77,12 +94,20 @@ export const action: ActionFunction = async ({ context, request }) => {
   return json<ActionData>({});
 };
 
+type Event = Extract<FutureContentsQuery["contents"]["nodes"][number], { __typename: "Event" }>;
+type Raid = Extract<FutureContentsQuery["contents"]["nodes"][number], { __typename: "Raid" }>;
+
 export default function Futures() {
-  const loaderData = useLoaderData<LoaderData>();
-  const { signedIn, events, raids, students } = loaderData;
+  const { signedIn, contents: contentsData, futurePlan } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
-  const [plan, setPlan] = useState<FuturePlan>(loaderData.futurePlan ?? { studentIds: [] });
+  const contents = contentsData.map((content) => ({
+...content,
+    since: new Date(content.since),
+    until: new Date(content.until),
+  } as Event | Raid));
+
+  const [plan, setPlan] = useState<FuturePlan>(futurePlan ?? { studentIds: [] });
   useEffect(() => {
     if (!signedIn) {
       return;
@@ -101,17 +126,13 @@ export default function Futures() {
     return () => { clearTimeout(timer); };
   }, [plan]);
 
-  const selectedPickups = events.flatMap((event) => event.pickups)
-    .filter((pickup) => plan.studentIds.includes(pickup.studentId));
-
   return (
     <div className="pb-64">
       <Title text="미래시" />
 
       <FutureTimeline
-        events={events}
-        raids={raids}
-        students={students}
+        events={contents.filter((content) => content.__typename === "Event") as Event[]}
+        raids={contents.filter((content) => content.__typename === "Raid") as Raid[]}
         plan={plan}
         onSelectStudent={signedIn ? (studentId) => {
           const newSelectedIds = plan.studentIds.includes(studentId) ?
@@ -123,16 +144,6 @@ export default function Futures() {
           undefined
         }
       />
-
-      {(plan.studentIds.length > 0) && (
-        <div className="fixed w-screen bottom-0 left-0">
-          <ResourceCalculator
-            pickups={selectedPickups}
-            students={students}
-            loading={fetcher.state === "submitting"}
-          />
-        </div>
-      )}
     </div>
   );
 }

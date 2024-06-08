@@ -7,17 +7,40 @@ import { StudentCard } from "~/components/atoms/student";
 import { Callout, SubTitle } from "~/components/atoms/typography";
 import { ContentHeader } from "~/components/organisms/content";
 import { Env } from "~/env.server";
-import { bossBannerUrl, getRaids, raidTypeText } from "~/models/raid";
+import { graphql } from "~/graphql";
+import { RaidDetailQuery } from "~/graphql/graphql";
+import { runQuery } from "~/lib/baql";
+import { raidTypeLocale } from "~/locales/ko";
+import { bossBannerUrl } from "~/models/assets";
 import { getRaidTipsByRaidId } from "~/models/raid-tip";
-import { getStudentsMap } from "~/models/student";
 import { StudentState, getUserStudentStates } from "~/models/student-state";
 
+const raidDetailQuery = graphql(`
+  query RaidDetail($raidId: String!, $studentIds: [String!]) {
+    raid(raidId: $raidId) {
+      raidId
+      type
+      name
+      boss
+      since
+      until
+      terrain
+      attackType
+      defenseType
+    }
+    students(studentIds: $studentIds) {
+      studentId
+      name
+      initialTier
+    }
+  }
+`);
+
 export const loader = async ({ request, context, params }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
-  const raid = (await getRaids(env, false)).find(({ id }) => id === params.id);
-  if (!raid) {
+  const raidId = params.id;
+  if (!raidId) {
     throw new Response(
-      JSON.stringify({ error: { message: "정보를 찾을 수 없어요" } }),
+      JSON.stringify({ error: { message: "이벤트 정보를 찾을 수 없어요" } }),
       {
         status: 404,
         headers: { "Content-Type": "application/json" },
@@ -25,8 +48,27 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
     );
   }
 
-  const tips = await getRaidTipsByRaidId(env, raid.id);
-  const students = await getStudentsMap(env, true, tips.flatMap(({ parties }) => parties ?? []).flat());
+  const env = context.env as Env;
+  const tips = await getRaidTipsByRaidId(env, raidId!);
+  const studentIds = tips.flatMap(({ parties }) => parties?.flatMap((party) => party));
+
+  const { data, error } = await runQuery<RaidDetailQuery>(raidDetailQuery, { raidId, studentIds });
+  let errorMessage: string | null = null;
+  if (error || !data) {
+    errorMessage = error?.message ?? "이벤트 정보를 가져오는 중 오류가 발생했어요";
+  } else if (!data.raid) {
+    errorMessage = "이벤트 정보를 찾을 수 없어요";
+  }
+
+  if (errorMessage) {
+    throw new Response(
+      JSON.stringify({ error: { message: errorMessage } }),
+      {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
 
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   let studentStates: StudentState[] = [];
@@ -35,7 +77,10 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
   }
 
   return json({ 
-    raid, tips, students, studentStates,
+    raid: data!.raid!,
+    tips,
+    students: data!.students!,
+    studentStates,
     signedIn: sensei !== null,
   });
 };
@@ -46,8 +91,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   const { raid } = data;
-  const title = `${raidTypeText(raid.type)} ${raid.name} 정보`;
-  const description = `블루 아카이브 ${raidTypeText(raid.type)} ${raid.name} 이벤트의 공략 정보 모음`;
+  const title = `${raidTypeLocale[raid.type]} ${raid.name} 정보`;
+  const description = `블루 아카이브 ${raidTypeLocale[raid.type]} ${raid.name} 이벤트의 공략 정보 모음`;
   return [
     { title: `${title} | MolluLog` },
     { name: "description", content: description },
@@ -66,7 +111,7 @@ export default function RaidDetail() {
       <div className="my-8">
         <ContentHeader
           name={raid.name}
-          type={raidTypeText(raid.type)}
+          type={raidTypeLocale[raid.type]}
           since={dayjs(raid.since)}
           until={dayjs(raid.until)}
           image={bossBannerUrl(raid.boss)}
@@ -102,15 +147,15 @@ export default function RaidDetail() {
             {parties && (parties.map((party) => (
               <div className="my-2 grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
                 {party.map((studentId) => {
-                  const student = students[studentId];
+                  const student = students.find(({ studentId: id }) => id === studentId)!;
                   const state = studentStates.find(({ student }) => student.id === studentId)!;
                   return (
                     <StudentCard
                       key={`student-${studentId}`}
                       id={studentId}
                       name={student.name}
-                      tier={(signedIn && state.owned) ? state?.tier : null}
-                      grayscale={signedIn && !state.owned}
+                      tier={(signedIn && state?.owned) ? (state?.tier ?? student.initialTier) : null}
+                      grayscale={signedIn && !state?.owned}
                     />
                   );
                 })}

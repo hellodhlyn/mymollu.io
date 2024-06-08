@@ -5,14 +5,22 @@ import { Button, Input, Label } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { EventSelector, PartyUnitEditor } from "~/components/molecules/editor";
+import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party";
-import type { RaidEvent } from "~/models/raid";
 import type { StudentState } from "~/models/student-state";
 import { sanitizeClassName } from "~/prophandlers";
 
 type PartyGeneratorProps = {
   party?: Party;
-  raids: RaidEvent[];
+  raids: {
+    raidId: string;
+    name: string;
+    type: RaidType;
+    boss: string;
+    terrain: Terrain;
+    since: Date;
+    until: Date;
+  }[];
   studentStates: StudentState[];
 };
 
