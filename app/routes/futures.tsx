@@ -10,7 +10,7 @@ import { getFuturePlan, setFuturePlan } from "~/models/future";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { graphql } from "~/graphql";
 import { runQuery } from "~/lib/baql";
-import { FutureContentsQuery } from "~/graphql/graphql";
+import type { FutureContentsQuery } from "~/graphql/graphql";
 
 const futureContentsQuery = graphql(`
   query FutureContents($now: ISO8601DateTime!) {

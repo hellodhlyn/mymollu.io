@@ -27,7 +27,6 @@ export default function PartyView({ party, studentStates, editable, raids }: Par
   const raid = party.raidId ? raids.find(({ raidId }) => party.raidId === raidId) : null;
   let raidText;
   if (raid) {
-    console.log(raid);
     raidText = [
       raidTypeLocale[raid.type],
       terrainLocale[raid.terrain],

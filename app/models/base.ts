@@ -1,4 +1,4 @@
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 
 export async function fetchCached<T>(env: Env, cacheKey: string, fn: () => Promise<T>, ttl?: number): Promise<T> {
   const cached = await env.KV_USERDATA.get(cacheKey);

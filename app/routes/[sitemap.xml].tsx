@@ -1,7 +1,7 @@
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { graphql } from "~/graphql";
-import { SitemapQuery } from "~/graphql/graphql";
+import type { SitemapQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 
 const sitemapQuery = graphql(`

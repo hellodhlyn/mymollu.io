@@ -1,6 +1,6 @@
-import { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { getAuthenticator } from "~/auth/authenticator.server";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const env = context.env as Env;

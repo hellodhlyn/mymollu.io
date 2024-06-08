@@ -60,4 +60,4 @@ export function TimelineItemHeader({ title, label, since, until, link }: Timelin
     }
   </>
   );
-};
+}

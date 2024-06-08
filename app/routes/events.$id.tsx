@@ -8,7 +8,7 @@ import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
 import { EventVideos } from "~/components/organisms/event";
 import { graphql } from "~/graphql";
-import { EventDetailQuery } from "~/graphql/graphql";
+import type { EventDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { eventTypeLocale, pickupLabelLocale } from "~/locales/ko";
 

@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ProfileImage } from "~/components/atoms/student";
-import { UserActivity } from "~/models/user-activity";
+import type { UserActivity } from "~/models/user-activity";
 
 dayjs.extend(relativeTime);
 dayjs.locale("ko");

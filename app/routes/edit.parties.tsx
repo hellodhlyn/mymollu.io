@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { PlusCircle } from "iconoir-react";
@@ -6,7 +6,7 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { SubTitle } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
-import { RaidForPartyQuery } from "~/graphql/graphql";
+import type { RaidForPartyQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getUserParties, removePartyByUid } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";

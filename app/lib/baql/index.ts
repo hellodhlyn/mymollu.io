@@ -3,7 +3,7 @@ import { createClient, cacheExchange, fetchExchange, debugExchange } from "urql"
 import { requestPolicyExchange } from "@urql/exchange-request-policy";
 import type { DocumentNode } from "graphql/language";
 
-const URL = "http://127.0.0.1:3000/graphql";
+const URL = "https://baql.mollulog.net/graphql";
 
 export const client = createClient({
   url: URL,

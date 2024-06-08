@@ -1,9 +1,9 @@
 import type { Env } from "~/env.server";
 import type { Sensei } from "./sensei";
 import { getSenseiByUsername } from "./sensei";
-import { AllStudentsQuery } from "~/graphql/graphql";
+import type { AllStudentsQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
-import { AttackType, DefenseType } from "./content";
+import type { AttackType, DefenseType } from "./content";
 import { graphql } from "~/graphql";
 import { fetchCached } from "./base";
 

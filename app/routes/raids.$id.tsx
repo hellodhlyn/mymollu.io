@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import { Link as LinkIcon } from "iconoir-react";
@@ -6,14 +6,15 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { StudentCard } from "~/components/atoms/student";
 import { Callout, SubTitle } from "~/components/atoms/typography";
 import { ContentHeader } from "~/components/organisms/content";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import { RaidDetailQuery } from "~/graphql/graphql";
+import type { RaidDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { raidTypeLocale } from "~/locales/ko";
 import { bossBannerUrl } from "~/models/assets";
 import { getRaidTipsByRaidId } from "~/models/raid-tip";
-import { StudentState, getUserStudentStates } from "~/models/student-state";
+import type { StudentState} from "~/models/student-state";
+import { getUserStudentStates } from "~/models/student-state";
 
 const raidDetailQuery = graphql(`
   query RaidDetail($raidId: String!, $studentIds: [String!]) {
@@ -73,10 +74,10 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   let studentStates: StudentState[] = [];
   if (sensei) {
-    studentStates = await getUserStudentStates(env, sensei.username) ?? [];
+    studentStates = await getUserStudentStates(env, sensei.username, true) ?? [];
   }
 
-  return json({ 
+  return json({
     raid: data!.raid!,
     tips,
     students: data!.students!,
@@ -133,7 +134,7 @@ export default function RaidDetail() {
           <p className="my-8 text-center">공략 정보를 준비중이에요.</p>
         )}
         {tips.map(({ title, description, parties, sourceUrl }) => (
-          <div id={`tip-${title}`} className="my-8">
+          <div key={`tip-${title}`} className="my-8">
             <h3 className="text-lg font-bold">{title}</h3>
             {sourceUrl && (
               <p className="text-sm text-neutral-500">
@@ -145,7 +146,7 @@ export default function RaidDetail() {
             )}
             <p className="my-2">{description}</p>
             {parties && (parties.map((party) => (
-              <div className="my-2 grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
+              <div key={`party-${party.join(",")}`} className="my-2 grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
                 {party.map((studentId) => {
                   const student = students.find(({ studentId: id }) => id === studentId)!;
                   const state = studentStates.find(({ student }) => student.id === studentId)!;

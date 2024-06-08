@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderFunction, LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Title } from "~/components/atoms/typography";
@@ -6,7 +6,7 @@ import { updateSensei } from "~/models/sensei";
 import type { Env } from "~/env.server";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
 import { ProfileEditor } from "~/components/organisms/profile";
-import { ProfileStudentsQuery } from "~/graphql/graphql";
+import type { ProfileStudentsQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { profileStudentsQuery } from "./edit.profile";
 
@@ -15,7 +15,6 @@ export const meta: MetaFunction = () => [
 ];
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
   const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

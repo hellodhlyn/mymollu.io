@@ -1,7 +1,7 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: "http://127.0.0.1:3000/graphql",
+  schema: "https://baql.mollulog.net/graphql",
   documents: ["app/**/*.{ts,tsx}"],
   config: {
     scalars: {

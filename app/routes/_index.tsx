@@ -8,7 +8,7 @@ import { TimelineItem } from "~/components/organisms/content-timeline";
 import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
 import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import { IndexQuery } from "~/graphql/graphql";
+import type { IndexQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getUserActivities } from "~/models/user-activity";
 

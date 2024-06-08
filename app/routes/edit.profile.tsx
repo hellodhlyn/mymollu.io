@@ -7,7 +7,7 @@ import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
 import { updateSensei } from "~/models/sensei";
 import { graphql } from "~/graphql";
 import { runQuery } from "~/lib/baql";
-import { ProfileStudentsQuery } from "~/graphql/graphql";
+import type { ProfileStudentsQuery } from "~/graphql/graphql";
 
 export const profileStudentsQuery = graphql(`
   query ProfileStudents {

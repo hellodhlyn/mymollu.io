@@ -1,4 +1,5 @@
-import { Env, getDB } from "~/env.server";
+import type { Env} from "~/env.server";
+import { getDB } from "~/env.server";
 
 type RaidTip = {
   title: string;
