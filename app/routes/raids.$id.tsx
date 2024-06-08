@@ -152,7 +152,7 @@ export default function RaidDetail() {
                   return (
                     <StudentCard
                       key={`student-${studentId}`}
-                      id={studentId}
+                      studentId={studentId}
                       name={student.name}
                       tier={(signedIn && state?.owned) ? (state?.tier ?? student.initialTier) : null}
                       grayscale={signedIn && !state?.owned}

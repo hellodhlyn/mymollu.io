@@ -51,7 +51,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
               return (
                 <StudentCard
                   key={`party-student-${studentId}`}
-                  id={state.student.id}
+                  studentId={state.student.id}
                   tier={state.owned ? (state.tier ?? state.student.initialTier) : undefined}
                 />
               );

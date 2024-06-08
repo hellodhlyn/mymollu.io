@@ -10,10 +10,10 @@ import { getSenseiByUsername } from "~/models/sensei";
 import { getUserStudentStates } from "~/models/student-state";
 import type { ActionData } from "./api.followerships";
 import { getAuthenticator } from "~/auth/authenticator.server";
-import { studentImageUrl } from "~/models/student";
 import { getUserActivities } from "~/models/user-activity";
 import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
 import { Suspense } from "react";
+import { studentImageUrl } from "~/models/assets";
 
 export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
   const usernameParam = params.username;

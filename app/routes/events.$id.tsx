@@ -107,7 +107,7 @@ export default function EventDetail() {
           <StudentCards
             cardProps={event.pickups.map((pickup) => {
               return {
-                  id: pickup.student.studentId,
+                  studentId: pickup.student.studentId,
                   name: pickup.student.name,
                   label: (<span className={pickup.rerun ? "text-white" : "text-yellow-500"}>{pickupLabelLocale(pickup)}</span>),
                 };

@@ -53,7 +53,7 @@ export default function EventTimelineItem(event: EventTimelineItemProps) {
           const label = pickupLabelLocale({ type, rerun });
           const colorClass = rerun ? "text-white" : "text-yellow-500";
           return {
-            id: student.studentId,
+            studentId: student.studentId,
             name: student.name,
             selected: (selectedStudentIds ?? []).includes(student.studentId),
             label: (

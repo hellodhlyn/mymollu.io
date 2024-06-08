@@ -1,5 +1,5 @@
 import { User } from "iconoir-react";
-import { studentImageUrl } from "~/models/student";
+import { studentImageUrl } from "~/models/assets";
 
 type ProfileImageProps = {
   studentId: string | null;

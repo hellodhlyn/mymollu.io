@@ -6,6 +6,6 @@ export function filterStatesByName(keyword: string, states: StudentState[]): Stu
   return states.filter((state) => search(state.student.name, keyword) >= 0);
 }
 
-export function filterStudentByName(keyword: string, students: Student[]): Student[] {
+export function filterStudentByName<T extends { name: string }>(keyword: string, students: T[]): T[] {
   return students.filter((student) => search(student.name, keyword) >= 0);
 }

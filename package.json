@@ -11,9 +11,6 @@
     "assets:build": "cd functions && GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o build/bootstrap ./assets-metadata",
     "assets:plan": "tofu -chdir=deploy/assets plan",
     "assets:deploy": "tofu -chdir=deploy/assets apply",
-    "static:pull": "wrangler kv:key list --binding KV_STATIC_DATA | jq -r '.[].name' | xargs -I {} sh -c 'echo ./app/statics/{} && wrangler kv:key get --binding KV_STATIC_DATA {} > app/statics/{}'",
-    "static:push": "find ./app/statics -type f -exec sh -c 'echo {} && wrangler kv:key put --binding KV_STATIC_DATA --path {} $(basename {})' \\;",
-    "static:push:dev": "find ./app/statics -type f -exec sh -c 'echo {} && wrangler kv:key put --binding KV_STATIC_DATA --local --path {} $(basename {})' \\;",
     "typecheck": "tsc",
     "lint": "eslint --fix app/"
   },

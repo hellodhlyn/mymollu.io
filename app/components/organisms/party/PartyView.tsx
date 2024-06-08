@@ -62,7 +62,7 @@ export default function PartyView({ party, studentStates, editable, raids }: Par
             {studentIds.map((id) => studentStates.find((state) => state.student.id === id)!).map(({ student, owned, tier }) => (
               <StudentCard
                 key={`student-${student.id}`}
-                id={student.id}
+                studentId={student.id}
                 name={student.name}
                 tier={owned ? (tier ?? student.initialTier) : undefined}
               />

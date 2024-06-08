@@ -1,23 +1,20 @@
-import type { ActionFunction, LoaderFunction, MetaFunction} from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunction, LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Title } from "~/components/atoms/typography";
 import { updateSensei } from "~/models/sensei";
-import type { Student } from "~/models/student";
-import { getStudents } from "~/models/student";
 import type { Env } from "~/env.server";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
 import { ProfileEditor } from "~/components/organisms/profile";
+import { ProfileStudentsQuery } from "~/graphql/graphql";
+import { runQuery } from "~/lib/baql";
+import { profileStudentsQuery } from "./edit.profile";
 
 export const meta: MetaFunction = () => [
   { title: "선생님 등록 | MolluLog" },
 ];
 
-type LoaderData = {
-  allStudents: Student[];
-};
-
-export const loader: LoaderFunction = async ({ request, context }) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const env = context.env as Env;
   const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
   if (!sensei) {
@@ -26,7 +23,12 @@ export const loader: LoaderFunction = async ({ request, context }) => {
     return redirect(`/@${sensei.username}`);
   }
 
-  return json<LoaderData>({ allStudents: await getStudents(env, true) });
+  const { data } = await runQuery<ProfileStudentsQuery>(profileStudentsQuery, {});
+  if (!data?.students) {
+    throw new Error("failed to load students");
+  }
+
+  return json({ students: data.students });
 }
 
 type ActionData = {
@@ -62,12 +64,12 @@ export const action: ActionFunction = async ({ request, context }) => {
 }
 
 export default function Register() {
-  const { allStudents } = useLoaderData<LoaderData>();
+  const { students } = useLoaderData<typeof loader>();
   return (
     <>
       <Title text="기본 정보 설정" />
       <Form method="post">
-        <ProfileEditor allStudents={allStudents} error={useActionData<ActionData>()?.error} />
+        <ProfileEditor students={students} error={useActionData<ActionData>()?.error} />
       </Form>
     </>
   );

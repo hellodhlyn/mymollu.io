@@ -89,7 +89,7 @@ export default function PartyUnitEditor(
         {filteredStates.length > 0 ?
           <StudentCards
             cardProps={filteredStates.map(({ student, owned, tier }) => ({
-              id: student.id,
+              studentId: student.id,
               name: student.name,
               tier: owned ? tier : undefined,
             }))}
@@ -114,7 +114,7 @@ export default function PartyUnitEditor(
               >
                 {state?.student ?
                   <StudentCard
-                    id={state.student.id}
+                    studentId={state.student.id}
                     tier={state.owned ? state.tier : undefined}
                   /> :
                   <div className="w-full h-full flex items-center justify-center">

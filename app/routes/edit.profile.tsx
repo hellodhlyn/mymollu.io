@@ -1,30 +1,37 @@
-import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { ProfileEditor } from "~/components/organisms/profile";
 import type { Env } from "~/env.server";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
-import type { Sensei } from "~/models/sensei";
 import { updateSensei } from "~/models/sensei";
-import { getStudents, type Student } from "~/models/student";
+import { graphql } from "~/graphql";
+import { runQuery } from "~/lib/baql";
+import { ProfileStudentsQuery } from "~/graphql/graphql";
+
+export const profileStudentsQuery = graphql(`
+  query ProfileStudents {
+    students { studentId name }
+  }
+`)
 
 export const meta: MetaFunction = () => [
   { title: "프로필 관리 | MolluLog" },
 ];
 
-type LoaderData = {
-  sensei: Sensei;
-  allStudents: Student[];
-};
-
-export const loader: LoaderFunction = async ({ context, request }) => {
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
   const env = context.env as Env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   }
 
-  return json<LoaderData>({ sensei, allStudents: await getStudents(env, true) });
+  const { data } = await runQuery<ProfileStudentsQuery>(profileStudentsQuery, {});
+  if (!data?.students) {
+    throw new Error("failed to load students");
+  }
+
+  return json({ sensei, students: data.students });
 }
 
 type ActionData = {
@@ -57,12 +64,12 @@ export const action: ActionFunction = async ({ request, context }) => {
 }
 
 export default function EditProfile() {
-  const { sensei, allStudents } = useLoaderData<LoaderData>();
+  const { sensei, students } = useLoaderData<typeof loader>();
   return (
     <div className="py-4">
       <Form method="post">
         <ProfileEditor
-          allStudents={allStudents}
+          students={students}
           initialData={sensei}
           error={useActionData<ActionData>()?.error}
         />
