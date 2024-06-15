@@ -7,7 +7,7 @@ import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { RaidForPartyEditQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
-import { updateOrCreateParty, getUserParties } from "~/models/party";
+import { updateParty, getUserParties, createParty } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";
 
 const raidForPartyEditQuery = graphql(`
@@ -56,12 +56,21 @@ export const action: ActionFunction = async ({ context, request }) => {
 
   const formData = await request.formData();
   const raidId = formData.get("raidId");
-  const uid = formData.get("uid");
-  await updateOrCreateParty(env, sensei, {
+  const partyPatches = {
     name: formData.get("name") as string,
     studentIds: JSON.parse(formData.get("studentIds") as string),
     raidId: raidId ? raidId as string : null,
-  }, uid ? uid as string : undefined);
+    showAsRaidTip: formData.get("showAsRaidTip") === "true",
+    memo: formData.get("memo") as string | null,
+  };
+
+  const uid = formData.get("uid");
+  if (!uid) {
+    await createParty(env, sensei, partyPatches);
+  } else {
+    await updateParty(env, sensei, uid as string, partyPatches);
+  }
+
   return redirect(`/edit/parties`);
 };
 

@@ -1,18 +1,29 @@
 import { Form, Link } from "@remix-run/react";
 import dayjs from "dayjs";
-import { StudentCard } from "~/components/atoms/student";
+import { ProfileImage, StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { raidTypeLocale, terrainLocale } from "~/locales/ko";
 import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party"
 import { bossImageUrl } from "~/models/assets";
 import type { StudentState } from "~/models/student-state";
+import { CheckCircleSolid } from "iconoir-react";
+import { useState } from "react";
 
 type PartyViewProps = {
   party: Party;
+  sensei?: {
+    profileStudentId: string | null;
+    username: string;
+  };
+  students?: {
+    studentId: string;
+    name: string;
+    initialTier: number;
+  }[];
   studentStates: StudentState[];
   editable?: boolean;
-  raids: {
+  raids?: {
     raidId: string;
     type: RaidType;
     name: string;
@@ -22,9 +33,10 @@ type PartyViewProps = {
   }[];
 };
 
-export default function PartyView({ party, studentStates, editable, raids }: PartyViewProps) {
-  const units = Array.isArray(party.studentIds[0]) ? (party.studentIds as string[][]) : [party.studentIds as string[]];
-  const raid = party.raidId ? raids.find(({ raidId }) => party.raidId === raidId) : null;
+export default function PartyView({ party, sensei, students, studentStates, editable, raids }: PartyViewProps) {
+  const [memoOpened, setMemoOpened] = useState(false);
+
+  const raid = (raids && party.raidId) ? raids.find(({ raidId }) => party.raidId === raidId) : null;
   let raidText;
   if (raid) {
     raidText = [
@@ -34,41 +46,98 @@ export default function PartyView({ party, studentStates, editable, raids }: Par
     ].filter((text) => text).join(" | ");
   }
 
+  const studentsMap: Map<string, Exclude<PartyViewProps["students"], undefined>[number]> = new Map();
+  if (students) {
+    for (const student of students) {
+      studentsMap.set(student.studentId, student);
+    }
+  }
+
+  const studentStatesMap: Map<string, StudentState> = new Map();
+  for (const state of studentStates) {
+    studentStatesMap.set(state.student.id, state);
+    studentsMap.set(state.student.id, { studentId: state.student.id, name: state.student.name, initialTier: state.student.initialTier });
+  }
+
   return (
     <div className="my-4 px-4 md:px-6 py-2 rounded-lg bg-neutral-100">
       <SubTitle text={party.name} />
+
+      {sensei && (
+        <Link className="flex items-center -mt-2 mb-4 hover:underline" to={`/@${sensei.username}`}>
+          <ProfileImage imageSize={6} studentId={sensei.profileStudentId} />
+          <span className="ml-2 text-sm">@{sensei.username}</span>
+        </Link>
+      )}
+
       {raid && (
-        <div className="flex my-4 md:my-8 -mx-4 md:-mx-6">
+        <Link className="group flex items-center my-4 md:my-8 -mx-4 md:-mx-6" to={`/raids/${raid.raidId}`}>
           <img
             className="h-12 md:h-24 w-36 md:w-fit object-cover object-left bg-gradient-to-l from-white rounded-r-lg"
             src={bossImageUrl(raid.boss)}
             alt={`${raid.name} 이벤트`}
           />
-          <div className="px-4 md:px-8 w-full flex flex-col justify-center">
-            <p className="font-bold">
+          <div className="px-4 md:px-8 w-full">
+            <p className="font-bold group-hover:underline">
               {raid.name}
             </p>
             <p className="text-xs md:text-sm text-neutral-500">
               {raidText}
             </p>
+            {party.showAsRaidTip && (
+              <p className="flex my-1 text-xs md:text-sm text-neutral-500 items-center">
+                <CheckCircleSolid className="mr-1 size-4 inline-block" strokeWidth={2} />
+                컨텐츠 공략으로 공개중
+              </p>
+            )}
           </div>
-        </div>
+        </Link>
       )}
 
-      {units.map((studentIds) => (
-        <div key={`unit-${studentIds.join(":")}`}>
+      <div className="py-2 w-full border-t border-1 border-neutral-200" />
+
+      {party.studentIds.map((squad) => (
+        <div key={`squad-${squad.join(":")}`}>
           <div className="grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
-            {studentIds.map((id) => studentStates.find((state) => state.student.id === id)!).map(({ student, owned, tier }) => (
-              <StudentCard
-                key={`student-${student.id}`}
-                studentId={student.id}
-                name={student.name}
-                tier={owned ? (tier ?? student.initialTier) : undefined}
-              />
-            ))}
+            {squad.map((studentId) => {
+              const student = studentsMap.get(studentId)!;
+              const state = studentStatesMap.get(studentId);
+              return (
+                <StudentCard
+                  key={`student-${studentId}`}
+                  studentId={studentId}
+                  name={student.name}
+                  tier={state?.owned ? (state.tier ?? student.initialTier) : undefined}
+                />
+              );
+            })}
           </div>
         </div>
       ))}
+
+      {party.memo && (
+        <div className="my-4 whitespace-pre-line">
+          {memoOpened ? (
+            <>
+              <p className="pb-2">{party.memo}</p>
+              {party.memo.length > 100 && (
+                <span className="cursor-pointer hover:underline text-neutral-500" onClick={() => setMemoOpened(false)}>
+                  ... 감추기
+                </span>
+              )}
+            </>
+          ) : (
+            <p>
+              {party.memo.slice(0, 100)}
+              {party.memo.length > 100 && (
+                <span className="cursor-pointer hover:underline text-neutral-500" onClick={() => setMemoOpened(true)}>
+                  ... 더보기
+                </span>
+              )}
+            </p>
+          )}
+        </div>
+      )}
 
       {editable && (
         <div className="my-2 flex items-center justify-end">

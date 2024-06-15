@@ -1,63 +1,133 @@
 import { nanoid } from "nanoid/non-secure";
 import type { Env } from "~/env.server";
-import type { Sensei} from "./sensei";
-import { getSenseiByUsername } from "./sensei";
+import type { Sensei } from "./sensei";
+import { UserRepo, getSenseiByUsername } from "./sensei";
 
-type PartyFields = {
+export type DBParty = {
+  id: number;
+  uid: string;
   name: string;
-  studentIds: string[] | string[][];
-  raidId?: string | null;
-}
+  userId: number;
+  raidId: string | null;
+  memo: string;
+  showAsRaidTip: number;
+  students: string;
+};
 
 export type Party = {
   uid: string;
-} & PartyFields;
+  sensei?: {
+    username: string;
+    profileStudentId: string | null;
+  };
+  name: string;
+  studentIds: string[][];
+  raidId: string | null;
+  memo: string | null;
+  showAsRaidTip: boolean;
+};
 
-function partyKey(username: string) {
-  return `parties:${username}`;
-}
-
-export function partyKeyById(id: number) {
-  return `parties:id:${id}`;
-}
+// Get all parties for a user
+const GET_USER_PARTIES_QUERY = "select * from parties where userId = ?1";
+const GET_PARTIES_BY_RAID_QUERY = "select * from parties where raidId = ?1 and showAsRaidTip = true";
 
 export async function getUserParties(env: Env, username: string): Promise<Party[]> {
   const sensei = await getSenseiByUsername(env, username);
-  const rawParties = await env.KV_USERDATA.get(sensei ? partyKeyById(sensei.id) : partyKey(username));
-  if (!rawParties) {
+  if (!sensei) {
     return [];
   }
 
-  return (JSON.parse(rawParties) as Party[]);
+  const result = await env.DB.prepare(GET_USER_PARTIES_QUERY).bind(sensei.id).all<DBParty>();
+  return result.results.map(toModel);
 }
+
+export async function getPartiesByRaidId(env: Env, raidId: string, includeSensei: boolean = false): Promise<Party[]> {
+  const result = await env.DB.prepare(GET_PARTIES_BY_RAID_QUERY).bind(raidId).all<DBParty>();
+  const rows = result.results;
+  if (rows.length === 0) {
+    return [];
+  }
+
+  const userRepo = new UserRepo(env);
+  const userMap = new Map<number, Sensei>();
+  if (includeSensei) {
+    const senseiIds = rows.map((row) => row.userId);
+    const senseis = await userRepo.findAllByIn("id", senseiIds);
+    senseis.forEach((sensei) => userMap.set(sensei.id, sensei));
+  }
+
+  return rows.map((row) => {
+    const sensei = includeSensei ? userMap.get(row.userId) : undefined;
+    return {
+      ...toModel(row),
+      sensei : sensei ? { username: sensei.username, profileStudentId: sensei.profileStudentId } : undefined,
+    };
+  });
+}
+
+// Delete a party by its UID
+const DELETE_PARTY_QUERY = "delete from parties where uid = ?1 and userId = ?2";
 
 export async function removePartyByUid(env: Env, sensei: Sensei, uid: string) {
-  const existingParties = await getUserParties(env, sensei.username);
-  const newParties = existingParties.filter((party) => party.uid !== uid);
-  await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(newParties));
+  return env.DB.prepare(DELETE_PARTY_QUERY).bind(uid, sensei.id).run();
 }
 
-export async function updateOrCreateParty(env: Env, sensei: Sensei, fields: PartyFields, uid?: string) {
-  if (fields.studentIds.length === 0) {
-    // TODO - handle error
+// Create a party
+type PartyCreateFields = Pick<Party, "name" | "studentIds" | "raidId" | "showAsRaidTip" | "memo">;
+
+const CREATE_PARTY_QUERY = "insert into parties (uid, name, userId, raidId, students, showAsRaidTip, memo) values (?1, ?2, ?3, ?4, ?5, ?6, ?7)";
+
+export async function createParty(env: Env, sensei: Sensei, fields: PartyCreateFields) {
+  const result = await env.DB.prepare(CREATE_PARTY_QUERY).bind(
+    nanoid(),
+    fields.name,
+    sensei.id,
+    fields.raidId,
+    JSON.stringify(fields.studentIds),
+    fields.showAsRaidTip,
+    fields.memo,
+  ).run();
+
+  if (result.error) {
+    console.error(result.error);
+  }
+  return;
+}
+
+// Update a party
+type PartyUpdateFields = Partial<PartyCreateFields>;
+
+const UPDATE_PARTY_QUERY = "update parties set name = ?1, raidId = ?2, students = ?3, showAsRaidTip = ?4, memo = ?5 where uid = ?6 and userId = ?7";
+
+export async function updateParty(env: Env, sensei: Sensei, uid: string, fields: PartyUpdateFields) {
+  const existingParty = (await getUserParties(env, sensei.username)).find((party) => party.uid === uid);
+  if (!existingParty) {
     return;
   }
 
-  const existingParties = await getUserParties(env, sensei.username);
+  const result = await env.DB.prepare(UPDATE_PARTY_QUERY).bind(
+    fields.name ?? existingParty.name,
+    fields.raidId ?? existingParty.raidId,
+    JSON.stringify(fields.studentIds ?? existingParty.studentIds),
+    fields.showAsRaidTip ?? existingParty.showAsRaidTip,
+    fields.memo ?? existingParty.memo,
+    uid,
+    sensei.id,
+  ).run();
 
-  let updatedParties: Party[] = [];
-  if (uid) {
-    const existingParty = existingParties.find((party) => party.uid === uid);
-    if (!existingParty) {
-      return;
-    }
-    const updatedParty = { ...existingParty, ...fields };
-    updatedParties = existingParties.map((party) => party.uid === uid ? updatedParty : party);
-  } else {
-    const newParty: Party = { uid: nanoid(8), ...fields };
-    updatedParties = [...existingParties, newParty];
+  if (result.error) {
+    console.error(result.error);
   }
+  return;
+}
 
-  updatedParties = updatedParties.filter((party) => party !== null);
-  await env.KV_USERDATA.put(partyKeyById(sensei.id), JSON.stringify(updatedParties));
+function toModel(row: DBParty): Party {
+  return {
+    uid: row.uid,
+    name: row.name,
+    studentIds: JSON.parse(row.students),
+    raidId: row.raidId,
+    memo: row.memo,
+    showAsRaidTip: row.showAsRaidTip === 1,
+  };
 }

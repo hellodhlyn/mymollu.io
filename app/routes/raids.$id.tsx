@@ -1,18 +1,17 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { Link, json, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
-import { Link as LinkIcon } from "iconoir-react";
 import { getAuthenticator } from "~/auth/authenticator.server";
-import { StudentCard } from "~/components/atoms/student";
 import { Callout, SubTitle } from "~/components/atoms/typography";
 import { ContentHeader } from "~/components/organisms/content";
+import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { RaidDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { raidTypeLocale } from "~/locales/ko";
 import { bossBannerUrl } from "~/models/assets";
-import { getRaidTipsByRaidId } from "~/models/raid-tip";
+import { getPartiesByRaidId } from "~/models/party";
 import type { StudentState} from "~/models/student-state";
 import { getUserStudentStates } from "~/models/student-state";
 
@@ -50,8 +49,8 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
   }
 
   const env = context.env as Env;
-  const tips = await getRaidTipsByRaidId(env, raidId!);
-  const studentIds = tips.flatMap(({ parties }) => parties?.flatMap((party) => party));
+  const parties = await getPartiesByRaidId(env, raidId, true);
+  const studentIds = parties.flatMap((party) => party.studentIds.flatMap((squad) => squad));
 
   const { data, error } = await runQuery<RaidDetailQuery>(raidDetailQuery, { raidId, studentIds });
   let errorMessage: string | null = null;
@@ -79,7 +78,7 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
 
   return json({
     raid: data!.raid!,
-    tips,
+    parties,
     students: data!.students!,
     studentStates,
     signedIn: sensei !== null,
@@ -105,7 +104,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 }
 
 export default function RaidDetail() {
-  const { raid, tips, students, studentStates, signedIn } = useLoaderData<typeof loader>();
+  const { raid, parties, students, studentStates, signedIn } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -130,39 +129,9 @@ export default function RaidDetail() {
           </Callout>
         )}
 
-        {(tips.length === 0) && (
-          <p className="my-8 text-center">공략 정보를 준비중이에요.</p>
-        )}
-        {tips.map(({ title, description, parties, sourceUrl }) => (
-          <div key={`tip-${title}`} className="my-8">
-            <h3 className="text-lg font-bold">{title}</h3>
-            {sourceUrl && (
-              <p className="text-sm text-neutral-500">
-                <LinkIcon className="w-4 h-4 inline-block mr-1" strokeWidth={2} />
-                <a className="underline" href={sourceUrl} target="_blank" rel="noreferrer">
-                  {sourceUrl.replace(/^https?:\/\//, "")}
-                </a>
-              </p>
-            )}
-            <p className="my-2">{description}</p>
-            {parties && (parties.map((party) => (
-              <div key={`party-${party.join(",")}`} className="my-2 grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
-                {party.map((studentId) => {
-                  const student = students.find(({ studentId: id }) => id === studentId)!;
-                  const state = studentStates.find(({ student }) => student.id === studentId)!;
-                  return (
-                    <StudentCard
-                      key={`student-${studentId}`}
-                      studentId={studentId}
-                      name={student.name}
-                      tier={(signedIn && state?.owned) ? (state?.tier ?? student.initialTier) : null}
-                      grayscale={signedIn && !state?.owned}
-                    />
-                  );
-                })}
-              </div>
-            )))}
-          </div>
+        {(parties.length === 0) && <p className="my-8 text-center">공략 정보를 준비중이에요.</p>}
+        {parties.map((party) => (
+          <PartyView party={party} sensei={party.sensei} students={students} studentStates={studentStates} />
         ))}
       </div>
     </>

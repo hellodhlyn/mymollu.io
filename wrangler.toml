@@ -6,13 +6,13 @@ main = "./build/index.js"
 compatibility_date = "2023-08-15"
 
 [placement]
-  mode = "smart"
+mode = "smart"
 
 [site]
-  bucket = "./public"
+bucket = "./public"
 
 [build]
-  command = "npm run worker:build"
+command = "pnpm run worker:build"
 
 [vars]
 HOST = "https://mollulog.net"
@@ -26,9 +26,14 @@ STAGE = "prod"
 #   - SUPERUSER_NAME
 
 [[kv_namespaces]]
-  binding = "KV_USERDATA"
-  id = "a613bc84ffeb4362b3deaa05c617a7b3"
+binding = "KV_USERDATA"
+id = "a613bc84ffeb4362b3deaa05c617a7b3"
 
 [[kv_namespaces]]
-  binding = "KV_SESSION"
-  id = "757ca5d838364689af06edc372cd4c56"
+binding = "KV_SESSION"
+id = "757ca5d838364689af06edc372cd4c56"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mollulog"
+database_id = "7a71335f-8622-43c2-8b63-d842b6ef7761"

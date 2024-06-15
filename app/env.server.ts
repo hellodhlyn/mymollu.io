@@ -5,6 +5,7 @@ import type { Database } from "./schema";
 export interface Env {
   __STATIC_CONTENT: KVNamespace<string>;
   KV_USERDATA: KVNamespace;
+  DB: D1Database;
 
   HOST: string;
   STAGE: "dev" | "prod";

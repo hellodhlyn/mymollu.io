@@ -37,7 +37,7 @@ export default function EventSelector({ raids, initialRaidId, onSelectRaid }: Ev
 
   const now = dayjs();
   return (
-    <div className="mt-4 mb-8 last:mb-4 mr-1 md:mr-2">
+    <div className="my-4 mr-1 md:mr-2">
       <Label text="목표 컨텐츠" />
 
       <Menu as="div" className="relative">

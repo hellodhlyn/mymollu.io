@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
-import { Button, Input, Label } from "~/components/atoms/form";
+import { Button, Input, Label, Textarea, Toggle } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { EventSelector, PartyUnitEditor } from "~/components/molecules/editor";
@@ -28,17 +28,23 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
   const [raidId, setRaidId] = useState<string | undefined>(party?.raidId ?? undefined);
 
   const [showPartyEditor, setShowPartyEditor] = useState(false);
-  const [units, setUnits] = useState<string[][]>(
-    party ? (Array.isArray(party.studentIds[0]) ? (party.studentIds as string[][]) : [party.studentIds as string[]]) : [],
-  );
+  const [units, setUnits] = useState<string[][]>(party?.studentIds ?? []);
 
   return (
     <div className="my-8">
-      <SubTitle text="새로운 편성" />
+      <SubTitle text="편성 만들기" />
       <Input name="name" label="편성 이름" placeholder="예) 비나 인세인 고점팟" defaultValue={party?.name} />
 
       <EventSelector raids={raids} initialRaidId={raidId} onSelectRaid={(id) => setRaidId(id)} />
-      {raidId && <input type="hidden" name="raidId" value={raidId} />}
+      {raidId && (
+        <>
+          <input type="hidden" name="raidId" value={raidId} />
+          <Toggle name="showAsRaidTip" label="컨텐츠 공략에 공개하기" initialState={party?.showAsRaidTip ?? false} />
+        </>
+      )}
+ 
+      <div className="h-8" />
+      <Textarea name="memo" label="편성 설명" placeholder="편성에 대한 설명을 적어주세요" defaultValue={party?.memo ?? undefined} />
 
       <SubTitle text="파티" />
       <input type="hidden" name="studentIds" value={JSON.stringify(units)} />
