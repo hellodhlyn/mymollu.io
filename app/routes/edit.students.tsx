@@ -93,7 +93,7 @@ export default function EditPage() {
         )}
         <StudentCards
           cardProps={filteredStates.map(({ student, owned }) => ({
-              id: student.id,
+              studentId: student.id,
               name: student.name,
               grayscale: !owned,
           }))}

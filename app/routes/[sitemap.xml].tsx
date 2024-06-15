@@ -1,9 +1,26 @@
-import type { LoaderFunction } from "@remix-run/cloudflare";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import type { Env } from "~/env.server";
-import { detailedEvent, getAllEvents } from "~/models/event";
-import { getRaids } from "~/models/raid";
+import { graphql } from "~/graphql";
+import type { SitemapQuery } from "~/graphql/graphql";
+import { runQuery } from "~/lib/baql";
+
+const sitemapQuery = graphql(`
+  query Sitemap {
+    contents {
+      nodes {
+        __typename
+        ... on Event {
+          id: eventId
+          until
+        }
+        ... on Raid {
+          id: raidId
+          until
+        }
+      }
+    }
+  }
+`);
 
 type SitemapItem = {
   link: string;
@@ -14,32 +31,22 @@ type SitemapItem = {
 
 const HOST = "https://mollulog.net";
 
-export const loader: LoaderFunction = async ({ context }) => {
-  const env = context.env as Env;
-
+export const loader = async () => {
   const items: SitemapItem[] = [
     { link: `${HOST}/events`, lastmod: dayjs(), changefreq: "daily", priority: 1.0 },
   ];
 
-  const now = dayjs();
-  const events = (await getAllEvents(env)).filter((event) => detailedEvent(event.type)).reverse();
-  events.forEach((event) => {
-    const until = dayjs(event.until);
-    const isOutdated = until.isBefore(now);
-    items.push({
-      link: `${HOST}/events/${event.id}`,
-      lastmod: isOutdated ? until : now,
-      changefreq: isOutdated ? "yearly" : "daily",
-      priority: isOutdated ? 0.3 : 1.0,
-    });
-  });
+  const { data, error } = await runQuery<SitemapQuery>(sitemapQuery, {});
+  if (error || !data) {
+    throw error ?? "failed to fetch events";
+  }
 
-  const raids = await getRaids(env, false);
-  raids.forEach((raid) => {
-    const until = dayjs(raid.until);
+  const now = dayjs();
+  data.contents.nodes.forEach((content) => {
+    const until = dayjs(content.until);
     const isOutdated = until.isBefore(now);
     items.push({
-      link: `${HOST}/raids/${raid.id}`,
+      link: `${HOST}/${content.__typename.toLowerCase()}s/${content.id}`,
       lastmod: isOutdated ? until : now,
       changefreq: isOutdated ? "yearly" : "daily",
       priority: isOutdated ? 0.3 : 1.0,

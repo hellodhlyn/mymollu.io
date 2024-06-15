@@ -1,8 +1,8 @@
-import dayjs, { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useState } from "react";
 import YouTube from "react-youtube";
 import { MultilineText } from "~/components/atoms/typography";
-import { eventLabelsMap } from "~/models/event";
 
 type ContentHeaderProps = {
   name: string;

@@ -2,26 +2,34 @@ import { Form, Link } from "@remix-run/react";
 import dayjs from "dayjs";
 import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
+import { raidTypeLocale, terrainLocale } from "~/locales/ko";
+import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party"
-import type { RaidEvent} from "~/models/raid";
-import { bossImageUrl, raidTerrainText, raidTypeText } from "~/models/raid";
+import { bossImageUrl } from "~/models/assets";
 import type { StudentState } from "~/models/student-state";
 
 type PartyViewProps = {
   party: Party;
   studentStates: StudentState[];
   editable?: boolean;
-  raids: RaidEvent[];
+  raids: {
+    raidId: string;
+    type: RaidType;
+    name: string;
+    boss: string;
+    terrain: Terrain;
+    since: Date;
+  }[];
 };
 
 export default function PartyView({ party, studentStates, editable, raids }: PartyViewProps) {
   const units = Array.isArray(party.studentIds[0]) ? (party.studentIds as string[][]) : [party.studentIds as string[]];
-  const raid = party.raidId ? raids.find(({ id }) => party.raidId === id) : null;
+  const raid = party.raidId ? raids.find(({ raidId }) => party.raidId === raidId) : null;
   let raidText;
   if (raid) {
-    [
-      raidTypeText(raid.type),
-      raid.terrain ? raidTerrainText(raid.terrain) : null,
+    raidText = [
+      raidTypeLocale[raid.type],
+      terrainLocale[raid.terrain],
       dayjs(raid.since).format("YYYY-MM-DD"),
     ].filter((text) => text).join(" | ");
   }
@@ -53,7 +61,7 @@ export default function PartyView({ party, studentStates, editable, raids }: Par
             {studentIds.map((id) => studentStates.find((state) => state.student.id === id)!).map(({ student, owned, tier }) => (
               <StudentCard
                 key={`student-${student.id}`}
-                id={student.id}
+                studentId={student.id}
                 name={student.name}
                 tier={owned ? (tier ?? student.initialTier) : undefined}
               />

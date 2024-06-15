@@ -1,16 +1,23 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
-import type { Party } from "~/models/party";
+import { graphql } from "~/graphql";
+import type { RaidForPartyQuery } from "~/graphql/graphql";
+import { runQuery } from "~/lib/baql";
 import { getUserParties } from "~/models/party";
-import type { RaidEvent } from "~/models/raid";
-import { getRaids } from "~/models/raid";
-import type { StudentState } from "~/models/student-state";
 import { getUserStudentStates } from "~/models/student-state";
+
+export const raidForPartyQuery = graphql(`
+  query RaidForParty {
+    raids {
+      nodes { raidId name type boss terrain since }
+    }
+  }
+`);
 
 export const meta: MetaFunction = ({ params }) => {
   return [
@@ -21,35 +28,33 @@ export const meta: MetaFunction = ({ params }) => {
   ];
 };
 
-type LoaderData = {
-  me: boolean;
-  states: StudentState[];
-  parties: Party[];
-  raids: RaidEvent[];
-}
-
-export const loader: LoaderFunction = async ({ context, request, params }) => {
+export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
   const env = context.env as Env;
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
   }
 
+  const { data } = await runQuery<RaidForPartyQuery>(raidForPartyQuery, {});
+  if (!data) {
+    throw new Error("failed to load data");
+  }
+
   const username = usernameParam.replace("@", "");
   const currentUsername = await getAuthenticator(env).isAuthenticated(request);
   const parties = (await getUserParties(env, username)).reverse();
   const states = await getUserStudentStates(env, username, true);
-  const raids = await getRaids(env, false);
-  return json<LoaderData>({
+
+  return json({
     me: username === currentUsername?.username,
     states: states!,
     parties,
-    raids,
+    raids: data.raids.nodes,
   });
 };
 
 export default function UserPartyPage() {
-  const { me, states, parties, raids } = useLoaderData<LoaderData>();
+  const { me, states, parties, raids } = useLoaderData<typeof loader>();
   const isNewbee = me && parties.length === 0;
 
   return (
@@ -66,7 +71,12 @@ export default function UserPartyPage() {
         </p>
       )}
       {parties.map((party) => (
-        <PartyView key={`party-${party.uid}`} party={party} studentStates={states} raids={raids} />
+        <PartyView
+          key={`party-${party.uid}`}
+          party={party}
+          studentStates={states}
+          raids={raids.map((raid) => ({ ...raid, since: new Date(raid.since) }))}
+        />
       ))}
     </div>
   );

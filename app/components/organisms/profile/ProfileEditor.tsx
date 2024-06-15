@@ -3,10 +3,15 @@ import { useState } from "react";
 import { Input, Button } from "~/components/atoms/form";
 import { StudentCards } from "~/components/molecules/student";
 import { filterStudentByName } from "~/filters/student";
-import { studentImageUrl, type Student } from "~/models/student";
+import { studentImageUrl } from "~/models/assets";
+
+type ProfileStudent = {
+  studentId: string;
+  name: string;
+};
 
 type ProfileEditorProps = {
-  allStudents: Student[];
+  students: ProfileStudent[];
   initialData?: {
     username: string;
     profileStudentId: string | null;
@@ -16,10 +21,10 @@ type ProfileEditorProps = {
   };
 }
 
-export default function ProfileEditor({ allStudents, initialData, error }: ProfileEditorProps) {
-  const [searchedStudents, setSearchedStudents] = useState<Student[]>([]);
-  const [profileStudent, setProfileStudent] = useState<Student | null>(
-    initialData?.profileStudentId ? allStudents.find(({ id }) => initialData.profileStudentId === id) ?? null : null
+export default function ProfileEditor({ students, initialData, error }: ProfileEditorProps) {
+  const [searchedStudents, setSearchedStudents] = useState<ProfileStudent[]>([]);
+  const [profileStudent, setProfileStudent] = useState<ProfileStudent | null>(
+    initialData?.profileStudentId ? students.find(({ studentId }) => initialData.profileStudentId === studentId) ?? null : null
   );
 
   const onSearch = (search: string) => {
@@ -30,7 +35,7 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
     if (disassemble(search).length <= 1) {
       return setSearchedStudents([]);
     }
-    setSearchedStudents(filterStudentByName(search, allStudents).slice(0, 6));
+    setSearchedStudents(filterStudentByName(search, students).slice(0, 6));
   };
 
   return (
@@ -51,7 +56,7 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
         <StudentCards
           cardProps={searchedStudents}
           onSelect={(id) => {
-            setProfileStudent(allStudents.find((student) => student.id === id)!);
+            setProfileStudent(students.find((student) => student.studentId === id)!);
             setSearchedStudents([]);
           }}
         />
@@ -61,12 +66,12 @@ export default function ProfileEditor({ allStudents, initialData, error }: Profi
           <div className="my-8 flex items-center px-4 py-2 bg-neutral-100 rounded-lg">
             <img
               className="h-12 w-12 mr-4 rounded-full object-cover"
-              src={studentImageUrl(profileStudent.id)}
+              src={studentImageUrl(profileStudent.studentId)}
               alt={profileStudent.name}
             />
             <p><span className="font-bold">{profileStudent.name}</span>를 선택했어요.</p>
           </div>
-          <input type="hidden" name="profileStudentId" value={profileStudent.id} />
+          <input type="hidden" name="profileStudentId" value={profileStudent.studentId} />
         </>
       )}
 

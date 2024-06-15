@@ -1,11 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@supabase/supabase-js";
-import { Database } from "./schema";
+import type { Database } from "./schema";
 
 export interface Env {
   __STATIC_CONTENT: KVNamespace<string>;
   KV_USERDATA: KVNamespace;
-  KV_STATIC_DATA: KVNamespace;
 
   HOST: string;
   STAGE: "dev" | "prod";

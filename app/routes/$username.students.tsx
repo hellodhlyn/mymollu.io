@@ -1,7 +1,6 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
-import type { StudentState } from "~/models/student-state";
 import { getUserStudentStates } from "~/models/student-state";
 import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
@@ -9,13 +8,7 @@ import { StudentCards } from "~/components/molecules/student";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
 
-type LoaderData = {
-  currentUsername?: string;
-  username: string;
-  states: StudentState[] | null;
-}
-
-export const loader: LoaderFunction = async ({ context, request, params }) => {
+export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
   const env = context.env as Env;
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
@@ -23,14 +16,11 @@ export const loader: LoaderFunction = async ({ context, request, params }) => {
   }
 
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
-
   const username = usernameParam.replace("@", "");
-  let states = await getUserStudentStates(env, username, false);
-
-  return json<LoaderData>({
+  return json({
     currentUsername: currentUser?.username,
     username,
-    states,
+    states: await getUserStudentStates(env, username, false),
   });
 };
 
@@ -44,7 +34,7 @@ export const meta: MetaFunction = ({ params }) => {
 };
 
 export default function UserPage() {
-  const loaderData = useLoaderData<LoaderData>();
+  const loaderData = useLoaderData<typeof loader>();
   const { currentUsername, username, states } = loaderData;
   if (!states) {
     return (
@@ -75,7 +65,7 @@ export default function UserPage() {
           </div> :
           <StudentCards
             cardProps={filteredStates.filter(({ owned }) => owned).map(({ student, tier }) => ({
-              id: student.id,
+              studentId: student.id,
               name: student.name,
               tier: tier ?? student.initialTier,
             }))}
@@ -87,7 +77,7 @@ export default function UserPage() {
         <p className="font-bold text-xl my-4">미모집 학생</p>
         <StudentCards
           cardProps={filteredStates.filter(({ owned }) => !owned).map(({ student }) => ({
-            id: student.id,
+            studentId: student.id,
             name: student.name,
             grayscale: true,
           }))}

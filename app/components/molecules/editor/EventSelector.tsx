@@ -3,27 +3,36 @@ import dayjs from "dayjs";
 import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
-import type { RaidEvent } from "~/models/raid";
-import { bossImageUrl, raidTerrainText, raidTypeText } from "~/models/raid"
+import { raidTypeLocale, terrainLocale } from "~/locales/ko";
+import type { RaidType, Terrain } from "~/models/content";
+import { bossImageUrl } from "~/models/assets"
 import { sanitizeClassName } from "~/prophandlers";
 
 type EventSelectorProps = {
-  raids: RaidEvent[];
+  raids: {
+    raidId: string;
+    name: string;
+    type: RaidType;
+    boss: string;
+    terrain: Terrain;
+    since: Date;
+    until: Date;
+  }[];
   initialRaidId?: string;
   onSelectRaid(id: string): void;
 };
 
-function raidDescription(raid: RaidEvent): string {
+function raidDescription(raid: EventSelectorProps["raids"][number]): string {
   return [
     dayjs(raid.since).format("YYYY-MM-DD"),
-    raidTypeText(raid.type),
-    raid.terrain ? raidTerrainText(raid.terrain) : null,
+    raidTypeLocale[raid.type],
+    terrainLocale[raid.terrain],
   ].filter((text) => text).join(" | ");
 }
 
 export default function EventSelector({ raids, initialRaidId, onSelectRaid }: EventSelectorProps) {
-  const [selectedRaid, setSelectedRaid] = useState<RaidEvent | undefined>(
-    raids.find((raid) => raid.id === initialRaidId),
+  const [selectedRaid, setSelectedRaid] = useState<EventSelectorProps["raids"][number] | null>(
+    raids.find((raid) => raid.raidId === initialRaidId) ?? null,
   );
 
   const now = dayjs();
@@ -52,13 +61,13 @@ export default function EventSelector({ raids, initialRaidId, onSelectRaid }: Ev
             <Menu.Items className="absolute origin-top-left max-h-96 overflow-auto my-2 bg-white rounded-lg shadow-lg border border-neutral-200 z-10">
               {raids.filter((raid) => dayjs(raid.until).isAfter(now)).map((raid) => (
                 <EventSelectorItem
-                  key={raid.id}
+                  key={raid.raidId}
                   name={raid.name}
                   description={raidDescription(raid)}
                   imageUrl={bossImageUrl(raid.boss)}
                   onSelect={() => {
                     setSelectedRaid(raid);
-                    onSelectRaid(raid.id);
+                    onSelectRaid(raid.raidId);
                     close();
                   }}
                 />

@@ -3,6 +3,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
+    "codegen": "graphql-codegen",
     "worker:dev": "remix dev --manual -c \"pnpm run worker:start\"",
     "worker:start": "wrangler dev --test-scheduled ./build/index.js",
     "worker:build": "remix build",
@@ -10,21 +11,21 @@
     "assets:build": "cd functions && GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o build/bootstrap ./assets-metadata",
     "assets:plan": "tofu -chdir=deploy/assets plan",
     "assets:deploy": "tofu -chdir=deploy/assets apply",
-    "static:pull": "wrangler kv:key list --binding KV_STATIC_DATA | jq -r '.[].name' | xargs -I {} sh -c 'echo ./app/statics/{} && wrangler kv:key get --binding KV_STATIC_DATA {} > app/statics/{}'",
-    "static:push": "find ./app/statics -type f -exec sh -c 'echo {} && wrangler kv:key put --binding KV_STATIC_DATA --path {} $(basename {})' \\;",
-    "static:push:dev": "find ./app/statics -type f -exec sh -c 'echo {} && wrangler kv:key put --binding KV_STATIC_DATA --local --path {} $(basename {})' \\;",
     "typecheck": "tsc",
     "lint": "eslint --fix app/"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.2",
+    "@graphql-codegen/cli": "^5.0.2",
     "@headlessui/react": "^1.7.19",
     "@remix-run/cloudflare": "^2.9.2",
     "@remix-run/css-bundle": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@supabase/supabase-js": "^2.43.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@urql/exchange-request-policy": "^1.2.0",
     "dayjs": "^1.11.11",
+    "graphql": "^16.8.1",
     "hangul-js": "^0.2.6",
     "iconoir-react": "^7.7.0",
     "isbot": "^3.8.0",
@@ -34,7 +35,8 @@
     "react-dom": "^18.3.1",
     "react-youtube": "^10.1.0",
     "remix-auth": "^3.6.0",
-    "remix-auth-google": "^2.0.0"
+    "remix-auth-google": "^2.0.0",
+    "urql": "^4.1.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240512.0",

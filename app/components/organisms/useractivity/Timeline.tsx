@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import { ChatBubbleXmark } from "iconoir-react";
 import type { UserActivity } from "~/models/user-activity";

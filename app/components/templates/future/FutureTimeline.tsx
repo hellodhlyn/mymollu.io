@@ -1,39 +1,65 @@
-import type { GameEvent } from "~/models/event";
-import { EventTimelineItem, RaidTimelineItem } from "~/components/molecules/event";
+import { TimelineItem } from "~/components/organisms/content-timeline";
 import type { FuturePlan } from "~/models/future";
-import type { StudentMap } from "~/models/student";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import type { RaidEvent } from "~/models/raid";
 import { useState } from "react";
 import { FilterButtons } from "~/components/molecules/student";
+import type { AttackType, DefenseType, EventType, PickupType, RaidType, Terrain } from "~/models/content";
 
-type EventsProps = {
+type GameEvent = {
+  eventId: string;
+  eventType: EventType;
+  name: string;
+  rerun: boolean;
+  pickups: {
+    type: PickupType;
+    rerun: boolean;
+    student: {
+      studentId: string;
+      name: string;
+    };
+  }[];
+  since: Date;
+  until: Date;
+};
+
+type Raid = {
+  raidId: string;
+  raidType: RaidType;
+  name: string;
+  since: Date;
+  until: Date;
+  boss: string;
+  terrain: Terrain;
+  attackType: AttackType;
+  defenseType: DefenseType;
+};
+
+type FutureTimelineProps = {
   events: GameEvent[];
-  raids: RaidEvent[];
-  students: StudentMap;
+  raids: Raid[];
   plan?: FuturePlan;
 
   onSelectStudent?: (studentId: string) => void;
   onMemoUpdate?: (memo: { [eventId: string]: string }) => void;
 };
 
-type TimelineItem = {
+type TimelineItemData = {
   id: string;
-  since: Dayjs;
-  until: Dayjs;
+  since: Date;
+  until: Date;
   event?: GameEvent;
-  raid?: RaidEvent;
+  raid?: Raid;
 };
 
 type Filter = {
-  eventTypes: GameEvent["type"][];
+  eventTypes: GameEvent["eventType"][];
   raid: boolean;
 };
 
-function dividerText(since: Dayjs): string {
-  const texts = [since.format("YYYY-MM-DD")];
-  const dDay = since.startOf("day").diff(dayjs().startOf("day"), "day");
+function dividerText(since: Date): string {
+  const sinceDayjs = dayjs(since);
+  const texts = [sinceDayjs.format("YYYY-MM-DD")];
+  const dDay = sinceDayjs.startOf("day").diff(dayjs().startOf("day"), "day");
   if (0 < dDay && dDay <= 30) {
     texts.push(`(D-${dDay})`);
   } else if (dDay === 0) {
@@ -43,14 +69,14 @@ function dividerText(since: Dayjs): string {
 }
 
 export default function FutureTimeline({
-  events, raids, students, plan, onSelectStudent, onMemoUpdate,
-}: EventsProps) {
+  events, raids, plan, onSelectStudent, onMemoUpdate,
+}: FutureTimelineProps) {
   const [filter, setFilter] = useState<Filter>({
     eventTypes: [],
     raid: false,
   });
 
-  const onToggleEvents = (activated: boolean, eventTypes: GameEvent["type"][]) => {
+  const onToggleEvents = (activated: boolean, eventTypes: GameEvent["eventType"][]) => {
     setFilter((prev) => {
       if (activated) {
         return { ...prev, eventTypes: [...prev.eventTypes, ...eventTypes] };
@@ -59,23 +85,23 @@ export default function FutureTimeline({
     });
   };
 
-  const timelineItems: TimelineItem[] = [
-    ...raids.map((e) => ({ id: e.id, since: dayjs(e.since), until: dayjs(e.until), raid: e })),
-    ...events.map((e) => ({ id: e.id, since: dayjs(e.since), until: dayjs(e.until), event: e })),
-  ].filter((item: TimelineItem) => {
+  const timelineItems: TimelineItemData[] = [
+    ...raids.map((content) => ({ id: content.raidId, since: content.since, until: content.until, raid: content })),
+    ...events.map((content) => ({ id: content.eventId, since: content.since, until: content.until, event: content })),
+  ].filter((item: TimelineItemData) => {
     if (filter.eventTypes.length === 0 && !filter.raid) {
       return true;
     } else if (item.raid) {
       return filter.raid;
     } else if (item.event) {
-      return filter.eventTypes.includes(item.event.type);
+      return filter.eventTypes.includes(item.event.eventType);
     }
     return false;
   }).sort((a, b) => dayjs(a.since).diff(b.since));
 
   const lastItem = timelineItems[timelineItems.length - 1];
   const eventUntil = dayjs((lastItem.event ?? lastItem.raid)!.until);
-  let prevSince = timelineItems[0].since;
+  let prevSince = dayjs(timelineItems[0].since);
 
   const now = dayjs();
   return (
@@ -93,7 +119,7 @@ export default function FutureTimeline({
         ]} />
       </div>
 
-      {(timelineItems.length > 0 && timelineItems[0].since.isBefore(dayjs())) ? (
+      {(timelineItems.length > 0 && dayjs(timelineItems[0].since).isBefore(dayjs())) ? (
         <div className="relative md:ml-2 flex items-center">
           <div className="absolute w-3 h-3 bg-red-600 rounded-full -left-1.5 border border-1 border-white animate-pulse" />
           <p className="ml-4 text-red-600 font-bold">진행중</p>
@@ -111,9 +137,9 @@ export default function FutureTimeline({
         const showMemo = onMemoUpdate && item.event && item.event.pickups.length > 0;
 
         let showDivider = false;
-        if (item.since.isAfter(now) && !prevSince.startOf("day").isSame(item.since.startOf("day"))) {
+        if (dayjs(item.since).isAfter(now) && !prevSince.startOf("day").isSame(dayjs(item.since).startOf("day"))) {
           showDivider = true;
-          prevSince = item.since;
+          prevSince = dayjs(item.since);
         }
 
         return (
@@ -127,20 +153,17 @@ export default function FutureTimeline({
               </div>
             )}
             <div className="ml-4 md:ml-6">
-              {item.raid && <RaidTimelineItem {...item.raid} />}
-              {item.event && (
-                <EventTimelineItem
-                  {...item.event}
-                  pickups={item.event.pickups}
-                  students={students}
+              <TimelineItem 
+                raid={item.raid}
+                event={item.event && {
+                  ...item.event,
 
-                  selectedStudentIds={plan?.studentIds ?? []}
-                  onSelect={selectable ? (studentId) => onSelectStudent(studentId) : undefined}
-
-                  initialMemo={plan?.memos ? plan.memos[item.id] : undefined}
-                  onMemoUpdate={showMemo ? ((text) => onMemoUpdate({ [item.id]: text })) : undefined}
-                />
-              )}
+                  selectedStudentIds: plan?.studentIds ?? [],
+                  onSelect: selectable ? (studentId) => onSelectStudent(studentId) : undefined,
+                  initialMemo: plan?.memos ? plan.memos[item.id] : undefined,
+                  onMemoUpdate: showMemo ? ((text) => onMemoUpdate({ [item.id]: text })) : undefined,
+                }}
+              />
             </div>
           </div>
         );
