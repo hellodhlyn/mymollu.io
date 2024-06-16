@@ -111,7 +111,9 @@ export default function Index() {
       <SubTitle text="타임라인" />
       <Suspense fallback={<TimelinePlaceholder />}>
         <Await resolve={userActivities}>
-          {(userActivities) => <Timeline activities={userActivities} showProfile />}
+          {(userActivities) => (
+            <Timeline activities={userActivities.map((activity) => ({ ...activity, eventAt: new Date(activity.eventAt) }))} showProfile />
+          )}
         </Await>
       </Suspense>
     </>

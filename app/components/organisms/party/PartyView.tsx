@@ -64,7 +64,7 @@ export default function PartyView({ party, sensei, students, studentStates, edit
       <SubTitle text={party.name} />
 
       {sensei && (
-        <Link className="flex items-center -mt-2 mb-4 hover:underline" to={`/@${sensei.username}`}>
+        <Link className="flex items-center -mt-2 mb-4 hover:underline font-bold" to={`/@${sensei.username}`}>
           <ProfileImage imageSize={6} studentId={sensei.profileStudentId} />
           <span className="ml-2 text-sm">@{sensei.username}</span>
         </Link>
@@ -116,7 +116,7 @@ export default function PartyView({ party, sensei, students, studentStates, edit
       ))}
 
       {party.memo && (
-        <div className="my-4 whitespace-pre-line">
+        <div className="my-4 whitespace-pre-line text-sm md:text-base">
           {memoOpened ? (
             <>
               <p className="pb-2">{party.memo}</p>

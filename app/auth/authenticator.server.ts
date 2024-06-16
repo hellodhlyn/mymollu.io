@@ -4,7 +4,7 @@ import { Authenticator } from "remix-auth";
 import { GoogleStrategy } from "remix-auth-google";
 import type { Env } from "~/env.server";
 import type { Sensei } from "~/models/sensei";
-import { getSenseiByGoogleId } from "~/models/sensei";
+import { getOrCreateSenseiByGoogleId } from "~/models/sensei";
 
 let _sessionStorage: SessionStorage;
 let _authenticator: Authenticator<Sensei>;
@@ -43,7 +43,7 @@ export function getAuthenticator(env: Env): Authenticator<Sensei> {
   }, async ({ extraParams }) => {
     try {
       const googleUserId = await fetchGoogleUserId(extraParams.id_token);
-      return await getSenseiByGoogleId(env, googleUserId);
+      return await getOrCreateSenseiByGoogleId(env, googleUserId);
     } catch (e) {
       console.error("Login failed");
       console.error(e);

@@ -1,4 +1,5 @@
 import { disassemble } from "hangul-js";
+import postposition from "cox-postposition";
 import { useState } from "react";
 import { Input, Button } from "~/components/atoms/form";
 import { StudentCards } from "~/components/molecules/student";
@@ -69,7 +70,7 @@ export default function ProfileEditor({ students, initialData, error }: ProfileE
               src={studentImageUrl(profileStudent.studentId)}
               alt={profileStudent.name}
             />
-            <p><span className="font-bold">{profileStudent.name}</span>를 선택했어요.</p>
+            <p><span className="font-bold">{profileStudent.name}</span>{postposition.pick(profileStudent.name, "을")} 선택했어요.</p>
           </div>
           <input type="hidden" name="profileStudentId" value={profileStudent.studentId} />
         </>

@@ -15,3 +15,12 @@ export async function fetchCached<T>(env: Env, cacheKey: string, fn: () => Promi
 export async function deleteCache(env: Env, ...cacheKeys: string[]) {
   await Promise.all(cacheKeys.map((key) => env.KV_USERDATA.delete(key)));
 }
+
+export function isUniqueConstraintError(err: Error): { table: string, column: string } | null {
+  const match = err.message.match(/UNIQUE constraint failed: (\w+)\.(\w+)/);
+  if (match) {
+    return { table: match[1], column: match[2] };
+  }
+
+  return null;
+}

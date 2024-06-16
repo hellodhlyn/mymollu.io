@@ -5,12 +5,12 @@ import { Callout, SubTitle } from "~/components/atoms/typography";
 import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
 import type { Env } from "~/env.server";
-import { getFollowers, getFollowing } from "~/models/followership";
+import { getFollowers, getFollowings } from "~/models/followership";
 import { getSenseiByUsername } from "~/models/sensei";
 import { getUserStudentStates } from "~/models/student-state";
 import type { ActionData } from "./api.followerships";
 import { getAuthenticator } from "~/auth/authenticator.server";
-import { getUserActivities } from "~/models/user-activity";
+import { getUserActivitiesBySensei } from "~/models/user-activity";
 import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
 import { Suspense } from "react";
 import { studentImageUrl } from "~/models/assets";
@@ -27,7 +27,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
 
   // Get a relationship
   const [following, followers] = await Promise.all([
-    getFollowing(env, sensei.id),
+    getFollowings(env, sensei.id),
     getFollowers(env, sensei.id),
   ]);
 
@@ -47,7 +47,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     followers: followers.length,
     profileStudentId: sensei?.profileStudentId ?? null,
     states,
-    userActivities: getUserActivities(env, sensei.id),
+    userActivities: getUserActivitiesBySensei(env, sensei.id),
   });
 };
 

@@ -1,48 +1,49 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Env } from "~/env.server";
-import { getDB } from "~/env.server";
-import type { Database } from "~/schema";
 import type { Sensei } from "./sensei";
-import { UserRepo } from "./sensei";
+import { getSenseisById } from "./sensei";
 import { createFollowingActivity } from "./user-activity";
 import { deleteCache, fetchCached } from "./base";
 
-export type Followership = Database["public"]["Tables"]["dev_followerships"]["Row"];
+export type Followership = {
+  followerId: number;
+  followeeId: number;
+}
+
 export type Relationship = {
   followed: boolean;
   following: boolean;
 };
 
 export async function follow(env: Env, followerId: number, followeeId: number) {
-  const repo = new FollowershipRepo(env);
-  await repo.create(followerId, followeeId);
+  const query = "insert into followerships (followerId, followeeId) values (?1, ?2)";
+  await env.DB.prepare(query).bind(followerId, followeeId).run();
   await createFollowingActivity(env, followerId, followeeId);
   await deleteCache(env, followersCacheKey(followeeId), followingCacheKey(followerId));
 }
 
 export async function unfollow(env: Env, followerId: number, followeeId: number) {
-  const repo = new FollowershipRepo(env);
-  await repo.deleteByFollowerIdAndFolloweeId(followerId, followeeId);
+  const query = "delete from followerships where followerId = ?1 and followeeId = ?2";
+  await env.DB.prepare(query).bind(followerId, followeeId).run();
   await deleteCache(env, followersCacheKey(followeeId), followingCacheKey(followerId));
 }
 
 export async function getFollowers(env: Env, followeeId: number): Promise<Sensei[]> {
   return fetchCached(env, followersCacheKey(followeeId), async () => {
-    const followershipRepo = new FollowershipRepo(env);
-    const followerIds = (await followershipRepo.findAllBy("followeeId", followeeId)).map((each) => each.followerId);
+    const query = "select * from followerships where followeeId = ?1";
+    const result = await env.DB.prepare(query).bind(followeeId).all<Followership>();
+    const followerIds = result.results.map((each) => each.followerId);
 
-    const userRepo = new UserRepo(env);
-    return await userRepo.findAllByIn("id", followerIds);
+    return getSenseisById(env, [...new Set(followerIds)]);
   });
 }
 
-export async function getFollowing(env: Env, followerId: number): Promise<Sensei[]> {
+export async function getFollowings(env: Env, followerId: number): Promise<Sensei[]> {
   return fetchCached(env, followingCacheKey(followerId), async () => {
-    const followershipRepo = new FollowershipRepo(env);
-    const followeeIds = (await followershipRepo.findAllBy("followerId", followerId)).map((each) => each.followeeId);
+    const query = "select * from followerships where followerId = ?1";
+    const result = await env.DB.prepare(query).bind(followerId).all<Followership>();
+    const followeeIds = result.results.map((each) => each.followeeId);
 
-    const userRepo = new UserRepo(env);
-    return await userRepo.findAllByIn("id", followeeIds);
+    return getSenseisById(env, [...new Set(followeeIds)]);
   });
 }
 
@@ -52,43 +53,4 @@ function followersCacheKey(followeeId: number) {
 
 function followingCacheKey(followerId: number) {
   return `followerships:following:${followerId}`;
-}
-
-class FollowershipRepo {
-  private db: SupabaseClient<Database>;
-  private tableName: string;
-
-  constructor(env: Env) {
-    this.db = getDB(env);
-    this.tableName = `${env.STAGE}_followerships`;
-  }
-
-  async create(followerId: number, followeeId: number) {
-    const { error } = await this.table().insert({ followerId, followeeId });
-    if (error) {
-      throw error;
-    }
-  }
-
-  async findAllBy(field: string, value: any): Promise<Followership[]> {
-    const { data, error } = await this.table().select("*").eq(field, value);
-    if (error || !data) {
-      console.error(error);
-      return [];
-    }
-    return data;
-  }
-
-  async deleteByFollowerIdAndFolloweeId(followerId: number, followeeId: number) {
-    const { error } = await this.table().delete()
-      .eq("followerId", followerId)
-      .eq("followeeId", followeeId);
-    if (error) {
-      throw error;
-    }
-  }
-
-  private table() {
-    return this.db.from(this.tableName);
-  }
 }

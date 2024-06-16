@@ -32,6 +32,7 @@ export default function Input({
         defaultValue={defaultValue}
         onChange={(e) => onChange?.(e.target.value)}
       />
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </div>
   );
 }

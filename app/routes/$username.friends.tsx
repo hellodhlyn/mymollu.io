@@ -8,7 +8,7 @@ import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
 import type { Env } from "~/env.server";
-import { getFollowers, getFollowing } from "~/models/followership";
+import { getFollowers, getFollowings } from "~/models/followership";
 import type { Sensei} from "~/models/sensei";
 import { getSenseiByUsername } from "~/models/sensei";
 
@@ -28,7 +28,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const sensei = (await getSenseiByUsername(env, username))!;
 
   const [following, followers] = await Promise.all([
-    getFollowing(env, sensei.id),
+    getFollowings(env, sensei.id),
     getFollowers(env, sensei.id),
   ]);
 

@@ -53,7 +53,10 @@ export const action: ActionFunction = async ({ request, context }) => {
     return json<ActionData>({ error: { username: "4~20글자의 영숫자 및 _ 기호만 사용 가능합니다." } })
   }
 
-  await updateSensei(env, sensei.id, sensei);
+  const result = await updateSensei(env, sensei.id, sensei);
+  if (result.error) {
+    return json<ActionData>({ error: result.error });
+  }
 
   const { getSession, commitSession } = sessionStorage(env);
   const session = await getSession(request.headers.get("cookie"));

@@ -1,7 +1,6 @@
 import { nanoid } from "nanoid/non-secure";
 import type { Env } from "~/env.server";
-import type { Sensei } from "./sensei";
-import { UserRepo, getSenseiByUsername } from "./sensei";
+import { getSenseisById, type Sensei } from "./sensei";
 
 export type DBParty = {
   id: number;
@@ -28,16 +27,11 @@ export type Party = {
 };
 
 // Get all parties for a user
-const GET_USER_PARTIES_QUERY = "select * from parties where userId = ?1";
 const GET_PARTIES_BY_RAID_QUERY = "select * from parties where raidId = ?1 and showAsRaidTip = true";
 
 export async function getUserParties(env: Env, username: string): Promise<Party[]> {
-  const sensei = await getSenseiByUsername(env, username);
-  if (!sensei) {
-    return [];
-  }
-
-  const result = await env.DB.prepare(GET_USER_PARTIES_QUERY).bind(sensei.id).all<DBParty>();
+  const query = "select * from parties p, senseis s where p.userId = s.id and s.username = ?1";
+  const result = await env.DB.prepare(query).bind(username).all<DBParty>();
   return result.results.map(toModel);
 }
 
@@ -48,16 +42,14 @@ export async function getPartiesByRaidId(env: Env, raidId: string, includeSensei
     return [];
   }
 
-  const userRepo = new UserRepo(env);
-  const userMap = new Map<number, Sensei>();
+  const senseiMap = new Map<number, Sensei>();
   if (includeSensei) {
-    const senseiIds = rows.map((row) => row.userId);
-    const senseis = await userRepo.findAllByIn("id", senseiIds);
-    senseis.forEach((sensei) => userMap.set(sensei.id, sensei));
+    const senseis = await getSenseisById(env, rows.map((row) => row.userId));
+    senseis.forEach((sensei) => senseiMap.set(sensei.id, sensei));
   }
 
   return rows.map((row) => {
-    const sensei = includeSensei ? userMap.get(row.userId) : undefined;
+    const sensei = includeSensei ? senseiMap.get(row.userId) : undefined;
     return {
       ...toModel(row),
       sensei : sensei ? { username: sensei.username, profileStudentId: sensei.profileStudentId } : undefined,

@@ -1,91 +1,109 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { SupabaseSchema } from "~/schema";
-import type { Env} from "~/env.server";
-import { getDB } from "~/env.server";
+import { nanoid } from "nanoid/non-secure";
+import type { Env } from "~/env.server";
+import { isUniqueConstraintError } from "./base";
+
+export type DBSensei = {
+  id: number;
+  uid: string;
+  username: string;
+  friendCode: string | null;
+  profileStudentId: string | null;
+  googleId: string | null;
+  active: number;
+};
 
 export type Sensei = {
   id: number;
+  uid: string;
   username: string;
-  active: boolean;
+  friendCode: string | null;
   googleId: string | null;
   profileStudentId: string | null;
+  active: boolean;
 };
 
+// Get a sensei by a single field
 export async function getSenseiById(env: Env, id: number): Promise<Sensei | null> {
-  const repo = new UserRepo(env);
-  return repo.findBy("id", id);
+  const result = await env.DB.prepare("select * from senseis where id = ?1").bind(id).first<DBSensei>();
+  return result ? toModel(result) : null;
 }
 
 export async function getSenseiByUsername(env: Env, username: string): Promise<Sensei | null> {
-  const repo = new UserRepo(env);
-  return repo.findBy("username", username);
+  const result = await env.DB.prepare("select * from senseis where username = ?1").bind(username).first<DBSensei>();
+  return result ? toModel(result) : null;
 }
 
-export async function getSenseiByGoogleId(env: Env, googleUserId: string): Promise<Sensei> {
-  const repo = new UserRepo(env);
-  const sensei = await repo.findBy("googleId", googleUserId);
-  if (sensei) {
-    return sensei;
+export async function getSenseisById(env: Env, ids: number[]): Promise<Sensei[]> {
+  const uniqueIds = [...new Set(ids)];
+  const senseis = await env.DB
+    .prepare(`select * from senseis where id in (${uniqueIds.map((_, idx) => `?${idx + 1}`).join(", ")})`)
+    .bind(...uniqueIds)
+    .all<DBSensei>();
+
+  return senseis.results.map((row) => toModel(row));
+}
+
+// Get or create a sensei by googleId
+const CREATE_SENSEI_QUERY = "insert into senseis (username, googleId) values (?1, ?2)";
+
+export async function getOrCreateSenseiByGoogleId(env: Env, googleId: string): Promise<Sensei> {
+  const result = await env.DB.prepare("select * from senseis where googleId = ?1").bind(googleId).first<DBSensei>();
+  if (result) {
+    return toModel(result);
   }
 
+  const createResult = await env.DB.prepare(CREATE_SENSEI_QUERY).bind(nanoid(8), googleId).run();
+  if (createResult.error) {
+    throw createResult.error;
+  }
+
+  return getOrCreateSenseiByGoogleId(env, googleId);
+}
+
+// Update a sensei
+type SenseiUpdateFields = Partial<Pick<Sensei, "username" | "friendCode" | "profileStudentId" | "active">>
+
+const UPDATE_SENSEI_QUERY = "update senseis set username = ?1, friendCode = ?2, profileStudentId = ?3, active = ?4 where id = ?5";
+export async function updateSensei(env: Env, id: number, fields: SenseiUpdateFields): Promise<{ error?: { username?: string } }> {
+  const existingSensei = await getSenseiById(env, id);
+  if (!existingSensei) {
+    return {};
+  }
+
+  let result: D1Response;
   try {
-    await repo.create(Math.random().toString(36).slice(2), googleUserId);
-  } catch (error) {
-    console.error(error);
-    throw "Failed to create user";
+    result = await env.DB.prepare(UPDATE_SENSEI_QUERY).bind(
+      fields.username ?? existingSensei.username,
+      fields.friendCode ?? existingSensei.friendCode,
+      fields.profileStudentId ?? existingSensei.profileStudentId,
+      fields.active ?? existingSensei.active,
+      id,
+    ).run();
+  } catch (e) {
+    const err = e as Error;
+    const uniqueError = isUniqueConstraintError(err);
+    if (uniqueError && uniqueError.column === "username") {
+      return { error: { username: "이미 사용중인 닉네임입니다." } };
+    }
+
+    console.error(e);
+    throw e;
   }
 
-  return getSenseiByGoogleId(env, googleUserId);
+  if (result.error) {
+    console.error(result.error);
+  }
+  return {};
 }
 
-export async function updateSensei(env: Env, id: number, values: Partial<Sensei>) {
-  try {
-    await new UserRepo(env).update(id, values);
-  } catch (error) {
-    return console.error(error);
-  }
-}
-
-export class UserRepo {
-  private db: SupabaseClient<SupabaseSchema>;
-  private tableName: string;
-
-  constructor(env: Env) {
-    this.db = getDB(env);
-    this.tableName = `${env.STAGE}_users`;
-  }
-
-  async create(username: string, googleId: string | null) {
-    const { error } = await this.table().insert({ username, googleId });
-    if (error) {
-      throw error;
-    }
-  }
-
-  async findBy(field: string, value: any): Promise<Sensei | null> {
-    const { data, error } = await this.table().select().eq(field, value);
-    if (error) {
-      throw error;
-    }
-    return (data && data.length > 0) ? data[0] : null;
-  }
-
-  async findAllByIn(field: string, values: any[]): Promise<Sensei[]> {
-    const { data, error } = await this.table().select().in(field, values);
-    if (error) {
-      throw error;
-    }
-    return data;
-  }
-
-  async update(id: number, values: Partial<Sensei>) {
-    const { error } = await this.table().update(values).eq("id", id);
-    if (error) {
-      throw error;
-    }
-  }
-
-  private table() {
-    return this.db.from(this.tableName);
-  }
+function toModel(row: DBSensei): Sensei {
+  return {
+    id: row.id,
+    uid: row.uid,
+    username: row.username,
+    friendCode: row.friendCode,
+    googleId: row.googleId,
+    profileStudentId: row.profileStudentId,
+    active: row.active === 1,
+  };
 }
