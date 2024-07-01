@@ -2,12 +2,14 @@ import type { ReactNode } from "react";
 
 type CalloutProps = {
   children: ReactNode | ReactNode[];
+  emoji?: string;
   className?: string;
 };
 
-export default function Callout({ className, children }: CalloutProps) {
+export default function Callout({ className, emoji, children }: CalloutProps) {
   return (
-    <div className={`${className ?? ""} p-4 bg-neutral-100 rounded-lg`}>
+    <div className={`${className ?? ""} flex p-4 bg-neutral-100 rounded-lg`}>
+      {emoji && <span className="ml-1 mr-2">{emoji}</span>}
       {children}
     </div>
   )

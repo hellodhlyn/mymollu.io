@@ -71,7 +71,7 @@ export const action: ActionFunction = async ({ context, request }) => {
     await updateParty(env, sensei, uid as string, partyPatches);
   }
 
-  return redirect(`/edit/parties`);
+  return redirect(`/@${sensei.username}/parties`);
 };
 
 export default function EditParties() {

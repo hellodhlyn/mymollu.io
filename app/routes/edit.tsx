@@ -5,7 +5,7 @@ import { Navigation } from "~/components/organisms/navigation";
 export default function Edit() {
   return (
     <>
-      <Title text="정보 관리" />
+      <Title text="프로필 관리" />
       <Navigation allowPathPrefix={true} links={[
         { to: "/edit/profile", text: "프로필" },
         { to: "/edit/students", text: "학생" },

@@ -14,17 +14,17 @@ export default function Header({ currentUsername }: HeaderProps) {
           mol<span className="ml-1.5 md:ml-2 pr-2 bg-neutral-900 text-white rounded-lg">lul</span>og
         </h1>
       </Link>
-      <div className="flex gap-x-4 text-lg">
+      <div className="flex gap-x-4 text-lg tracking-tight">
         {currentUsername && (
           <>
             <Link to="/futures" className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>미래시</span>
             </Link>
             <Link to={`/@${currentUsername}`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
-              <span>프로필</span>
+              <span>내 정보</span>
             </Link>
             <Link to={`/edit/profile`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
-              <span>정보 관리</span>
+              <span>프로필 관리</span>
             </Link>
           </>
         )}

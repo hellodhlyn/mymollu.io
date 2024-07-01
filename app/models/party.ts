@@ -30,7 +30,7 @@ export type Party = {
 const GET_PARTIES_BY_RAID_QUERY = "select * from parties where raidId = ?1 and showAsRaidTip = true";
 
 export async function getUserParties(env: Env, username: string): Promise<Party[]> {
-  const query = "select * from parties p, senseis s where p.userId = s.id and s.username = ?1";
+  const query = "select p.* from parties p, senseis s where p.userId = s.id and s.username = ?1";
   const result = await env.DB.prepare(query).bind(username).all<DBParty>();
   return result.results.map(toModel);
 }
@@ -71,7 +71,7 @@ const CREATE_PARTY_QUERY = "insert into parties (uid, name, userId, raidId, stud
 
 export async function createParty(env: Env, sensei: Sensei, fields: PartyCreateFields) {
   const result = await env.DB.prepare(CREATE_PARTY_QUERY).bind(
-    nanoid(),
+    nanoid(8),
     fields.name,
     sensei.id,
     fields.raidId,

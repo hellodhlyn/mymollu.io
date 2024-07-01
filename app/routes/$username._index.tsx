@@ -93,8 +93,8 @@ export default function UserIndex() {
   return (
     <div className="my-8">
       {isNewbee && (
-        <Callout className="my-4 flex">
-          <span className="grow">✨ 모집한 학생을 등록해보세요.</span>
+        <Callout className="my-8" emoji="✨">
+          <span className="grow">모집한 학생을 등록해보세요.</span>
           <Link to="/edit/students" className="ml-1 underline">등록하러 가기 →</Link>
         </Callout>
       )}

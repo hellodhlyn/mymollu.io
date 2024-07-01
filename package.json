@@ -23,7 +23,6 @@
     "@remix-run/cloudflare": "^2.9.2",
     "@remix-run/css-bundle": "^2.9.2",
     "@remix-run/react": "^2.9.2",
-    "@supabase/supabase-js": "^2.43.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@urql/exchange-request-policy": "^1.2.0",
     "cox-postposition": "^1.4.1",

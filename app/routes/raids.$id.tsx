@@ -122,9 +122,9 @@ export default function RaidDetail() {
       <div className="my-8">
         <SubTitle text="공략 및 편성" />
         {!signedIn && (
-          <Callout className="my-4 flex">
-            <span className="grow">
-              ✨ <Link to="/signin" className="underline">로그인</Link> 후 학생 모집 정보를 등록하면 내 학생에 맞는 편성을 확인할 수 있어요.
+          <Callout className="my-4" emoji="✨">
+            <span>
+              <Link to="/signin" className="underline">로그인</Link> 후 학생 모집 정보를 등록하면 내 학생에 맞는 편성을 확인할 수 있어요.
             </span>
           </Callout>
         )}
