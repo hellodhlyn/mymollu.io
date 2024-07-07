@@ -55,7 +55,7 @@ async function getStudentsMap(env: Env, includeUnreleased: boolean = false): Pro
       result[student.id] = student;
     }
     return result;
-  });
+  }, 10 * 3600);
 }
 
 export function userStateKeyById(id: number) {
