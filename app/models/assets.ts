@@ -7,5 +7,5 @@ export function bossBannerUrl(boss: string): string {
 }
 
 export function studentImageUrl(studentId: string): string {
-  return `https://assets.mollulog.net/assets/images/students/${studentId}`;
+  return `/assets/images/students/${studentId}`;
 }
