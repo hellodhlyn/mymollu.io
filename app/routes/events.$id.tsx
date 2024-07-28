@@ -28,7 +28,8 @@ const eventDetailQuery = graphql(`
       pickups {
         type
         rerun
-        student { studentId name }
+        student { studentId }
+        studentName
       }
     }
   }
@@ -107,8 +108,8 @@ export default function EventDetail() {
           <StudentCards
             cardProps={event.pickups.map((pickup) => {
               return {
-                  studentId: pickup.student.studentId,
-                  name: pickup.student.name,
+                  studentId: pickup.student?.studentId || null,
+                  name: pickup.studentName,
                   label: (<span className={pickup.rerun ? "text-white" : "text-yellow-500"}>{pickupLabelLocale(pickup)}</span>),
                 };
               }

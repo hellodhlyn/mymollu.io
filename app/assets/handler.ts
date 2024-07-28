@@ -1,11 +1,15 @@
 export async function handleAssetRoutes(url: string): Promise<Response> {
   const { pathname } = new URL(url);
   if (pathname.startsWith("/assets/images/students")) {
-    const matches = pathname.match(/^\/assets\/images\/students\/(?<studentId>\d{5})$/);
+    const matches = pathname.match(/^\/assets\/images\/students\/(?<studentId>\S+)$/);
+    console.log(matches);
     if (matches?.groups?.studentId) {
       const { studentId } = matches.groups;
-      const proxyUrl = `https://raw.githubusercontent.com/SchaleDB/SchaleDB/main/images/student/collection/${studentId}.webp`;
-      return proxy(proxyUrl);
+      if (studentId === "unlisted") {
+        return proxy("https://assets.mollulog.net/assets/images/students/-1");
+      } else {
+        return proxy(`https://raw.githubusercontent.com/SchaleDB/SchaleDB/main/images/student/collection/${studentId}.webp`);
+      }
     }
   }
 

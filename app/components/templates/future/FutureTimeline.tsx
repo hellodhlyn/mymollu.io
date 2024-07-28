@@ -13,10 +13,8 @@ type GameEvent = {
   pickups: {
     type: PickupType;
     rerun: boolean;
-    student: {
-      studentId: string;
-      name: string;
-    };
+    studentId: string | null;
+    studentName: string;
   }[];
   since: Date;
   until: Date;
@@ -39,7 +37,7 @@ type FutureTimelineProps = {
   raids: Raid[];
   plan?: FuturePlan;
 
-  onSelectStudent?: (studentId: string) => void;
+  onSelectStudent?: (studentId: string | null) => void;
   onMemoUpdate?: (memo: { [eventId: string]: string }) => void;
 };
 

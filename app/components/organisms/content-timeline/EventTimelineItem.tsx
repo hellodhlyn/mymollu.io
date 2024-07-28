@@ -12,16 +12,14 @@ export type EventTimelineItemProps = {
   pickups: {
     type: PickupType;
     rerun: boolean;
-    student: {
-      studentId: string;
-      name: string;
-    };
+    studentId: string | null;
+    studentName: string;
   }[];
   since: Date;
   until: Date;
 
   selectedStudentIds?: string[];
-  onSelect?: (studentId: string) => void;
+  onSelect?: (studentId: string | null) => void;
   initialMemo?: string;
   onMemoUpdate?: (text: string) => void;
 };
@@ -49,13 +47,13 @@ export default function EventTimelineItem(event: EventTimelineItemProps) {
 
       <StudentCards
         mobileGrid={5}
-        cardProps={event.pickups.map(({ type, rerun, student }) => {
+        cardProps={event.pickups.map(({ type, rerun, studentId, studentName }) => {
           const label = pickupLabelLocale({ type, rerun });
           const colorClass = rerun ? "text-white" : "text-yellow-500";
           return {
-            studentId: student.studentId,
-            name: student.name,
-            selected: (selectedStudentIds ?? []).includes(student.studentId),
+            studentId: studentId || "unlisted",
+            name: studentName,
+            selected: studentId ? (selectedStudentIds ?? []).includes(studentId) : false,
             label: (
               <span className={`${colorClass}`}>{label}</span>
             ),

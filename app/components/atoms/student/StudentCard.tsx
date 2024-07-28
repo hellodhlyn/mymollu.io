@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { studentImageUrl } from "~/models/assets";
 
 export type StudentCardProps = {
-  studentId: string;
+  studentId: string | null;
   name?: string;
   nameSize?: "small" | "normal";
 
@@ -34,6 +34,8 @@ export default function StudentCard(
     visibleNames.push("쇼쿠호");
   } else if (name === "사텐 루이코") {
     visibleNames.push("사텐");
+  } else if (name === "시로코*테러") {
+    visibleNames.push("시로코", "테러");
   } else if (name?.includes("(")) {
     const splits = name.split("(");
     visibleNames.push(splits[0], splits[1].replace(")", ""));
@@ -46,7 +48,7 @@ export default function StudentCard(
       <div className="relative">
         <img
           className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale opacity-75" : ""} transition`}
-          src={studentImageUrl(studentId)}
+          src={studentImageUrl(studentId || "unlisted")}
           alt={name} loading="lazy"
         />
         {showInfo && (

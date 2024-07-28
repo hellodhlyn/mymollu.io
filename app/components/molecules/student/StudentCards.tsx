@@ -4,7 +4,7 @@ import { StudentCard } from "~/components/atoms/student"
 type StudentCardsProps = {
   cardProps: StudentCardProps[];
   mobileGrid?: 4 | 5 | 6;
-  onSelect?: (id: string) => void;
+  onSelect?: (id: string | null) => void;
 };
 
 export default function StudentCards({ cardProps, mobileGrid, onSelect }: StudentCardsProps) {

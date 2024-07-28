@@ -27,7 +27,8 @@ const futureContentsQuery = graphql(`
           pickups {
             type
             rerun
-            student { studentId name }
+            student { studentId }
+            studentName
           }
         }
         ... on Raid {
@@ -126,15 +127,24 @@ export default function Futures() {
     return () => { clearTimeout(timer); };
   }, [plan]);
 
+  const events = (contents.filter((content) => content.__typename === "Event") as Event[]).map((event) => ({
+    ...event,
+    pickups: event.pickups.map((pickup) => ({ ...pickup, studentId: pickup.student?.studentId || null })),
+  }));
+
   return (
     <div className="pb-64">
       <Title text="미래시" />
 
       <FutureTimeline
-        events={contents.filter((content) => content.__typename === "Event") as Event[]}
+        events={events}
         raids={contents.filter((content) => content.__typename === "Raid") as Raid[]}
         plan={plan}
         onSelectStudent={signedIn ? (studentId) => {
+          if (!studentId) {
+            return;
+          }
+
           const newSelectedIds = plan.studentIds.includes(studentId) ?
             plan.studentIds.filter((id) => id !== studentId) : [...plan.studentIds, studentId];
           setPlan((prev) => ({ ...prev, studentIds: newSelectedIds }));
