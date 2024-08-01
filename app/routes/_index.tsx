@@ -27,7 +27,8 @@ const indexQuery = graphql(`
           pickups {
             type
             rerun
-            student { studentId name }
+            student { studentId }
+            studentName
           }
         }
         ... on Raid {
@@ -92,7 +93,12 @@ export default function Index() {
             <TimelineItem
               key={content.__typename === "Event" ? content.eventId : content.raidId}
               raid={content.__typename === "Raid" ? content : undefined}
-              event={content.__typename === "Event" ? content : undefined}
+              event={
+                content.__typename === "Event" ? {
+                  ...content,
+                  pickups: content.pickups.map((pickup) => ({ ...pickup, studentId: pickup.student?.studentId ?? null, }))
+                } : undefined
+              }
             />
           )
         })}
