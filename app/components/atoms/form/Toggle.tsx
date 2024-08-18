@@ -5,9 +5,10 @@ type ToggleProps = {
   name?: string;
   label: string;
   initialState?: boolean;
+  onChange?: (value: boolean) => void;
 };
 
-export default function Toggle({ name, label, initialState }: ToggleProps) {
+export default function Toggle({ name, label, initialState, onChange }: ToggleProps) {
   const [enabled, setEnabled] = useState(initialState ?? false);
 
   return (
@@ -16,7 +17,7 @@ export default function Toggle({ name, label, initialState }: ToggleProps) {
         <Switch
           className="h-7 w-14 p-1 group relative flex cursor-pointer rounded-full bg-neutral-200 data-[checked]:bg-blue-500 transition-colors duration-200 ease-in-out"
           checked={enabled}
-          onChange={setEnabled}
+          onChange={(value) => { setEnabled(value); setEnabled(value); }}
         >
           <span
             aria-hidden="true"

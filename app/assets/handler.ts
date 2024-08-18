@@ -1,15 +1,21 @@
+const SCHALE_DB_HOST = "https://raw.githubusercontent.com/SchaleDB/SchaleDB/main";
+
 export async function handleAssetRoutes(url: string): Promise<Response> {
   const { pathname } = new URL(url);
   if (pathname.startsWith("/assets/images/students")) {
     const matches = pathname.match(/^\/assets\/images\/students\/(?<studentId>\S+)$/);
-    console.log(matches);
     if (matches?.groups?.studentId) {
       const { studentId } = matches.groups;
       if (studentId === "unlisted") {
         return proxy("https://assets.mollulog.net/assets/images/students/-1");
       } else {
-        return proxy(`https://raw.githubusercontent.com/SchaleDB/SchaleDB/main/images/student/collection/${studentId}.webp`);
+        return proxy(`${SCHALE_DB_HOST}/images/student/collection/${studentId}.webp`);
       }
+    }
+  } else if (pathname.startsWith("/assets/images/items")) {
+    const matches = pathname.match(/^\/assets\/images\/items\/(?<imageId>\S+)$/);
+    if (matches?.groups?.imageId) {
+      return proxy(`${SCHALE_DB_HOST}/images/item/icon/${matches.groups.imageId}.webp`)
     }
   }
 

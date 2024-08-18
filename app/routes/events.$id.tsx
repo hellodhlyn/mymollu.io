@@ -2,15 +2,18 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
 import dayjs from "dayjs";
+import { getAuthenticator } from "~/auth/authenticator.server";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
-import { EventVideos } from "~/components/organisms/event";
+import { EventStages, EventVideos } from "~/components/organisms/event";
+import { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { EventDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { eventTypeLocale, pickupLabelLocale } from "~/locales/ko";
+import { StudentState, getUserStudentStates } from "~/models/student-state";
 
 const eventDetailQuery = graphql(`
   query EventDetail($eventId: String!) {
@@ -31,11 +34,25 @@ const eventDetailQuery = graphql(`
         student { studentId }
         studentName
       }
+      stages {
+        difficulty
+        index
+        entryAp
+        rewards {
+          item {
+            itemId
+            name
+            imageId
+            eventBonuses { studentId ratio }
+          }
+          amount
+        }
+      }
     }
   }
 `);
 
-export const loader = async ({ params, context }: LoaderFunctionArgs) => {
+export const loader = async ({ params, context, request }: LoaderFunctionArgs) => {
   const { data, error } = await runQuery<EventDetailQuery>(eventDetailQuery, { eventId: params.id });
   let errorMessage: string | null = null;
   if (error || !data) {
@@ -54,7 +71,18 @@ export const loader = async ({ params, context }: LoaderFunctionArgs) => {
     );
   }
 
-  return json({ event: data!.event! });
+  const env = context.env as Env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
+  let studentStates: StudentState[] = [];
+  if (sensei) {
+    studentStates = await getUserStudentStates(env, sensei.username, true) ?? [];
+  }
+
+  return json({
+    event: data!.event!,
+    studentStates,
+    signedIn: sensei !== null,
+  });
 };
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -87,7 +115,7 @@ export const ErrorBoundary = () => {
 };
 
 export default function EventDetail() {
-  const { event } = useLoaderData<typeof loader>();
+  const { event, signedIn, studentStates } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -117,6 +145,14 @@ export default function EventDetail() {
             mobileGrid={5}
           />
         </div>
+      )}
+
+      {event.type === "event" && event.stages.length > 0 && (
+        <EventStages
+          stages={event.stages}
+          signedIn={signedIn}
+          ownedStudentIds={studentStates.filter(({ owned }) => owned).map(({ student }) => student.id)}
+        />
       )}
 
       {(event.videos && event.videos.length > 0) && <EventVideos videos={event.videos} />}
