@@ -1,16 +1,18 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
-import { isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
+import { defer } from "@remix-run/cloudflare";
+import { Await, isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
 import dayjs from "dayjs";
+import { Suspense } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
 import { EventStages, EventVideos } from "~/components/organisms/event";
+import { TimelinePlaceholder } from "~/components/organisms/useractivity";
 import { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import type { EventDetailQuery } from "~/graphql/graphql";
+import { EventStagesQuery, type EventDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { eventTypeLocale, pickupLabelLocale } from "~/locales/ko";
 import { StudentState, getUserStudentStates } from "~/models/student-state";
@@ -34,6 +36,13 @@ const eventDetailQuery = graphql(`
         student { studentId }
         studentName
       }
+    }
+  }
+`);
+
+const eventStagesQuery = graphql(`
+  query EventStages($eventId: String!) {
+    event(eventId: $eventId) {
       stages {
         difficulty
         index
@@ -51,6 +60,14 @@ const eventDetailQuery = graphql(`
     }
   }
 `);
+
+async function getEventStages(eventId: string): Promise<Exclude<EventStagesQuery["event"], null>["stages"] | []> {
+  const { data, error } = await runQuery<EventStagesQuery>(eventStagesQuery, { eventId });
+  if (error || !data?.event) {
+    return [];
+  }
+  return data.event.stages;
+}
 
 export const loader = async ({ params, context, request }: LoaderFunctionArgs) => {
   const { data, error } = await runQuery<EventDetailQuery>(eventDetailQuery, { eventId: params.id });
@@ -78,8 +95,9 @@ export const loader = async ({ params, context, request }: LoaderFunctionArgs) =
     studentStates = await getUserStudentStates(env, sensei.username, true) ?? [];
   }
 
-  return json({
+  return defer({
     event: data!.event!,
+    stages: getEventStages(params.id as string),
     studentStates,
     signedIn: sensei !== null,
   });
@@ -115,7 +133,7 @@ export const ErrorBoundary = () => {
 };
 
 export default function EventDetail() {
-  const { event, signedIn, studentStates } = useLoaderData<typeof loader>();
+  const { event, stages, signedIn, studentStates } = useLoaderData<typeof loader>();
 
   return (
     <>
@@ -147,13 +165,17 @@ export default function EventDetail() {
         </div>
       )}
 
-      {event.type === "event" && event.stages.length > 0 && (
-        <EventStages
-          stages={event.stages}
-          signedIn={signedIn}
-          ownedStudentIds={studentStates.filter(({ owned }) => owned).map(({ student }) => student.id)}
-        />
-      )}
+      <Suspense fallback={<TimelinePlaceholder />}>
+        <Await resolve={stages}>
+          {(stages) => event.type === "event" && stages && stages.length > 0 && (
+            <EventStages
+              stages={stages}
+              signedIn={signedIn}
+              ownedStudentIds={studentStates.filter(({ owned }) => owned).map(({ student }) => student.id)}
+            />
+          )}
+        </Await>
+      </Suspense>
 
       {(event.videos && event.videos.length > 0) && <EventVideos videos={event.videos} />}
     </>
