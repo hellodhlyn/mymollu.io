@@ -1,4 +1,4 @@
-import { json, type LinksFunction, type LoaderFunction } from "@remix-run/cloudflare";
+import { LoaderFunctionArgs, json, type LinksFunction } from "@remix-run/cloudflare";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import {
   Links,
@@ -10,27 +10,24 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
-import { Header } from "./components";
 import { getAuthenticator } from "./auth/authenticator.server";
 import type { Env } from "./env.server";
+import { Header, Footer } from "./components/organisms/base";
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.8/static/pretendard.css" },
+  { rel: "stylesheet", href: "https://cdn.jsdelivr.net/gh/Nyannnnnng/GyeonggiTitleWoff/stylesheet.css" },
   { rel: "stylesheet", href: styles },
 ];
 
-type LoaderData = {
-  currentUsername: string | null;
-}
-
-export const loader: LoaderFunction = async ({ request, context }) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
-  return json<LoaderData>({ currentUsername: sensei?.username || null });
+  return json({ currentUsername: sensei?.username ?? null });
 };
 
 export default function App() {
-  const { currentUsername } = useLoaderData<LoaderData>();
+  const { currentUsername } = useLoaderData<typeof loader>();
 
   return (
     <html lang="ko">
@@ -45,9 +42,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div className="mx-auto max-w-3xl p-4 pb-32">
+        <div className="mx-auto max-w-3xl p-4">
           <Header currentUsername={currentUsername} />
           <Outlet />
+          <Footer />
         </div>
         <ScrollRestoration />
         <Scripts />

@@ -12,7 +12,7 @@ import { useToast } from "~/components/atoms/notification";
 import { getAuthenticator } from "~/auth/authenticator.server";
 
 export const meta: MetaFunction = () => [
-  { title: "학생 성장 관리 | MolluLog" },
+  { title: "학생 성장 관리 | 몰루로그" },
 ];
 
 type LoaderData = {

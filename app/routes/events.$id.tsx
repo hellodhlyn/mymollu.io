@@ -108,14 +108,14 @@ export const loader = async ({ params, context, request }: LoaderFunctionArgs) =
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) {
-    return [{ title: "이벤트 정보 | MolluLog" }];
+    return [{ title: "이벤트 정보 | 몰루로그" }];
   }
 
   const { event } = data;
   const title = `${event.name} - 이벤트 정보`;
   const description = `블루 아카이브 "${event.name}" 이벤트의 공략, 픽업 정보 모음`;
   return [
-    { title: `${title} | MolluLog` },
+    { title: `${title} | 몰루로그` },
     { name: "description", content: description },
     { name: "og:title", content: title },
     { name: "og:image", content: event.imageUrl },

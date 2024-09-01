@@ -53,9 +53,9 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
 
 export const meta: MetaFunction = ({ params }) => {
   return [
-    { title: `${params.username || ""} - 프로필 | MolluLog`.trim() },
+    { title: `${params.username || ""} - 프로필 | 몰루로그`.trim() },
     { name: "description", content: `${params.username} 선생님의 프로필과 최근 활동을 확인해보세요.` },
-    { name: "og:title", content: `${params.username || ""} - 프로필 | MolluLog`.trim() },
+    { name: "og:title", content: `${params.username || ""} - 프로필 | 몰루로그`.trim() },
     { name: "og:description", content: `${params.username} 선생님의 프로필과 최근 활동을 확인해보세요.` },
   ];
 };

@@ -19,7 +19,7 @@ const raidForPartyEditQuery = graphql(`
 `);
 
 export const meta: MetaFunction = () => [
-  { title: "편성 관리 | MolluLog" },
+  { title: "편성 관리 | 몰루로그" },
 ];
 
 export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {

@@ -9,9 +9,9 @@ export default function Header({ currentUsername }: HeaderProps) {
   const pathname = matches[matches.length - 1].pathname;
   return (
     <div className="mt-8 mb-12 md:my-16 text-neutral-900">
-      <Link to="/">
-        <h1 className="my-6 font-black text-4xl md:text-5xl italic">
-          mol<span className="ml-1.5 md:ml-2 pr-2 bg-neutral-900 text-white rounded-lg">lul</span>og
+      <Link to="/" className="hover:opacity-50 transition-opacity">
+        <h1 className="my-4 text-4xl md:text-5xl font-ingame">
+          <span className="font-bold">몰루</span>로그
         </h1>
       </Link>
       <div className="flex gap-x-4 text-lg tracking-tight">

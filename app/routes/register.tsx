@@ -11,7 +11,7 @@ import { runQuery } from "~/lib/baql";
 import { profileStudentsQuery } from "./edit.profile";
 
 export const meta: MetaFunction = () => [
-  { title: "선생님 등록 | MolluLog" },
+  { title: "선생님 등록 | 몰루로그" },
 ];
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {

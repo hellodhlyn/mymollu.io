@@ -48,7 +48,7 @@ export const meta: MetaFunction = () => {
   const title = "블루 아카이브 이벤트, 픽업 미래시";
   const description = "블루 아카이브 한국 서버의 이벤트 및 총력전, 픽업 미래시 정보 모음";
   return [
-    { title: `${title} | MolluLog` },
+    { title: `${title} | 몰루로그` },
     { name: "description", content: description },
     { name: "og:title", content: title },
     { name: "og:description", content: description },

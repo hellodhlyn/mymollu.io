@@ -13,7 +13,7 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
 
 export const meta: MetaFunction = () => [
-  { title: "모집 학생 관리 | MolluLog" },
+  { title: "모집 학생 관리 | 몰루로그" },
 ];
 
 type LoaderData = {

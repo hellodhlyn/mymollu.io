@@ -16,7 +16,7 @@ export const profileStudentsQuery = graphql(`
 `)
 
 export const meta: MetaFunction = () => [
-  { title: "프로필 관리 | MolluLog" },
+  { title: "프로필 관리 | 몰루로그" },
 ];
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {

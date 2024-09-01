@@ -87,14 +87,14 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) {
-    return [{ title: "이벤트 정보 | MolluLog" }];
+    return [{ title: "이벤트 정보 | 몰루로그" }];
   }
 
   const { raid } = data;
   const title = `${raidTypeLocale[raid.type]} ${raid.name} 정보`;
   const description = `블루 아카이브 ${raidTypeLocale[raid.type]} ${raid.name} 이벤트의 공략 정보 모음`;
   return [
-    { title: `${title} | MolluLog` },
+    { title: `${title} | 몰루로그` },
     { name: "description", content: description },
     { name: "og:title", content: title },
     { name: "og:description", content: description },

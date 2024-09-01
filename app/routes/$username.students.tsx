@@ -26,9 +26,9 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
 
 export const meta: MetaFunction = ({ params }) => {
   return [
-    { title: `${params.username || ""} - 학생부 | MolluLog`.trim() },
+    { title: `${params.username || ""} - 학생부 | 몰루로그`.trim() },
     { name: "description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
-    { name: "og:title", content: `${params.username || ""} - 학생부 | MolluLog`.trim() },
+    { name: "og:title", content: `${params.username || ""} - 학생부 | 몰루로그`.trim() },
     { name: "og:description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
   ];
 };
