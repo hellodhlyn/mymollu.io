@@ -1,4 +1,4 @@
-const SCHALE_DB_HOST = "https://raw.githubusercontent.com/SchaleDB/SchaleDB/main";
+const SCHALE_DB_HOST = "https://schaledb.com";
 
 export async function handleAssetRoutes(url: string): Promise<Response> {
   const { pathname } = new URL(url);

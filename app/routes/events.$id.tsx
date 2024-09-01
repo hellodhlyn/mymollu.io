@@ -52,7 +52,10 @@ const eventStagesQuery = graphql(`
             itemId
             name
             imageId
-            eventBonuses { studentId ratio }
+            eventBonuses {
+              student { studentId role }
+              ratio
+            }
           }
           amount
         }

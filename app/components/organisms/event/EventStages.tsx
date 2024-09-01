@@ -3,6 +3,7 @@ import { ItemCard } from "~/components/atoms/item";
 import { SubTitle, Callout } from "~/components/atoms/typography";
 import { ItemCards } from "~/components/molecules/item";
 import { StudentCards } from "~/components/molecules/student";
+import { Role } from "~/models/student-state";
 
 type EventStagesProps = {
   stages: {
@@ -16,7 +17,10 @@ type EventStagesProps = {
         name: string;
         imageId: string;
         eventBonuses: {
-          studentId: string;
+          student: {
+            studentId: string;
+            role: Role;
+          };
           ratio: number;
         }[];
       };
@@ -34,9 +38,28 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
       continue;
     }
 
-    const appliedBonuses = reward.item.eventBonuses.filter((bonus) => ownedStudentIds.includes(bonus.studentId));
-    const ratio = appliedBonuses.length > 0 ? appliedBonuses.map((bonus) => bonus.ratio).slice(0, 6).reduce((a, b) => a + b) : 0;
-    itemBonuses[item.itemId] = { item, ratio };
+    let appliedRatio = 0;
+    let appliedStriker = 0, appliedSpecial = 0;
+    for (const { student, ratio } of reward.item.eventBonuses.sort((a, b) => b.ratio - a.ratio)) {
+      if (!ownedStudentIds.includes(student.studentId)) {
+        continue;
+      }
+
+      if (student.role === "striker" && appliedStriker < 4) {
+        appliedStriker += 1;
+        appliedRatio += ratio * 100;
+      }
+      if (student.role === "special" && appliedSpecial < 2) {
+        appliedSpecial += 1;
+        appliedRatio += ratio * 100;
+      }
+
+      if (appliedStriker === 4 && appliedSpecial === 2) {
+        break;
+      }
+    }
+
+    itemBonuses[item.itemId] = { item, ratio: appliedRatio / 100 };
   }
 
   return (
@@ -123,9 +146,9 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
                   </p>
                 </div>
               </div>
-              <StudentCards mobileGrid={8} pcGrid={12} cardProps={item.eventBonuses.map(({ studentId, ratio }) => ({
-                studentId,
-                grayscale: signedIn && !ownedStudentIds.includes(studentId),
+              <StudentCards mobileGrid={8} pcGrid={12} cardProps={item.eventBonuses.map(({ student, ratio }) => ({
+                studentId: student.studentId,
+                grayscale: signedIn && !ownedStudentIds.includes(student.studentId),
                 label: (<span className="text-white font-normal">{Math.floor(ratio * 100)}%</span>),
               }))} />
             </div>
