@@ -1,8 +1,8 @@
 import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { Title } from "~/components/atoms/typography";
+import { Callout, Title } from "~/components/atoms/typography";
 import { FutureTimeline } from "~/components/templates/future";
 import type { Env } from "~/env.server";
 import type { FuturePlan } from "~/models/future";
@@ -27,7 +27,7 @@ const futureContentsQuery = graphql(`
           pickups {
             type
             rerun
-            student { studentId }
+            student { studentId attackType defenseType role schaleDbId }
             studentName
           }
         }
@@ -86,9 +86,8 @@ export const action: ActionFunction = async ({ context, request }) => {
   }
 
   const formData = await request.formData();
-  const studentIds = JSON.parse(formData.get("studentIds") as string) as string[];
   await setFuturePlan(env, currentUser.id, {
-    studentIds,
+    pickups: formData.get("pickups") ? JSON.parse(formData.get("pickups") as string) : undefined,
     memos: formData.get("memos") ? JSON.parse(formData.get("memos") as string) : undefined,
   });
 
@@ -101,9 +100,10 @@ type Raid = Extract<FutureContentsQuery["contents"]["nodes"][number], { __typena
 export default function Futures() {
   const { signedIn, contents: contentsData, futurePlan } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
+  const navigate = useNavigate();
 
   const contents = contentsData.map((content) => ({
-...content,
+    ...content,
     since: new Date(content.since),
     until: new Date(content.until),
   } as Event | Raid));
@@ -117,7 +117,7 @@ export default function Futures() {
     const timer = setTimeout(() => {
       fetcher.submit(
         {
-          studentIds: JSON.stringify(plan.studentIds),
+          pickups: plan.pickups ? JSON.stringify(plan.pickups) : null,
           memos: plan.memos ? JSON.stringify(plan.memos) : null,
         },
         { method: "post", navigate: false },
@@ -129,26 +129,50 @@ export default function Futures() {
 
   const events = (contents.filter((content) => content.__typename === "Event") as Event[]).map((event) => ({
     ...event,
-    pickups: event.pickups.map((pickup) => ({ ...pickup, studentId: pickup.student?.studentId || null })),
+    pickups: event.pickups.map((pickup) => {
+      const studentId = pickup.student?.studentId;
+      return {
+        ...pickup,
+        student: {
+          ...pickup.student,
+          studentId: studentId ?? null,
+          name: pickup.studentName,
+          state: {
+            selected: studentId && plan.pickups?.[event.eventId]?.includes(studentId),
+          },
+        },
+      };
+    }),
   }));
 
   return (
     <div className="pb-64">
       <Title text="미래시" />
+      <p className="text-neutral-500 -mt-2 my-4">
+        미래시는 일본 서버 일정을 바탕으로 추정된 것으로, 실제 일정과 다를 수 있습니다.
+      </p>
+
+      {plan.studentIds && plan.studentIds.length > 0 && !plan.pickups && (
+        <Callout className="my-4 flex" emoji="🚚">
+          <p>관심 학생을 등록하는 방식이 변경되었어요. 기존에 선택했던 학생을 새로 등록해주세요.</p>
+        </Callout>
+      )}
 
       <FutureTimeline
         events={events}
         raids={contents.filter((content) => content.__typename === "Raid") as Raid[]}
         plan={plan}
-        onSelectStudent={signedIn ? (studentId) => {
+        onSelectStudent={signedIn ? (eventId, studentId) => {
           if (!studentId) {
             return;
           }
 
-          const newSelectedIds = plan.studentIds.includes(studentId) ?
-            plan.studentIds.filter((id) => id !== studentId) : [...plan.studentIds, studentId];
-          setPlan((prev) => ({ ...prev, studentIds: newSelectedIds }));
-        } : undefined}
+          const newPickups = plan.pickups ? { ...plan.pickups } : {};
+          const eventPickups = newPickups[eventId] ?? [];
+          newPickups[eventId] = eventPickups.includes(studentId) ? eventPickups.filter((id) => id !== studentId) : [...eventPickups, studentId];
+
+          setPlan((prev) => ({ ...prev, pickups: newPickups }));
+        } : () => navigate("/signin")}
         onMemoUpdate={signedIn ?
           (newMemo) => setPlan((prev) => ({ ...prev, memos: { ...prev.memos, ...newMemo } })) :
           undefined

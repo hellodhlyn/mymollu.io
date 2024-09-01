@@ -3,7 +3,7 @@ import type { FuturePlan } from "~/models/future";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { FilterButtons } from "~/components/molecules/student";
-import type { AttackType, DefenseType, EventType, PickupType, RaidType, Terrain } from "~/models/content";
+import type { AttackType, DefenseType, EventType, PickupType, RaidType, Role, Terrain } from "~/models/content";
 
 type GameEvent = {
   eventId: string;
@@ -13,8 +13,13 @@ type GameEvent = {
   pickups: {
     type: PickupType;
     rerun: boolean;
-    studentId: string | null;
-    studentName: string;
+    student: {
+      studentId: string | null;
+      name: string;
+      attackType?: AttackType;
+      defenseType?: DefenseType;
+      role?: Role;
+    };
   }[];
   since: Date;
   until: Date;
@@ -37,7 +42,7 @@ type FutureTimelineProps = {
   raids: Raid[];
   plan?: FuturePlan;
 
-  onSelectStudent?: (studentId: string | null) => void;
+  onSelectStudent?: (eventId: string, studentId: string) => void;
   onMemoUpdate?: (memo: { [eventId: string]: string }) => void;
 };
 
@@ -104,10 +109,6 @@ export default function FutureTimeline({
   const now = dayjs();
   return (
     <>
-      <p className="text-neutral-500 -mt-2 my-4">
-        미래시는 일본 서버 일정을 바탕으로 추정된 것으로, 실제 일정과 다를 수 있습니다.
-      </p>
-
       <div className="my-6">
         <FilterButtons buttonProps={[
           { text: "스토리", onToggle: (activated) => { onToggleEvents(activated, ["main_story"]) } },
@@ -151,13 +152,13 @@ export default function FutureTimeline({
               </div>
             )}
             <div className="ml-4 md:ml-6">
-              <TimelineItem 
+              <TimelineItem
                 raid={item.raid}
                 event={item.event && {
                   ...item.event,
 
                   selectedStudentIds: plan?.studentIds ?? [],
-                  onSelect: selectable ? (studentId) => onSelectStudent(studentId) : undefined,
+                  onSelect: (studentId) => (selectable && studentId) ? onSelectStudent(item.event!.eventId, studentId) : undefined,
                   initialMemo: plan?.memos ? plan.memos[item.id] : undefined,
                   onMemoUpdate: showMemo ? ((text) => onMemoUpdate({ [item.id]: text })) : undefined,
                 }}

@@ -1,7 +1,8 @@
 import type { Env } from "~/env.server";
 
 export type FuturePlan = {
-  studentIds: string[];
+  studentIds?: string[];
+  pickups?: { [eventId: string]: string[] };
   memos?: { [eventId: string]: string };
 }
 

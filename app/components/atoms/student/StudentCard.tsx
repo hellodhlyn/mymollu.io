@@ -1,3 +1,4 @@
+import { CheckCircle, CheckCircleSolid, HeartSolid } from "iconoir-react";
 import type { ReactNode } from "react";
 import { studentImageUrl } from "~/models/assets";
 
@@ -47,14 +48,17 @@ export default function StudentCard(
     <div className="my-1">
       <div className="relative">
         <img
-          className={`rounded-lg ${selected ? "border border-4 border-blue-500" : ""} ${grayscale ? "grayscale opacity-75" : ""} transition`}
+          className={`rounded-lg ${grayscale ? "grayscale opacity-75" : ""} transition`}
           src={studentImageUrl(studentId || "unlisted")}
           alt={name} loading="lazy"
         />
+        {selected && (
+          <div className="absolute top-1 right-1 bg-white opacity-90 rounded-full">
+            <HeartSolid className="p-0.5 text-red-500 size-5" />
+          </div>
+        )}
         {showInfo && (
-          <div
-            className="absolute bottom-0 right-0 flex flex-col items-center px-2 rounded-lg bg-black bg-opacity-75 text-center font-extrabold text-xs"
-          >
+          <div className="absolute bottom-0 right-0 flex flex-col items-center px-2 rounded-lg bg-black bg-opacity-75 text-center font-extrabold text-xs">
             {(tier) && (
               <p className={`flex items-center ${visibileTier(tier)[1] ? "text-teal-300" : "text-yellow-300"}`}>
                 {(tier <= 5) ?

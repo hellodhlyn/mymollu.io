@@ -2,7 +2,7 @@ import { TimelineItemHeader } from "~/components/molecules/content-timeline";
 import { MemoEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
 import { eventTypeLocale, pickupLabelLocale } from "~/locales/ko";
-import type { EventType, PickupType } from "~/models/content";
+import type { AttackType, DefenseType, EventType, PickupType, Role } from "~/models/content";
 
 export type EventTimelineItemProps = {
   eventId: string;
@@ -12,8 +12,14 @@ export type EventTimelineItemProps = {
   pickups: {
     type: PickupType;
     rerun: boolean;
-    studentId: string | null;
-    studentName: string;
+    student: {
+      studentId: string | null;
+      name: string;
+      attackType?: AttackType;
+      defenseType?: DefenseType;
+      role?: Role;
+      schaleDbId?: string;
+    };
   }[];
   since: Date;
   until: Date;
@@ -47,12 +53,13 @@ export default function EventTimelineItem(event: EventTimelineItemProps) {
 
       <StudentCards
         mobileGrid={5}
-        cardProps={event.pickups.map(({ type, rerun, studentId, studentName }) => {
+        students={event.pickups.map(({ type, rerun, student }) => {
+          const { studentId } = student;
+
           const label = pickupLabelLocale({ type, rerun });
           const colorClass = rerun ? "text-white" : "text-yellow-500";
           return {
-            studentId: studentId || "unlisted",
-            name: studentName,
+            ...student,
             selected: studentId ? (selectedStudentIds ?? []).includes(studentId) : false,
             label: (
               <span className={`${colorClass}`}>{label}</span>
