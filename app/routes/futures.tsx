@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
-import { useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Callout, Title } from "~/components/atoms/typography";
 import { FutureTimeline } from "~/components/templates/future";
@@ -11,8 +11,10 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { graphql } from "~/graphql";
 import { runQuery } from "~/lib/baql";
 import type { FutureContentsQuery } from "~/graphql/graphql";
+import { sanitizeClassName } from "~/prophandlers";
+import { Calendar } from "iconoir-react";
 
-const futureContentsQuery = graphql(`
+export const futureContentsQuery = graphql(`
   query FutureContents($now: ISO8601DateTime!) {
     contents(untilAfter: $now, first: 9999) {
       nodes {
@@ -70,6 +72,7 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
   const futurePlan = signedIn ? await getFuturePlan(env, currentUser.id) : null;
   return json({
     signedIn,
+    currentUsername: currentUser?.username,
     contents: data.contents.nodes,
     futurePlan,
   });
@@ -98,7 +101,7 @@ type Event = Extract<FutureContentsQuery["contents"]["nodes"][number], { __typen
 type Raid = Extract<FutureContentsQuery["contents"]["nodes"][number], { __typename: "Raid" }>;
 
 export default function Futures() {
-  const { signedIn, contents: contentsData, futurePlan } = useLoaderData<typeof loader>();
+  const { signedIn, currentUsername, contents: contentsData, futurePlan } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const navigate = useNavigate();
 
@@ -178,6 +181,20 @@ export default function Futures() {
           undefined
         }
       />
+
+      {currentUsername && (
+        <Link to={`/@${currentUsername}/futures`}>
+          <div
+            className={sanitizeClassName(`
+              m-4 md:m-8 px-4 py-2 fixed bottom-safe-b right-0 flex items-center bg-neutral-900 hover:bg-neutral-700
+              text-white shadow-xl rounded-full transition cursor-pointer
+            `)}
+          >
+            <Calendar className="size-4 mr-2" strokeWidth={2} />
+            <span>모집 계획</span>
+          </div>
+        </Link>
+      )}
     </div>
   );
 }

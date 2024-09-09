@@ -60,7 +60,7 @@ export default function StudentInfo({ student, favorited, onRemoveFavorite, onAd
         {onAddFavorite && onRemoveFavorite && (
           <div className="px-4 py-2 flex items-center hover:bg-neutral-700 transition cursor-pointer border-t border-neutral-700" onClick={favorited ? onRemoveFavorite: onAddFavorite}>
             {favorited ? <MinusCircle className="size-4" /> : <PlusCircle className="size-4" />}
-            <span className="ml-1.5">관심 학생에{favorited ? "서 제거" : " 추가"}</span>
+            <span className="ml-1.5">관심 모집 학생에{favorited ? "서 해제" : " 등록"}</span>
           </div>
         )}
 

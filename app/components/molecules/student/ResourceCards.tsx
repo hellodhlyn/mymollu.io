@@ -17,9 +17,15 @@ function ResourceCard({ imageUrl, count }: ResourceCardProps) {
   )
 }
 
-export default function ResourceCards({ cardProps }: { cardProps: ResourceCardProps[] }) {
+type ResourceCardsProps = {
+  cardProps: ResourceCardProps[];
+  mobileGrid?: 5 | 6;
+};
+
+export default function ResourceCards({ mobileGrid, cardProps }: ResourceCardsProps) {
+  const mobileGridClass = mobileGrid === 5 ? "grid-cols-5" : "grid-cols-6";
   return (
-    <div className="my-2 grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
+    <div className={`my-2 grid ${mobileGridClass} md:grid-cols-10 gap-1 md:gap-2`}>
       {cardProps.map((prop) => (
         <ResourceCard key={prop.id} {...prop} />
       ))}

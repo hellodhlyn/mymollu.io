@@ -3,7 +3,7 @@ import { ChatLines } from "iconoir-react";
 type MemoEditorProps = {
   initialText?: string;
   placeholder?: string;
-  onUpdate: (text: string) => void;
+  onUpdate?: (text: string) => void;
 };
 
 export default function MemoEditor({ initialText, placeholder, onUpdate }: MemoEditorProps) {
@@ -16,7 +16,8 @@ export default function MemoEditor({ initialText, placeholder, onUpdate }: MemoE
         className="flex-grow bg-neutral-100"
         placeholder={placeholder ?? "메모를 남겨보세요"}
         defaultValue={initialText}
-        onKeyUp={(e) => onUpdate(e.currentTarget.value)}
+        disabled={!onUpdate}
+        onKeyUp={onUpdate ? (e) => onUpdate(e.currentTarget.value) : undefined}
       />
     </div>
   );

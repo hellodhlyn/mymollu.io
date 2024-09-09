@@ -57,6 +57,7 @@ export default function User() {
       <Navigation links={[
         { to: `/@${username}/`, text: "프로필" },
         { to: `/@${username}/students`, text: "학생" },
+        { to: `/@${username}/futures`, text: "계획" },
         { to: `/@${username}/parties`, text: "편성" },
         { to: `/@${username}/friends`, text: "친구" },
       ]} />
