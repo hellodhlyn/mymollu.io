@@ -1,6 +1,13 @@
+import { useMatches } from "@remix-run/react";
 import { Link } from "iconoir-react";
 
 export default function Footer() {
+  const matches = useMatches();
+  const pathname = matches[matches.length - 1].pathname;
+  if (pathname === "/signin") {
+    return null;
+  }
+
   return (
     <div className="mt-16 py-16">
       <p className="text-lg text-bold font-ingame"><span className="font-bold">

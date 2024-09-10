@@ -8,14 +8,15 @@ export type ButtonProps = {
   type?: "button" | "submit" | "reset";
   color?: "primary" | "red" | "white";
   onClick?: () => void;
+  disabled?: boolean;
 };
 
-export default function Button({ text, className, children, type, color, onClick }: ButtonProps) {
+export default function Button({ text, className, children, type, color, onClick, disabled }: ButtonProps) {
   let colorClass = "";
   if (color === "primary") {
-    colorClass = "bg-blue-500 hover:bg-blue-400 shadow-blue-300 dark:shadow-blue-700 text-white"
+    colorClass = "bg-blue-500 hover:bg-blue-400 shadow-blue-300 disabled:bg-blue-300 text-white"
   } else if (color === "red") {
-    colorClass = "bg-red-500 hover:bg-red-400 shadow-red-300 dark:shadow-red-700 text-white"
+    colorClass = "bg-red-500 hover:bg-red-400 shadow-red-300 disabled:shadow-red-300 text-white"
   } else {
     colorClass = "bg-white hover:bg-gray-50 border";
   }
@@ -28,6 +29,7 @@ export default function Button({ text, className, children, type, color, onClick
         transition whitespace-nowrap ${colorClass} ${className ?? ""}
       `}
       onClick={onClick}
+      disabled={disabled}
     >
       {children ?? text}
     </button>
