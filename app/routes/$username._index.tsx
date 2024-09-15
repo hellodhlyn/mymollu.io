@@ -46,6 +46,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     following: following.length,
     followers: followers.length,
     profileStudentId: sensei?.profileStudentId ?? null,
+    friendCode: sensei?.friendCode ?? null,
     states,
     userActivities: getUserActivitiesBySensei(env, sensei.id),
   });
@@ -62,7 +63,7 @@ export const meta: MetaFunction = ({ params }) => {
 
 export default function UserIndex() {
   const loaderData = useLoaderData<typeof loader>();
-  const { username, currentUsername, profileStudentId, states, userActivities } = loaderData;
+  const { username, currentUsername, friendCode, profileStudentId, states, userActivities } = loaderData;
 
   let followability: ProfileCardProps["followability"] = loaderData.relationship.following ? "following" : "followable";
   if (currentUsername === username) {
@@ -102,6 +103,7 @@ export default function UserIndex() {
       <div className="my-8">
         <ProfileCard
           username={username}
+          friendCode={friendCode}
           imageUrl={imageUrl}
           tierCounts={tierCounts}
           followability={followability}

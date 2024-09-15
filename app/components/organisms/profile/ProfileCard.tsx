@@ -6,6 +6,7 @@ import { ProfileUsername } from "~/components/molecules/profile";
 export type ProfileCardProps = {
   imageUrl: string | null;
   username: string;
+  friendCode: string | null;
   tierCounts: Map<number, number>;
   loading: boolean;
   followability: "followable" | "following" | "unable";

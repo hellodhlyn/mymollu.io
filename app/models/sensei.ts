@@ -17,7 +17,6 @@ export type Sensei = {
   uid: string;
   username: string;
   friendCode: string | null;
-  googleId: string | null;
   profileStudentId: string | null;
   active: boolean;
 };
@@ -64,6 +63,14 @@ export async function getOrCreateSenseiByGoogleId(env: Env, googleId: string): P
 type SenseiUpdateFields = Partial<Pick<Sensei, "username" | "friendCode" | "profileStudentId" | "active">>
 
 const UPDATE_SENSEI_QUERY = "update senseis set username = ?1, friendCode = ?2, profileStudentId = ?3, active = ?4 where id = ?5";
+
+function nullableFieldToUpdate<T>(value: T | null | undefined, existingValue: T | null): T | null {
+  if (value === undefined) {
+    return existingValue;
+  }
+  return value;
+}
+
 export async function updateSensei(env: Env, id: number, fields: SenseiUpdateFields): Promise<{ error?: { username?: string } }> {
   const existingSensei = await getSenseiById(env, id);
   if (!existingSensei) {
@@ -74,8 +81,8 @@ export async function updateSensei(env: Env, id: number, fields: SenseiUpdateFie
   try {
     result = await env.DB.prepare(UPDATE_SENSEI_QUERY).bind(
       fields.username ?? existingSensei.username,
-      fields.friendCode ?? existingSensei.friendCode,
-      fields.profileStudentId ?? existingSensei.profileStudentId,
+      nullableFieldToUpdate(fields.friendCode, existingSensei.friendCode),
+      nullableFieldToUpdate(fields.profileStudentId, existingSensei.profileStudentId),
       fields.active ?? existingSensei.active,
       id,
     ).run();
@@ -102,7 +109,6 @@ function toModel(row: DBSensei): Sensei {
     uid: row.uid,
     username: row.username,
     friendCode: row.friendCode,
-    googleId: row.googleId,
     profileStudentId: row.profileStudentId,
     active: row.active === 1,
   };

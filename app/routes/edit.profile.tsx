@@ -35,7 +35,10 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 }
 
 type ActionData = {
-  error?: { username?: string };
+  error?: {
+    username?: string;
+    friendCode?: string;
+  };
 }
 
 export const action: ActionFunction = async ({ request, context }) => {
@@ -49,8 +52,13 @@ export const action: ActionFunction = async ({ request, context }) => {
   const formData = await request.formData();
   sensei.username = formData.get("username") as string;
   sensei.profileStudentId = formData.has("profileStudentId") ? formData.get("profileStudentId") as string : null;
+  sensei.friendCode = formData.get("friendCode") ? (formData.get("friendCode") as string).toUpperCase() : null;
+
   if (!/^[a-zA-Z0-9_]{4,20}$/.test(sensei.username)) {
     return json<ActionData>({ error: { username: "4~20글자의 영숫자 및 _ 기호만 사용 가능합니다." } })
+  }
+  if (sensei.friendCode && !/^[A-Z]{8}$/.test(sensei.friendCode)) {
+    return json<ActionData>({ error: { friendCode: "친구 코드는 알파벳 8글자에요." } });
   }
 
   const result = await updateSensei(env, sensei.id, sensei);

@@ -5,16 +5,17 @@ import { sanitizeClassName } from "~/prophandlers";
 type ProfileUsernameProps = {
   imageUrl: string | null;
   username: string;
+  friendCode: string | null;
   loading?: boolean;
   followability?: "followable" | "following" | "unable";
-  following?: number;
-  followers?: number;
+  following: number;
+  followers: number;
   onFollow?: () => void;
   onUnfollow?: () => void;
 };
 
 export default function ProfileUsername({
-  imageUrl, username, loading, followability, followers, following, onFollow, onUnfollow,
+  imageUrl, username, friendCode, loading, followability, followers, following, onFollow, onUnfollow,
 }: ProfileUsernameProps) {
   return (
     <div className="m-4 md:m-6 pb-4 md:pb-6 flex items-center">
@@ -28,14 +29,18 @@ export default function ProfileUsername({
       }
       <div className="ml-2 md:ml-4 flex-grow">
         <p className="font-bold text-lg md:text-xl">@{username}</p>
-        {(following !== undefined && followers !== undefined) && (
+        <p className="text-sm">
+          <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
+            {following} <span className="text-neutral-500">팔로잉</span>
+          </Link>
+          <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
+            {followers} <span className="text-neutral-500">팔로워</span>
+          </Link>
+        </p>
+        {friendCode && (
           <p className="text-sm">
-            <Link to={`/@${username}/friends?tab=following`} className="hover-underline mr-2">
-              {following} <span className="text-neutral-500">팔로잉</span>
-            </Link>
-            <Link to={`/@${username}/friends?tab=following`} className="hover-underline">
-              {followers} <span className="text-neutral-500">팔로워</span>
-            </Link>
+            <span className="text-neutral-500">친구 코드 </span>
+            <span>{friendCode}</span>
           </p>
         )}
       </div>

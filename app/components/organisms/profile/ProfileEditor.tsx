@@ -16,9 +16,11 @@ type ProfileEditorProps = {
   initialData?: {
     username: string;
     profileStudentId: string | null;
+    friendCode: string | null;
   };
   error?: {
     username?: string;
+    friendCode?: string;
   };
 }
 
@@ -75,6 +77,12 @@ export default function ProfileEditor({ students, initialData, error }: ProfileE
           <input type="hidden" name="profileStudentId" value={profileStudent.studentId} />
         </>
       )}
+
+      <Input
+        name="friendCode" label="친구 코드 (선택)" defaultValue={initialData?.friendCode ?? undefined}
+        error={error?.friendCode}
+        description="게임 내 [소셜] > [친구] > [ID 카드] 에서 확인할 수 있어요."
+      />
 
       <Button type="submit" text="완료" color="primary" className="my-4" />
     </>
