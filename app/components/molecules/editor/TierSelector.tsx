@@ -21,10 +21,11 @@ function Stars({ tier }: { tier: number }) {
 }
 
 type TierSelectorProps = {
+  text?: string;
   onSelect: (tier: number) => void;
 };
 
-export default function TierSelector({ onSelect }: TierSelectorProps) {
+export default function TierSelector({ text, onSelect }: TierSelectorProps) {
   return (
     <Menu as="div" className="relative">
       {({ close }) => (
@@ -32,7 +33,7 @@ export default function TierSelector({ onSelect }: TierSelectorProps) {
           <Menu.Button>
             <SmallButton>
               <Star className="mr-1 w-4 h-4" strokeWidth={2} />
-              <span>성장</span>
+              <span>{text ?? "성장"}</span>
             </SmallButton>
           </Menu.Button>
           <Menu.Items className="absolute origin-top-left bg-white rounded-lg shadow-lg border border-gray-100">

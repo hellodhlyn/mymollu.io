@@ -54,7 +54,10 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
           <div key={`student-card-${name}`}>
             <div
               className={(onSelect && studentId) ? "hover:scale-105 cursor-pointer transition" : ""}
-              onClick={() => studentId ? setSelectedStudentId(studentId) : undefined}
+              onClick={studentId ? () => {
+                onSelect?.(studentId);
+                setSelectedStudentId(studentId);
+              } : undefined}
             >
               <StudentCard {...student} selected={student?.state?.selected} />
             </div>

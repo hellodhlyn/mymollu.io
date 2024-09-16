@@ -81,6 +81,27 @@ export async function getUserStudentStates(env: Env, username: string, includeUn
   });
 }
 
+export async function filterSenseisByStudent(
+  env: Env, studentId: string, minTier: number
+): Promise<{ senseiId: number, tier: number }[]> {
+  const list = await env.KV_USERDATA.list({ prefix: "student-states:id:" });
+
+  const result: { senseiId: number, tier: number }[] = [];
+  await Promise.all(list.keys.map(async (key) => {
+    const rawStates = await env.KV_USERDATA.get(key.name);
+    if (!rawStates) {
+      return;
+    }
+
+    const states = (rawStates ? JSON.parse(rawStates) : []) as StudentState[];
+    const state = states.find((state) => state.student.id === studentId);
+    if (state && state.owned && state.tier && state.tier >= minTier) {
+      result.push({ senseiId: parseInt(key.name.split(":")[2]), tier: state.tier });
+    }
+  }));
+  return result;
+}
+
 export async function updateStudentStates(env: Env, sensei: Sensei, states: StudentState[]) {
   await env.KV_USERDATA.put(userStateKeyById(sensei.id), JSON.stringify(states));
 }

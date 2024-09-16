@@ -1,10 +1,10 @@
-import { redirect, defer } from "@remix-run/cloudflare";
-import type { ActionFunction, MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { Await, Form, Link, useLoaderData } from "@remix-run/react";
+import { defer } from "@remix-run/cloudflare";
+import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { Await, Link, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
-import { Button, Input } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
 import { TimelineItem } from "~/components/organisms/content-timeline";
+import { SenseiFinder } from "~/components/organisms/home";
 import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
 import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
@@ -14,6 +14,7 @@ import { getUserActivities } from "~/models/user-activity";
 
 const indexQuery = graphql(`
   query Index($now: ISO8601DateTime!) {
+    students { studentId name }
     contents(untilAfter: $now, sinceBefore: $now, first: 9999) {
       nodes {
         __typename
@@ -60,22 +61,17 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   }
 
   return defer({
-    userActivities: getUserActivities(env),
+    students: data.students,
     contents: data.contents.nodes,
+    userActivities: getUserActivities(env),
   });
 }
-
-export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  const username = formData.get("username") as string;
-  return redirect(`/@${username.replace("@", "")}`);
-};
 
 type Event = Extract<IndexQuery["contents"]["nodes"][number], { __typename: "Event" }>;
 type Raid = Extract<IndexQuery["contents"]["nodes"][number], { __typename: "Raid" }>;
 
 export default function Index() {
-  const { userActivities, contents } = useLoaderData<typeof loader>();
+  const { students, contents, userActivities } = useLoaderData<typeof loader>();
   return (
     <>
       <div className="p-4 md:px-6 md:py-4 border border-neutral-100 rounded-xl">
@@ -96,7 +92,13 @@ export default function Index() {
               event={
                 content.__typename === "Event" ? {
                   ...content,
-                  pickups: content.pickups.map((pickup) => ({ ...pickup, studentId: pickup.student?.studentId ?? null, }))
+                  pickups: content.pickups.map((pickup) => ({
+                    ...pickup,
+                    student: {
+                      studentId: pickup.student?.studentId ?? null,
+                      name: pickup.studentName,
+                    },
+                  }))
                 } : undefined
               }
             />
@@ -107,12 +109,10 @@ export default function Index() {
         <p className="mx-2 my-4 mb-8 text-right">미래시 보러가기 →</p>
       </Link>
 
-      <SubTitle text="선생님 찾기" />
-      <p className="text-neutral-500">닉네임을 입력해 다른 선생님의 프로필을 확인해보세요</p>
-      <Form className="flex" method="post">
-        <Input name="username" placeholder="@username" />
-        <Button type="submit" text="찾기" color="primary" />
-      </Form>
+      <div className="my-8">
+        <SubTitle text="선생님 찾기" />
+        <SenseiFinder students={students} />
+      </div>
 
       <SubTitle text="타임라인" />
       <Suspense fallback={<TimelinePlaceholder />}>

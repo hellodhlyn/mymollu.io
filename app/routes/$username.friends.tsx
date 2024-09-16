@@ -1,12 +1,12 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
-import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { ChatBubbleEmpty, Group } from "iconoir-react";
 import { useEffect, useState } from "react";
-import { ProfileImage } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
+import { SenseiList } from "~/components/organisms/sensei";
 import type { Env } from "~/env.server";
 import { getFollowers, getFollowings } from "~/models/followership";
 import type { Sensei} from "~/models/sensei";
@@ -67,21 +67,10 @@ export default function UserFollowing() {
         exclusive
       />
 
-      {senseis.length === 0 && (
-        <ErrorPage Icon={ChatBubbleEmpty} message="등록한 친구가 없어요 :(" />
-      )}
-      {senseis.map((sensei) => {
-        return (
-          <div key={`sensei-${sensei.username}`} className="w-full border-b last:border-0 border-neutral-100">
-            <Link to={`/@${sensei.username}`}>
-              <div className="p-2 md:p-4 flex items-center hover:bg-neutral-100 rounded-lg transition">
-                <ProfileImage studentId={sensei.profileStudentId} />
-                <p className="ml-2">{sensei.username}</p>
-              </div>
-            </Link>
-          </div>
-        );
-      })}
+      {senseis.length === 0 ?
+        <ErrorPage Icon={ChatBubbleEmpty} message="등록한 친구가 없어요 :(" /> :
+        <SenseiList senseis={senseis} />
+      }
     </div>
   );
 }

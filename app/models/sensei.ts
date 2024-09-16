@@ -42,6 +42,11 @@ export async function getSenseisById(env: Env, ids: number[]): Promise<Sensei[]>
   return senseis.results.map((row) => toModel(row));
 }
 
+export async function getSenseiByRandom(env: Env): Promise<Sensei> {
+  const result = await env.DB.prepare("select * from senseis order by random() limit 1").first<DBSensei>();
+  return toModel(result!);
+}
+
 // Get or create a sensei by googleId
 const CREATE_SENSEI_QUERY = "insert into senseis (username, googleId) values (?1, ?2)";
 

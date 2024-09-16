@@ -1,9 +1,7 @@
-import { disassemble } from "hangul-js";
 import postposition from "cox-postposition";
 import { useState } from "react";
 import { Input, Button } from "~/components/atoms/form";
-import { StudentCards } from "~/components/molecules/student";
-import { filterStudentByName } from "~/filters/student";
+import { StudentSearch } from "~/components/molecules/student";
 import { studentImageUrl } from "~/models/assets";
 
 type ProfileStudent = {
@@ -25,21 +23,9 @@ type ProfileEditorProps = {
 }
 
 export default function ProfileEditor({ students, initialData, error }: ProfileEditorProps) {
-  const [searchedStudents, setSearchedStudents] = useState<ProfileStudent[]>([]);
   const [profileStudent, setProfileStudent] = useState<ProfileStudent | null>(
     initialData?.profileStudentId ? students.find(({ studentId }) => initialData.profileStudentId === studentId) ?? null : null
   );
-
-  const onSearch = (search: string) => {
-    if (search.length === 0) {
-      return setSearchedStudents([]);
-    }
-
-    if (disassemble(search).length <= 1) {
-      return setSearchedStudents([]);
-    }
-    setSearchedStudents(filterStudentByName(search, students).slice(0, 6));
-  };
 
   return (
     <>
@@ -49,21 +35,13 @@ export default function ProfileEditor({ students, initialData, error }: ProfileE
         description="4~20글자의 영숫자 및 _ 기호를 이용할 수 있어요."
       />
 
-      <Input
-        label="프로필 아이콘"
+      <StudentSearch
+        label="프로필 학생"
         placeholder="이름으로 찾기..."
-        description="학생을 프로필 아이콘으로 선택할 수 있어요."
-        onChange={onSearch}
+        description="학생을 프로필 학생으로 선택할 수 있어요."
+        students={students}
+        onSelect={(id) => setProfileStudent(students.find((student) => student.studentId === id)!)}
       />
-      {(searchedStudents && searchedStudents.length > 0) && (
-        <StudentCards
-          cardProps={searchedStudents}
-          onSelect={(id) => {
-            setProfileStudent(students.find((student) => student.studentId === id)!);
-            setSearchedStudents([]);
-          }}
-        />
-      )}
       {profileStudent && (
         <>
           <div className="my-8 flex items-center px-4 py-2 bg-neutral-100 rounded-lg">

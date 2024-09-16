@@ -8,8 +8,8 @@ type ProfileUsernameProps = {
   friendCode: string | null;
   loading?: boolean;
   followability?: "followable" | "following" | "unable";
-  following: number;
-  followers: number;
+  following?: number;
+  followers?: number;
   onFollow?: () => void;
   onUnfollow?: () => void;
 };
@@ -18,25 +18,27 @@ export default function ProfileUsername({
   imageUrl, username, friendCode, loading, followability, followers, following, onFollow, onUnfollow,
 }: ProfileUsernameProps) {
   return (
-    <div className="m-4 md:m-6 pb-4 md:pb-6 flex items-center">
+    <div className="m-4 md:m-6 flex items-center">
       {imageUrl ?
-        <img className="h-12 w-12 md:w-16 md:h-16 rounded-full object-cover" src={imageUrl ?? ""} alt={`${username}의 프로필`} /> :
+        <img className="size-12 md:w-16 md:h-16 rounded-full object-cover" src={imageUrl ?? ""} alt={`${username}의 프로필`} /> :
         (
-          <div className="h-12 w-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700">
-            <User className="h-8 w-8" strokeWidth={2} />
+          <div className="size-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700">
+            <User className="size-8" strokeWidth={2} />
           </div>
         )
       }
       <div className="ml-2 md:ml-4 flex-grow">
         <p className="font-bold text-lg md:text-xl">@{username}</p>
-        <p className="text-sm">
-          <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
-            {following} <span className="text-neutral-500">팔로잉</span>
-          </Link>
-          <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
-            {followers} <span className="text-neutral-500">팔로워</span>
-          </Link>
-        </p>
+        {followers !== undefined && following !== undefined && (
+          <p className="text-sm">
+            <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
+              {following} <span className="text-neutral-500">팔로잉</span>
+            </Link>
+            <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
+              {followers} <span className="text-neutral-500">팔로워</span>
+            </Link>
+          </p>
+        )}
         {friendCode && (
           <p className="text-sm">
             <span className="text-neutral-500">친구 코드 </span>
