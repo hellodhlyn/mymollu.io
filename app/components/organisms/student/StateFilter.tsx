@@ -4,13 +4,13 @@ import type { Dispatch, SetStateAction} from "react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components/atoms/form";
 import { FilterButtons } from "~/components/molecules/student";
-import type { Student } from "~/models/student";
-import type { StudentState } from "~/models/student-state";
+import { AttackType } from "~/models/content";
+import type { Role, StudentState } from "~/models/student-state";
 
 type Filter = {
   minimumTier: number;
-  role: Student["role"] | null;
-  attackTypes: Student["attackType"][];
+  role: Role | null;
+  attackTypes: AttackType[];
 }
 
 type Sort = {
@@ -41,7 +41,7 @@ export function useStateFilter(
   });
   const [keyword, setKeyword] = useState<string>("");
 
-  const toggleAttackType = (attackType: Student["attackType"]): (activated: boolean) => void => {
+  const toggleAttackType = (attackType: AttackType): (activated: boolean) => void => {
     return (activated: boolean) => {
       setFilter((prev) => {
         if (activated && !prev.attackTypes.includes(attackType)) {
@@ -55,9 +55,8 @@ export function useStateFilter(
     };
   }
 
-  const [filteredStates, setFilteredStates] = useState(allStates);
-  useEffect(() => {
-    const newFilteredStates = allStates.filter(({ student }) => {
+  const filterAndSort = (): StudentState[] => {
+    const results = allStates.filter(({ student }) => {
       // 학생 능력치로 필터
       if (student.initialTier < filter.minimumTier) {
         return false;
@@ -77,7 +76,7 @@ export function useStateFilter(
       return true;
     });
 
-    newFilteredStates.sort((a, b) => {
+    results.sort((a, b) => {
       const defaultComparision = a.student.order - b.student.order;
       if (sort.by === "tier") {
         const tierA = a.tier ?? a.student.initialTier;
@@ -92,7 +91,12 @@ export function useStateFilter(
       return defaultComparision;
     });
 
-    setFilteredStates(newFilteredStates);
+    return results;
+  };
+
+  const [filteredStates, setFilteredStates] = useState(filterAndSort());
+  useEffect(() => {
+    setFilteredStates(filterAndSort());
   }, [allStates, filter, sort, keyword]);
 
   return [(

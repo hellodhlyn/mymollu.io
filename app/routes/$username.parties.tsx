@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
-import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { PlusCircle } from "iconoir-react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
@@ -71,17 +71,8 @@ export default function UserPartyPage() {
   const { me, states, parties, raids } = useLoaderData<typeof loader>();
   const isNewbee = me && parties.length === 0;
 
-  const [params] = useSearchParams();
-  const redirected = params.get("redirected") === "true";
-
   return (
     <div className="my-8">
-      {redirected && (
-        <Callout className="my-4 flex" emoji="🚚">
-          <span>이제 프로필 화면에서 바로 편성을 관리할 수 있어요.</span>
-        </Callout>
-      )}
-
       {isNewbee && (
         <Callout className="my-4 flex">
           <span className="grow">✨ 학생 편성을 등록해보세요.</span>

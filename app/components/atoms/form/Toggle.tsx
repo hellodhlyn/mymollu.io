@@ -3,7 +3,7 @@ import { useState } from "react";
 
 type ToggleProps = {
   name?: string;
-  label: string;
+  label?: string;
   initialState?: boolean;
   onChange?: (value: boolean) => void;
 };
@@ -17,7 +17,7 @@ export default function Toggle({ name, label, initialState, onChange }: TogglePr
         <Switch
           className="h-7 w-14 p-1 group relative flex cursor-pointer rounded-full bg-neutral-200 data-[checked]:bg-blue-500 transition-colors duration-200 ease-in-out"
           checked={enabled}
-          onChange={(value) => { setEnabled(value); setEnabled(value); }}
+          onChange={(value) => { onChange?.(value); setEnabled(value); }}
         >
           <span
             aria-hidden="true"

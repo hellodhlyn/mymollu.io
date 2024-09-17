@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useMatches,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { getAuthenticator } from "./auth/authenticator.server";
@@ -29,6 +30,9 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
 export default function App() {
   const { currentUsername } = useLoaderData<typeof loader>();
 
+  const matches = useMatches();
+  const pathname = matches[matches.length - 1].pathname;
+
   return (
     <html lang="ko">
       <head>
@@ -42,11 +46,14 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div className="mx-auto max-w-3xl p-4">
-          <Header currentUsername={currentUsername} />
-          <Outlet />
-          <Footer />
-        </div>
+        {pathname.startsWith("/edit") ? <Outlet /> : (
+          <div className="mx-auto max-w-3xl p-4">
+            <Header currentUsername={currentUsername} />
+            <Outlet />
+            <Footer />
+          </div>
+        )}
+        
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

@@ -2,6 +2,7 @@ import type { ActionFunction, LoaderFunctionArgs, MetaFunction } from "@remix-ru
 import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
+import { Title } from "~/components/atoms/typography";
 import { PartyGenerator } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
@@ -71,22 +72,25 @@ export const action: ActionFunction = async ({ context, request }) => {
     await updateParty(env, sensei, uid as string, partyPatches);
   }
 
-  return redirect(`/@${sensei.username}/parties`);
+  return redirect(`/edit/parties`);
 };
 
 export default function EditParties() {
   const loaderData = useLoaderData<typeof loader>();
 
   return (
-    <div className="my-8">
+    <>
+      <Title text="편성 관리" />
       <Form method="post">
         {loaderData.party && <input type="hidden" name="uid" value={loaderData.party.uid} />}
-        <PartyGenerator 
-          party={loaderData.party ?? undefined}
-          raids={loaderData.raids.map((raid) => ({ ...raid, since: new Date(raid.since), until: new Date(raid.until)}))}
-          studentStates={loaderData.states}
-        />
+        <div className="max-w-4xl">
+          <PartyGenerator
+            party={loaderData.party ?? undefined}
+            raids={loaderData.raids.map((raid) => ({ ...raid, since: new Date(raid.since), until: new Date(raid.until) }))}
+            studentStates={loaderData.states}
+          />
+        </div>
       </Form>
-    </div>
+    </>
   );
 }

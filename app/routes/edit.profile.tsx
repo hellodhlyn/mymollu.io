@@ -8,6 +8,7 @@ import { updateSensei } from "~/models/sensei";
 import { graphql } from "~/graphql";
 import { runQuery } from "~/lib/baql";
 import type { ProfileStudentsQuery } from "~/graphql/graphql";
+import { Title } from "~/components/atoms/typography";
 
 export const profileStudentsQuery = graphql(`
   query ProfileStudents {
@@ -77,7 +78,8 @@ export const action: ActionFunction = async ({ request, context }) => {
 export default function EditProfile() {
   const { sensei, students } = useLoaderData<typeof loader>();
   return (
-    <div className="py-4">
+    <>
+      <Title text="프로필" />
       <Form method="post">
         <ProfileEditor
           students={students}
@@ -85,6 +87,6 @@ export default function EditProfile() {
           error={useActionData<ActionData>()?.error}
         />
       </Form>
-    </div>
+    </>
   );
 }
