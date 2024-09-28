@@ -25,13 +25,13 @@ export type EventTimelineItemProps = {
   until: Date;
 
   selectedStudentIds?: string[];
-  onSelect?: (studentId: string | null) => void;
+  onFavorite?: (studentId: string, favorited: boolean) => void;
   initialMemo?: string;
   onMemoUpdate?: (text: string) => void;
 };
 
 export default function EventTimelineItem(event: EventTimelineItemProps) {
-  const { selectedStudentIds, onSelect, initialMemo, onMemoUpdate } = event;
+  const { selectedStudentIds, onFavorite, initialMemo, onMemoUpdate } = event;
 
   const eventLabelTexts = [];
   if (["event", "pickup"].includes(event.eventType)) {
@@ -66,7 +66,7 @@ export default function EventTimelineItem(event: EventTimelineItemProps) {
             ),
           }
         })}
-        onSelect={onSelect}
+        onFavorite={onFavorite}
       />
 
       {onMemoUpdate && (

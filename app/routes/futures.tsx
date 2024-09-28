@@ -123,7 +123,7 @@ export default function Futures() {
           pickups: plan.pickups ? JSON.stringify(plan.pickups) : null,
           memos: plan.memos ? JSON.stringify(plan.memos) : null,
         },
-        { method: "post", navigate: false },
+        { method: "post" },
       );
     }, 500);
 
@@ -165,14 +165,14 @@ export default function Futures() {
         events={events}
         raids={contents.filter((content) => content.__typename === "Raid") as Raid[]}
         plan={plan}
-        onSelectStudent={signedIn ? (eventId, studentId) => {
+        onFavorite={signedIn ? (eventId, studentId, favorited) => {
           if (!studentId) {
             return;
           }
 
           const newPickups = plan.pickups ? { ...plan.pickups } : {};
           const eventPickups = newPickups[eventId] ?? [];
-          newPickups[eventId] = eventPickups.includes(studentId) ? eventPickups.filter((id) => id !== studentId) : [...eventPickups, studentId];
+          newPickups[eventId] = favorited ? [...eventPickups, studentId] : eventPickups.filter((id) => id !== studentId);
 
           setPlan((prev) => ({ ...prev, pickups: newPickups }));
         } : () => navigate("/signin")}

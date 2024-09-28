@@ -27,9 +27,10 @@ type StudentCardsProps = {
   mobileGrid?: 4 | 5 | 6 | 8;
   pcGrid?: 8 | 10 | 12;
   onSelect?: (id: string) => void;
+  onFavorite?: (id: string, favorited: boolean) => void;
 };
 
-export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, onSelect }: StudentCardsProps) {
+export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, onSelect, onFavorite }: StudentCardsProps) {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
   let gridClass = "grid-cols-6";
@@ -52,10 +53,12 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
     <div className={`grid ${gridClass} ${pcGridClass} gap-1 sm:gap-2`}>
       {students && students.map((student, index) => {
         const { studentId, name } = student;
+        const showInfo = studentId && name && student.attackType && student.defenseType && student.role && student.schaleDbId;
+
         return (
           <div key={`student-card-${name ?? studentId ?? index}`}>
             <div
-              className={(onSelect && studentId) ? "hover:scale-105 cursor-pointer transition" : ""}
+              className={((onSelect || onFavorite) && studentId) ? "hover:scale-105 cursor-pointer transition" : ""}
               onClick={studentId ? () => {
                 onSelect?.(studentId);
                 setSelectedStudentId(studentId);
@@ -64,7 +67,7 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
               <StudentCard {...student} favorited={student?.state?.selected} />
             </div>
 
-            {(studentId && name && selectedStudentId === studentId && student.attackType && student.defenseType && student.role && student.schaleDbId) && (
+            {(showInfo && selectedStudentId === studentId) && (
               <StudentInfo
                 student={{
                   name,
@@ -74,8 +77,8 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
                   schaleDbId: student.schaleDbId!,
                 }}
                 favorited={student?.state?.selected ?? false}
-                onRemoveFavorite={() => { onSelect?.(studentId!); }}
-                onAddFavorite={() => { onSelect?.(studentId!); }}
+                onRemoveFavorite={() => { onFavorite?.(studentId!, false); }}
+                onAddFavorite={() => { onFavorite?.(studentId!, true); }}
                 onClose={() => { setSelectedStudentId(null); }}
               />
             )}

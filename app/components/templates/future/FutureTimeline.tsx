@@ -42,7 +42,7 @@ type FutureTimelineProps = {
   raids: Raid[];
   plan?: FuturePlan;
 
-  onSelectStudent?: (eventId: string, studentId: string) => void;
+  onFavorite?: (eventId: string, studentId: string, favorited: boolean) => void;
   onMemoUpdate?: (memo: { [eventId: string]: string }) => void;
 };
 
@@ -72,7 +72,7 @@ function dividerText(since: Date): string {
 }
 
 export default function FutureTimeline({
-  events, raids, plan, onSelectStudent, onMemoUpdate,
+  events, raids, plan, onFavorite, onMemoUpdate,
 }: FutureTimelineProps) {
   const [filter, setFilter] = useState<Filter>({
     eventTypes: [],
@@ -132,7 +132,6 @@ export default function FutureTimeline({
       <div className="h-2 border-l md:ml-2 border-neutral-200 border-opacity-75" />
 
       {timelineItems.map((item) => {
-        const selectable = onSelectStudent !== undefined;
         const showMemo = onMemoUpdate && item.event && item.event.pickups.length > 0;
 
         let showDivider = false;
@@ -158,7 +157,7 @@ export default function FutureTimeline({
                   ...item.event,
 
                   selectedStudentIds: plan?.studentIds ?? [],
-                  onSelect: (studentId) => (selectable && studentId) ? onSelectStudent(item.event!.eventId, studentId) : undefined,
+                  onFavorite: onFavorite ? (studentId, favorited) => onFavorite(item.event!.eventId, studentId, favorited) : undefined,
                   initialMemo: plan?.memos ? plan.memos[item.id] : undefined,
                   onMemoUpdate: showMemo ? ((text) => onMemoUpdate({ [item.id]: text })) : undefined,
                 }}
