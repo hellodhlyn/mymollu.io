@@ -2,9 +2,9 @@ import { Link } from "@remix-run/react";
 import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Button, Input, Label, Textarea, Toggle } from "~/components/atoms/form";
-import { StudentCard } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { EventSelector, PartyUnitEditor } from "~/components/molecules/editor";
+import { StudentCards } from "~/components/molecules/student";
 import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party";
 import type { StudentState } from "~/models/student-state";
@@ -28,7 +28,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
   const [raidId, setRaidId] = useState<string | undefined>(party?.raidId ?? undefined);
 
   const [showPartyEditor, setShowPartyEditor] = useState(false);
-  const [units, setUnits] = useState<string[][]>(party?.studentIds ?? []);
+  const [units, setUnits] = useState<(string | null)[][]>(party?.studentIds ?? []);
 
   return (
     <div className="my-8">
@@ -49,26 +49,40 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
       <SubTitle text="파티" />
       <input type="hidden" name="studentIds" value={JSON.stringify(units)} />
       {units.map((unit, index) => (
-        <div className="mb-4" key={`party-unit-${index}`}>
+        <div className="my-4 px-4 py-2 md:px-6 md:py-4 bg-neutral-100 rounded-xl" key={`party-unit-${index}`}>
           <Label text={`${index + 1}번째 파티`} />
-          <div className="grid grid-cols-6 md:grid-cols-12 gap-1 gap-2">
-            {unit.map((studentId) => {
-              const state = studentStates.find(({ student }) => student.id === studentId)!;
-              return (
-                <StudentCard
-                  key={`party-student-${studentId}`}
-                  studentId={state.student.id}
-                  tier={state.owned ? (state.tier ?? state.student.initialTier) : undefined}
-                />
-              );
+          <StudentCards
+            students={unit.map((studentId) => {
+              const state = studentId ? studentStates.find(({ student }) => student.id === studentId) : null;
+              return {
+                studentId: state?.student?.id ?? null,
+                name: state?.student?.name ?? undefined,
+                tier: state?.owned ? (state.tier ?? state.student.initialTier) : undefined,
+              };
             })}
+            mobileGrid={6}
+            pcGrid={12}
+          />
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="py-2 px-4 hover:bg-neutral-100 text-red-500 font-bold transition rounded-lg"
+              onClick={() => setUnits((prev) => prev.filter((_, i) => i !== index))}
+            >
+              삭제
+            </button>
           </div>
         </div>
       ))}
       {showPartyEditor ?
         <PartyUnitEditor
           index={units.length}
-          studentStates={studentStates}
+          students={studentStates.map(({ student, owned, tier }) => ({
+            studentId: student.id,
+            name: student.name,
+            role: student.role,
+            tier: owned ? (tier ?? student.initialTier) : undefined,
+          }))}
           onComplete={(studentIds) => {
             setUnits((prev) => [...prev, studentIds]);
             setShowPartyEditor(false);

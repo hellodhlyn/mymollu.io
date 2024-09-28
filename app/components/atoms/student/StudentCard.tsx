@@ -1,4 +1,4 @@
-import { CheckCircle, CheckCircleSolid, HeartSolid } from "iconoir-react";
+import { HeartSolid } from "iconoir-react";
 import type { ReactNode } from "react";
 import { studentImageUrl } from "~/models/assets";
 
@@ -10,7 +10,7 @@ export type StudentCardProps = {
   tier?: number | null;
   label?: ReactNode;
 
-  selected?: boolean;
+  favorited?: boolean;
   grayscale?: boolean;
 }
 
@@ -23,7 +23,7 @@ function visibileTier(tier: number): [number, boolean] {
 }
 
 export default function StudentCard(
-  { studentId, name, nameSize, tier, label, selected, grayscale }: StudentCardProps,
+  { studentId, name, nameSize, tier, label, favorited, grayscale }: StudentCardProps,
 ) {
   const showInfo = tier !== undefined || label !== undefined;
   const visibleNames = [];
@@ -52,7 +52,7 @@ export default function StudentCard(
           src={studentImageUrl(studentId || "unlisted")}
           alt={name} loading="lazy"
         />
-        {selected && (
+        {favorited && (
           <div className="absolute top-1 right-1 bg-white opacity-90 rounded-full">
             <HeartSolid className="p-0.5 text-red-500 size-5" />
           </div>
@@ -73,7 +73,7 @@ export default function StudentCard(
         )}
       </div>
       {name && (
-        <div className="mt-1 text-center leading-tight">
+        <div className="mt-1 text-center leading-tight tracking-tighter">
           <p className={nameSize === "small" ? "text-xs" : "text-sm"}>{visibleNames[0]}</p>
           {(visibleNames.length === 2) && <p className="text-xs">{visibleNames[1]}</p>}
         </div>

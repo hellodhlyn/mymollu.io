@@ -10,7 +10,7 @@ type StudentCardsProps = {
 
   students?: {
     studentId: string | null;
-    name: string;
+    name?: string;
     attackType?: AttackType;
     defenseType?: DefenseType;
     role?: Role;
@@ -25,8 +25,8 @@ type StudentCardsProps = {
     };
   }[];
   mobileGrid?: 4 | 5 | 6 | 8;
-  pcGrid?: 8 | 12;
-  onSelect?: (id: string | null) => void;
+  pcGrid?: 8 | 10 | 12;
+  onSelect?: (id: string) => void;
 };
 
 export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, onSelect }: StudentCardsProps) {
@@ -42,16 +42,18 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
   }
 
   let pcGridClass = "md:grid-cols-8"
-  if (pcGrid === 12) {
+  if (pcGrid === 10) {
+    pcGridClass = "md:grid-cols-10";
+  } else if (pcGrid === 12) {
     pcGridClass = "md:grid-cols-12";
   }
 
   return (
     <div className={`grid ${gridClass} ${pcGridClass} gap-1 sm:gap-2`}>
-      {students && students.map((student) => {
+      {students && students.map((student, index) => {
         const { studentId, name } = student;
         return (
-          <div key={`student-card-${name}`}>
+          <div key={`student-card-${name ?? studentId ?? index}`}>
             <div
               className={(onSelect && studentId) ? "hover:scale-105 cursor-pointer transition" : ""}
               onClick={studentId ? () => {
@@ -59,10 +61,10 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
                 setSelectedStudentId(studentId);
               } : undefined}
             >
-              <StudentCard {...student} selected={student?.state?.selected} />
+              <StudentCard {...student} favorited={student?.state?.selected} />
             </div>
 
-            {(selectedStudentId === studentId && student.attackType && student.defenseType && student.role && student.schaleDbId) && (
+            {(studentId && name && selectedStudentId === studentId && student.attackType && student.defenseType && student.role && student.schaleDbId) && (
               <StudentInfo
                 student={{
                   name,
@@ -72,8 +74,8 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
                   schaleDbId: student.schaleDbId!,
                 }}
                 favorited={student?.state?.selected ?? false}
-                onRemoveFavorite={() => { onSelect?.(studentId); }}
-                onAddFavorite={() => { onSelect?.(studentId); }}
+                onRemoveFavorite={() => { onSelect?.(studentId!); }}
+                onAddFavorite={() => { onSelect?.(studentId!); }}
                 onClose={() => { setSelectedStudentId(null); }}
               />
             )}
@@ -86,7 +88,7 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
         <div
           key={`student-card-${prop.studentId}${prop.name ? `-${prop.name}` : ""}`}
           className={(onSelect && prop.studentId) ? "hover:scale-105 cursor-pointer transition" : ""}
-          onClick={() => onSelect?.(prop.studentId)}
+          onClick={() => prop.studentId && onSelect?.(prop.studentId)}
         >
           <StudentCard key={`list-students-${prop.studentId}`} {...prop} />
         </div>

@@ -1,6 +1,6 @@
 import { Form, Link } from "@remix-run/react";
 import dayjs from "dayjs";
-import { ProfileImage, StudentCard } from "~/components/atoms/student";
+import { ProfileImage } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { raidTypeLocale, terrainLocale } from "~/locales/ko";
 import type { RaidType, Terrain } from "~/models/content";
@@ -9,6 +9,7 @@ import { bossImageUrl } from "~/models/assets";
 import type { StudentState } from "~/models/student-state";
 import { CheckCircleSolid } from "iconoir-react";
 import { useState } from "react";
+import { StudentCards } from "~/components/molecules/student";
 
 type PartyViewProps = {
   party: Party;
@@ -96,22 +97,25 @@ export default function PartyView({ party, sensei, students, studentStates, edit
 
       <div className="py-2 w-full border-t border-1 border-neutral-200" />
 
-      {party.studentIds.map((squad) => (
-        <div key={`squad-${squad.join(":")}`}>
-          <div className="grid grid-cols-6 md:grid-cols-10 gap-1 md:gap-2">
-            {squad.map((studentId) => {
+      {party.studentIds.map((squad, index) => (
+        <div key={`squad-${squad.join(":")}`} className={index > 0 ? "mt-2 pt-2 md:pt-0 border-t border-neutral-200 md:border-0" : undefined}>
+          <StudentCards
+            students={squad.map((studentId) => {
+              if (!studentId) {
+                return { studentId: null };
+              }
+
               const student = studentsMap.get(studentId)!;
               const state = studentStatesMap.get(studentId);
-              return (
-                <StudentCard
-                  key={`student-${studentId}`}
-                  studentId={studentId}
-                  name={student.name}
-                  tier={state?.owned ? (state.tier ?? student.initialTier) : undefined}
-                />
-              );
+              return {
+                studentId,
+                name: student.name,
+                tier: state?.owned ? (state.tier ?? student.initialTier) : undefined,
+              };
             })}
-          </div>
+            mobileGrid={6}
+            pcGrid={10}
+          />
         </div>
       ))}
 

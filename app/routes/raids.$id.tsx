@@ -131,7 +131,10 @@ export default function RaidDetail() {
 
         {(parties.length === 0) && <p className="my-8 text-center">공략 정보를 준비중이에요.</p>}
         {parties.map((party) => (
-          <PartyView party={party} sensei={party.sensei} students={students} studentStates={studentStates} />
+          <PartyView
+            key={`party-${party.uid}`}
+            party={party} sensei={party.sensei} students={students} studentStates={studentStates}
+          />
         ))}
       </div>
     </>

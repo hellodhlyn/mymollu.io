@@ -6,9 +6,20 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
+import { graphql } from "~/graphql";
+import { RaidForPartyEditQuery } from "~/graphql/graphql";
+import { runQuery } from "~/lib/baql";
 import { getUserParties } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";
 import { sanitizeClassName } from "~/prophandlers";
+
+export const raidForPartyEditQuery = graphql(`
+  query RaidForPartyEdit {
+    raids {
+      nodes { raidId name type boss terrain since until }
+    }
+  }
+`);
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
   const env = context.env as Env;
@@ -17,13 +28,18 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     return redirect("/signin");
   }
 
+  const raidQueryResult = await runQuery<RaidForPartyEditQuery>(raidForPartyEditQuery, {});
+  if (!raidQueryResult.data) {
+    throw "failed to load data";
+  }
+
   const parties = (await getUserParties(env, currentUser.username)).reverse();
   const states = await getUserStudentStates(env, currentUser.username, true);
-  return json({ parties, states });
+  return json({ parties, states, raids: raidQueryResult.data.raids.nodes });
 };
 
 export default function EditParties() {
-  const { parties, states } = useLoaderData<typeof loader>();
+  const { parties, states, raids } = useLoaderData<typeof loader>();
   return (
     <>
       <Title text="편성 관리" />
@@ -41,6 +57,11 @@ export default function EditParties() {
           <PartyView
             key={party.uid}
             party={party}
+            raids={raids.map((raid) => ({
+              ...raid,
+              since: new Date(raid.since),
+              until: new Date(raid.until),
+            }))}
             studentStates={states || []}
             editable
           />

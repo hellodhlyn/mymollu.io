@@ -20,7 +20,7 @@ export type Party = {
     profileStudentId: string | null;
   };
   name: string;
-  studentIds: string[][];
+  studentIds: (string | null)[][];
   raidId: string | null;
   memo: string | null;
   showAsRaidTip: boolean;
