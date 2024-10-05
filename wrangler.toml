@@ -19,6 +19,10 @@ STAGE = "prod"
 binding = "KV_USERDATA"
 id = "a613bc84ffeb4362b3deaa05c617a7b3"
 
+[[kv_namespaces]]
+binding = "KV_SESSION"
+id = "757ca5d838364689af06edc372cd4c56"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "mollulog"
