@@ -44,6 +44,11 @@ export const raidTypeLocale: Record<RaidType, string> = {
   unlimit: "제약해제결전",
 };
 
+export const contentTypeLocale: Record<EventType | RaidType, string> = {
+  ...eventTypeLocale,
+  ...raidTypeLocale,
+};
+
 export const pickupTypeLocale: Record<PickupType, string> = {
   usual: "일반",
   limited: "한정",
