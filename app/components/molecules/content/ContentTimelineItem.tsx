@@ -4,21 +4,33 @@ import { attackTypeLocale, contentTypeLocale, defenseTypeLocale, pickupLabelLoca
 import { bossImageUrl } from "~/models/assets";
 import { AttackType, DefenseType, EventType, PickupType, RaidType, Role, Terrain } from "~/models/content";
 import { StudentCards } from "../student";
+import { ReactNode } from "react";
+import { Link } from "@remix-run/react";
+import { MemoEditor } from "../editor";
 
 export type ContentTimelineItemProps = {
   name: string;
   contentType: EventType | RaidType;
   rerun: boolean;
   remainingDays: number | null;
+  link: string | null;
+
+  showMemo: boolean;
+  initialMemo?: string;
+  onUpdateMemo?: (text: string) => void;
+
+  favoritedStudents?: string[];
+  onFavorite?: (studentId: string, favorited: boolean) => void;
+
   pickups?: {
     type: PickupType;
     rerun: boolean;
     student: {
       studentId: string;
-      attackType: AttackType;
-      defenseType: DefenseType;
-      role: Role;
-      schaleDbId: string;
+      attackType?: AttackType;
+      defenseType?: DefenseType;
+      role?: Role;
+      schaleDbId?: string;
     } | null;
     studentName: string;
   }[];
@@ -44,11 +56,31 @@ const defenseTypeColorMap: Record<DefenseType, "red" | "yellow" | "blue" | "purp
   elastic: "purple",
 };
 
-export default function ContentTimelineItem(
-  { name, contentType, rerun, remainingDays, raidInfo, pickups }: ContentTimelineItemProps,
-) {
+function ContentTitles({ name, showLink }: { name: string, showLink: boolean }): ReactNode {
   const titles = name.split("\n");
+  return (
+    titles.map((titleLine, index) => {
+      const key = `${name}-${index}`;
+      if (index < titles.length - 1) {
+        return <p key={key} className="my-1">{titleLine}</p>;
+      } else {
+        return (
+          <div key={key}>
+            <span className="inline">{titleLine}</span>
+            {showLink && <NavArrowRight className="inline size-4" strokeWidth={2} />}
+          </div>
+        );
+      }
+    })
+  )
+}
 
+export default function ContentTimelineItem(
+  {
+    name, contentType, rerun, remainingDays, link, raidInfo, pickups,
+    showMemo, initialMemo, onUpdateMemo, favoritedStudents, onFavorite,
+  }: ContentTimelineItemProps,
+) {
   let remainingDaysText = "";
   if (remainingDays === 1) {
     remainingDaysText = "내일 종료";
@@ -59,7 +91,7 @@ export default function ContentTimelineItem(
   }
 
   return (
-    <div className="my-4 md:my-8">
+    <div className="my-6">
       {/* 컨텐츠 분류 */}
       <div className="my-1 flex items-center gap-x-2">
         <span className="text-sm text-neutral-500">
@@ -73,27 +105,20 @@ export default function ContentTimelineItem(
       </div>
 
       {/* 컨텐츠 이름 */}
-      <div className="font-bold text-lg md:text-xl hover:underline cursor-pointer">
-        {titles.map((titleLine, index) => {
-          const key = `${name}-${index}`;
-          if (index < titles.length - 1) {
-            return <p key={key} className="my-1">{titleLine}</p>;
-          } else {
-            return (
-              <div key={key} className="flex items-center">
-                <span className="inline">{titleLine}</span>
-                <NavArrowRight className="inline size-4" strokeWidth={2} />
-              </div>
-            );
-          }
-        })}
-      </div>
+      {link ? 
+        <Link to={link} className="font-bold text-lg md:text-xl cursor-pointer hover:underline">
+          <ContentTitles name={name} showLink={true} />
+        </Link> :
+        <div className="font-bold text-lg md:text-xl">
+          <ContentTitles name={name} showLink={false} />
+        </div>
+      }
 
       {/* 레이드 정보 */}
       {raidInfo && (
-        <div className="my-2 relative md:w-3/5">
+        <div className="mt-2 mb-6 relative md:w-3/5">
           <img
-            className="mb-2 rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
+            className="rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
             src={bossImageUrl(raidInfo.boss)} alt={`총력전 보스 ${name}`} loading="lazy"
           />
           <div className="absolute bottom-0 right-0 flex gap-x-1 p-1 text-white text-sm">
@@ -108,6 +133,7 @@ export default function ContentTimelineItem(
       {pickups && (
         <div className="my-2">
           <StudentCards
+            mobileGrid={5}
             students={pickups.map((pickup) => {
               const student = pickup.student;
               const colorClass = pickup.rerun ? "text-white" : "text-yellow-500";
@@ -116,11 +142,18 @@ export default function ContentTimelineItem(
                 studentId: student?.studentId ?? null,
                 name: pickup.studentName,
                 label: <span className={`${colorClass}`}>{pickupLabelLocale(pickup)}</span>,
+                state: {
+                  favorited: student?.studentId ? favoritedStudents?.includes(student.studentId) : false,
+                },
               };
             })}
+            onFavorite={onFavorite}
           />
         </div>
       )}
+
+      {/* 메모 */}
+      {showMemo && <MemoEditor initialText={initialMemo} onUpdate={(text) => onUpdateMemo?.(text)} />}
     </div>
   );
 }

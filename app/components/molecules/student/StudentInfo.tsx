@@ -40,7 +40,7 @@ export default function StudentInfo({ student, favorited, onRemoveFavorite, onAd
   const { name, attackType, defenseType, role } = student;
 
   return (
-    <div className="absolute origin-top left-4 my-2 bg-neutral-900 opacity-90 text-white rounded-lg z-10">
+    <div className="absolute origin-top left-0 my-2 bg-neutral-900 opacity-90 text-white rounded-lg z-10">
       <div className="p-4">
         <p className="pb-2 font-bold">{name}</p>
         <div className="flex text-sm gap-x-1">
