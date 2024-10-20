@@ -1,7 +1,8 @@
 import type { StudentCardProps } from "~/components/atoms/student";
 import { StudentCard } from "~/components/atoms/student"
 import StudentInfo from "./StudentInfo";
-import { ReactNode, useState } from "react";
+import type { ReactNode} from "react";
+import { useState } from "react";
 import type { AttackType, DefenseType, Role } from "~/models/content";
 
 type StudentCardsProps = {

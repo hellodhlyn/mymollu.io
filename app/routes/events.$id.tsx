@@ -10,12 +10,13 @@ import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
 import { EventStages, EventVideos } from "~/components/organisms/event";
 import { TimelinePlaceholder } from "~/components/organisms/useractivity";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import { EventStagesQuery, type EventDetailQuery } from "~/graphql/graphql";
+import type { EventStagesQuery, type EventDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { eventTypeLocale, pickupLabelLocale } from "~/locales/ko";
-import { StudentState, getUserStudentStates } from "~/models/student-state";
+import type { StudentState} from "~/models/student-state";
+import { getUserStudentStates } from "~/models/student-state";
 
 const eventDetailQuery = graphql(`
   query EventDetail($eventId: String!) {

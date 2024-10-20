@@ -1,6 +1,6 @@
 import { Xmark, PlusCircle, OpenNewWindow, MinusCircle } from "iconoir-react";
 import { attackTypeLocale, defenseTypeLocale, roleLocale } from "~/locales/ko";
-import { AttackType, DefenseType, Role } from "~/models/content";
+import type { AttackType, DefenseType, Role } from "~/models/content";
 
 type StudentInfoProps = {
   student: {

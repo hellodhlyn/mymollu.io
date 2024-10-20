@@ -4,7 +4,7 @@ import { Label, Toggle } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
 import { StudentCards } from "~/components/molecules/student";
 import { filterStudentByName } from "~/filters/student";
-import { Role } from "~/models/content";
+import type { Role } from "~/models/content";
 
 type EditorStudent = {
   studentId: string;

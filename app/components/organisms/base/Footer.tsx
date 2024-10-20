@@ -19,7 +19,7 @@ export default function Footer() {
         &lt;블루 아카이브&gt;의 각종 에셋 및 컨텐츠의 권리는 넥슨코리아, 넥슨게임즈 및 Yostar에 있습니다.
       </p>
 
-      <a href="https://github.com/hellodhlyn/mollulog" target="_blank">
+      <a href="https://github.com/hellodhlyn/mollulog" target="_blank" rel="noreferrer">
         <div className="flex items-center gap-x-1 hover:opacity-50 transition-opacity">
           <Link className="size-5" />
           <span>GitHub</span>

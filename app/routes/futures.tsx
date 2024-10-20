@@ -1,15 +1,18 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/cloudflare";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
+import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 import { Calendar } from "iconoir-react";
 import { useEffect, useState } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
-import { ContentTimeline, ContentTimelineProps } from "~/components/organisms/content";
-import { Env } from "~/env.server";
+import type { ContentTimelineProps } from "~/components/organisms/content";
+import { ContentTimeline } from "~/components/organisms/content";
+import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import { FutureContentsQuery } from "~/graphql/graphql";
+import type { FutureContentsQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
-import { FuturePlan, getFuturePlan, setFuturePlan } from "~/models/future";
+import type { FuturePlan} from "~/models/future";
+import { getFuturePlan, setFuturePlan } from "~/models/future";
 import { sanitizeClassName } from "~/prophandlers";
 
 export const futureContentsQuery = graphql(`

@@ -3,7 +3,7 @@ import { ItemCard } from "~/components/atoms/item";
 import { SubTitle, Callout } from "~/components/atoms/typography";
 import { ItemCards } from "~/components/molecules/item";
 import { StudentCards } from "~/components/molecules/student";
-import { Role } from "~/models/student-state";
+import type { Role } from "~/models/student-state";
 
 type EventStagesProps = {
   stages: {

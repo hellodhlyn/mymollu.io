@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { useState } from "react";
-import { ContentTimelineItem, ContentTimelineItemProps } from "~/components/molecules/content";
+import type { ContentTimelineItemProps } from "~/components/molecules/content";
+import { ContentTimelineItem } from "~/components/molecules/content";
 import { FilterButtons } from "~/components/molecules/student";
 import type { EventType, RaidType } from "~/models/content";
 

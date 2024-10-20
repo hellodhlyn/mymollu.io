@@ -1,4 +1,5 @@
-import { ActionFunctionArgs, json, LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/cloudflare";
+import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
+import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
@@ -7,7 +8,7 @@ import { useToast } from "~/components/atoms/notification";
 import { EditTier } from "~/components/atoms/student";
 import { Title } from "~/components/atoms/typography";
 import { useStateFilter } from "~/components/organisms/student";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { studentImageUrl } from "~/models/assets";
 import { getUserStudentStates, updateStudentStates } from "~/models/student-state";
 

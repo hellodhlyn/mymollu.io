@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction} from "react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components/atoms/form";
 import { FilterButtons } from "~/components/molecules/student";
-import { AttackType } from "~/models/content";
+import type { AttackType } from "~/models/content";
 import type { Role, StudentState } from "~/models/student-state";
 
 type Filter = {

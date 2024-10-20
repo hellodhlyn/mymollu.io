@@ -1,7 +1,8 @@
-import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 import { FuturePlan } from "~/components/organisms/future";
-import { Env } from "~/env.server";
-import { UserFuturesQuery } from "~/graphql/graphql";
+import type { Env } from "~/env.server";
+import type { UserFuturesQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getFuturePlan } from "~/models/future";
 import { Link, useLoaderData } from "@remix-run/react";

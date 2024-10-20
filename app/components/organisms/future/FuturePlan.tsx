@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { MemoEditor } from "~/components/molecules/editor";
 import { ResourceCards, StudentCards } from "~/components/molecules/student";
 import { pickupLabelLocale } from "~/locales/ko";
-import { PickupType } from "~/models/content";
+import type { PickupType } from "~/models/content";
 
 type FuturePlanProps = {
   events: {

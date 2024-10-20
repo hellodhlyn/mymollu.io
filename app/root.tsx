@@ -1,4 +1,5 @@
-import { LoaderFunctionArgs, json, type LinksFunction } from "@remix-run/cloudflare";
+import { json} from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, type LinksFunction } from "@remix-run/cloudflare";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import {
   Links,

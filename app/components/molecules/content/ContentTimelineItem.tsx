@@ -2,9 +2,9 @@ import { NavArrowRight } from "iconoir-react";
 import { Chip } from "~/components/atoms/button";
 import { attackTypeLocale, contentTypeLocale, defenseTypeLocale, pickupLabelLocale, terrainLocale } from "~/locales/ko";
 import { bossImageUrl } from "~/models/assets";
-import { AttackType, DefenseType, EventType, PickupType, RaidType, Role, Terrain } from "~/models/content";
+import type { AttackType, DefenseType, EventType, PickupType, RaidType, Role, Terrain } from "~/models/content";
 import { StudentCards } from "../student";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 import { MemoEditor } from "../editor";
 

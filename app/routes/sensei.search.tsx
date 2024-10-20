@@ -1,4 +1,5 @@
-import { defer, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { defer } from "@remix-run/cloudflare";
 import { Await, useLoaderData } from "@remix-run/react";
 import postposition from "cox-postposition";
 import { Suspense } from "react";
@@ -6,9 +7,9 @@ import { SubTitle, Title } from "~/components/atoms/typography";
 import { SenseiFinder } from "~/components/organisms/home";
 import { SenseiList } from "~/components/organisms/sensei";
 import { TimelinePlaceholder } from "~/components/organisms/useractivity";
-import { Env } from "~/env.server";
+import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import { SearchSenseiQuery } from "~/graphql/graphql";
+import type { SearchSenseiQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getSenseiById } from "~/models/sensei";
 import { filterSenseisByStudent } from "~/models/student-state";

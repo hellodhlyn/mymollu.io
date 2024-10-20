@@ -1,5 +1,6 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/cloudflare";
-import { Env } from "~/env.server";
+import type { LoaderFunctionArgs} from "@remix-run/cloudflare";
+import { redirect } from "@remix-run/cloudflare";
+import type { Env } from "~/env.server";
 import { getSenseiByRandom } from "~/models/sensei";
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {

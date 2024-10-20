@@ -7,7 +7,7 @@ import { Title } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
 import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import { RaidForPartyEditQuery } from "~/graphql/graphql";
+import type { RaidForPartyEditQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getUserParties } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";
