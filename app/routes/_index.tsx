@@ -1,9 +1,11 @@
 import { defer } from "@remix-run/cloudflare";
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { Await, Link, useLoaderData } from "@remix-run/react";
+import dayjs from "dayjs";
 import { Suspense } from "react";
 import { SubTitle } from "~/components/atoms/typography";
-import { TimelineItem } from "~/components/organisms/content-timeline";
+import { ContentTimelineItem } from "~/components/molecules/content";
+import { contentOrders } from "~/components/organisms/content/ContentTimeline";
 import { SenseiFinder } from "~/components/organisms/home";
 import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
 import type { Env } from "~/env.server";
@@ -22,7 +24,7 @@ const indexQuery = graphql(`
         since
         until
         ... on Event {
-          eventId
+          contentId: eventId
           eventType : type
           rerun
           pickups {
@@ -33,12 +35,9 @@ const indexQuery = graphql(`
           }
         }
         ... on Raid {
-          raidId
+          contentId: raidId
           raidType: type
-          boss
-          terrain
-          attackType
-          defenseType
+          boss terrain attackType defenseType
         }
       }
     }
@@ -67,11 +66,9 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   });
 }
 
-type Event = Extract<IndexQuery["contents"]["nodes"][number], { __typename: "Event" }>;
-type Raid = Extract<IndexQuery["contents"]["nodes"][number], { __typename: "Raid" }>;
-
 export default function Index() {
   const { students, contents, userActivities } = useLoaderData<typeof loader>();
+  const today = dayjs();
   return (
     <>
       <div className="p-4 md:px-6 md:py-4 border border-neutral-100 rounded-xl">
@@ -79,28 +76,25 @@ export default function Index() {
           <div className="w-3 h-3 bg-red-600 border border-1 border-white rounded-full animate-pulse" />
           <p className="ml-2 text-red-600 font-bold">진행중 이벤트</p>
         </div>
-        {contents.map((contentData) => {
-          const content = {
-            ...contentData,
-            since: new Date(contentData.since),
-            until: new Date(contentData.until),
-          } as Event | Raid;
+
+        {contents.sort((a, b) => {
+          const aContentType = a.__typename === "Event" ? a.eventType : a.raidType;
+          const bContentType = b.__typename === "Event" ? b.eventType : b.raidType;
+          return contentOrders.indexOf(aContentType) - contentOrders.indexOf(bContentType);
+        }).map((content) => {
+          const isEvent = content.__typename === "Event";
+          const showLink = !isEvent || ["event", "immortal_event", "main_story"].includes(content.eventType);
           return (
-            <TimelineItem
-              key={content.__typename === "Event" ? content.eventId : content.raidId}
-              raid={content.__typename === "Raid" ? content : undefined}
-              event={
-                content.__typename === "Event" ? {
-                  ...content,
-                  pickups: content.pickups.map((pickup) => ({
-                    ...pickup,
-                    student: {
-                      studentId: pickup.student?.studentId ?? null,
-                      name: pickup.studentName,
-                    },
-                  }))
-                } : undefined
-              }
+            <ContentTimelineItem
+              key={content.contentId}
+              name={content.name}
+              contentType={isEvent ? content.eventType : content.raidType}
+              rerun={isEvent ? content.rerun : false}
+              remainingDays={dayjs(content.until).diff(today, "day")}
+              link={showLink ? `/${isEvent ? "events" : "raids"}/${content.contentId}` : null}
+              showMemo={false}
+              pickups={isEvent ? content.pickups : undefined}
+              raidInfo={isEvent ? undefined : content}
             />
           )
         })}

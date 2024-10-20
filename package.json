@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
-    "@graphql-codegen/cli": "^5.0.2",
-    "@headlessui/react": "^2.1.8",
-    "@remix-run/cloudflare": "^2.12.0",
-    "@remix-run/css-bundle": "^2.12.0",
-    "@remix-run/react": "^2.12.0",
+    "@graphql-codegen/cli": "^5.0.3",
+    "@headlessui/react": "^2.1.10",
+    "@remix-run/cloudflare": "^2.13.1",
+    "@remix-run/css-bundle": "^2.13.1",
+    "@remix-run/react": "^2.13.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@urql/exchange-request-policy": "^1.2.0",
     "cox-postposition": "^1.4.1",
@@ -41,15 +41,15 @@
     "urql": "^4.1.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240909.0",
-    "@remix-run/dev": "^2.12.0",
-    "@remix-run/eslint-config": "^2.12.0",
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
+    "@cloudflare/workers-types": "^4.20241011.0",
+    "@remix-run/dev": "^2.13.1",
+    "@remix-run/eslint-config": "^2.13.1",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
     "eslint": "^8.57.0",
-    "tailwindcss": "^3.4.11",
-    "typescript": "^5.6.2",
-    "wrangler": "^3.78.2"
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3",
+    "wrangler": "^3.80.5"
   },
   "engines": {
     "node": ">=16.13.0"

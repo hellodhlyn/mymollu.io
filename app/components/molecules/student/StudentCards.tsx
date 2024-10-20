@@ -21,7 +21,7 @@ type StudentCardsProps = {
     grayscale?: boolean;
 
     state?: {
-      selected?: boolean;
+      favorited?: boolean;
     };
   }[];
   mobileGrid?: 4 | 5 | 6 | 8;
@@ -50,7 +50,7 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
   }
 
   return (
-    <div className={`grid ${gridClass} ${pcGridClass} gap-1 sm:gap-2`}>
+    <div className={`relative grid ${gridClass} ${pcGridClass} gap-1 sm:gap-2`}>
       {students && students.map((student, index) => {
         const { studentId, name } = student;
         const showInfo = studentId && name && student.attackType && student.defenseType && student.role && student.schaleDbId;
@@ -64,7 +64,7 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
                 setSelectedStudentId(studentId);
               } : undefined}
             >
-              <StudentCard {...student} favorited={student?.state?.selected} />
+              <StudentCard {...student} favorited={student?.state?.favorited} />
             </div>
 
             {(showInfo && selectedStudentId === studentId) && (
@@ -76,7 +76,7 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
                   role: student.role!,
                   schaleDbId: student.schaleDbId!,
                 }}
-                favorited={student?.state?.selected ?? false}
+                favorited={student?.state?.favorited ?? false}
                 onRemoveFavorite={() => { onFavorite?.(studentId!, false); }}
                 onAddFavorite={() => { onFavorite?.(studentId!, true); }}
                 onClose={() => { setSelectedStudentId(null); }}
