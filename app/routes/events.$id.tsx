@@ -12,7 +12,7 @@ import { EventStages, EventVideos } from "~/components/organisms/event";
 import { TimelinePlaceholder } from "~/components/organisms/useractivity";
 import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
-import type { EventStagesQuery, type EventDetailQuery } from "~/graphql/graphql";
+import type { EventStagesQuery, EventDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { eventTypeLocale, pickupLabelLocale } from "~/locales/ko";
 import type { StudentState} from "~/models/student-state";

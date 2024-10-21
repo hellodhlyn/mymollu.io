@@ -97,7 +97,7 @@ export default function ContentTimelineItem(
         <span className="text-sm text-neutral-500">
           {(contentType === "event" || contentType === "pickup") && rerun && "복각 "}{contentTypeLocale[contentType]}
         </span>
-        {remainingDays && (
+        {remainingDaysText && (
           <span className="py-0.5 px-2 text-xs bg-neutral-900 text-white rounded-full">
             {remainingDaysText}
           </span>
