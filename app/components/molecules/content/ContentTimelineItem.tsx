@@ -86,7 +86,7 @@ export default function ContentTimelineItem(
     remainingDaysText = "내일 종료";
   } else if (remainingDays === 0) {
     remainingDaysText = "오늘 종료";
-  } else {
+  } else if (remainingDays !== null) {
     remainingDaysText = `${remainingDays}일 남음`;
   }
 
