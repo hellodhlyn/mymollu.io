@@ -38,16 +38,17 @@ export default function ContentHeader(
     });
   }, [currentVideo, videoListRef]);
 
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const selectVideo = (indexDiff: 1 | -1) => {
     if (!videos) {
       return;
     }
 
+    setVideoPlaying(false);
     const newIndex = (videos.findIndex((video) => video.youtube === currentVideo?.youtube) + indexDiff + videos.length) % videos.length;
     setCurrentVideo(videos[newIndex]);
   };
 
-  const [videoPlaying, setVideoPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const playerRef = useRef<any | null>(null);
   const [videoEndTimer, setVideoEndTimer] = useState<NodeJS.Timeout | null>(null);
@@ -56,11 +57,15 @@ export default function ContentHeader(
       return;
     }
 
-    if (muted) {
-      playerRef.current.mute();
-    } else {
-      playerRef.current.unMute();
-      playerRef.current.setVolume(30);
+    try {
+      if (muted) {
+        playerRef.current.mute();
+      } else {
+        playerRef.current.unMute();
+        playerRef.current.setVolume(30);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }, [muted, playerRef]);
 
@@ -111,18 +116,16 @@ export default function ContentHeader(
                 }}
                 // @ts-ignore
                 onReady={(ytEvent) => {
-                  if (!muted) {
-                    ytEvent.target.unMute();
-                    ytEvent.target.setVolume(30);
-                  }
                   playerRef.current = ytEvent.target;
-                  setVideoPlaying(true);
+                  setMuted(true);
                 }}
                 // @ts-ignore
                 onPlay={(ytEvent) => {
                   if (videoEndTimer) {
                     clearTimeout(videoEndTimer);
                   }
+
+                  setVideoPlaying(true);
                   setVideoEndTimer(
                     setTimeout(
                       () => { setVideoPlaying(false); },

@@ -163,6 +163,7 @@ export default function EventDetail() {
                 };
               }
             )}
+            mobileGrid={5}
           />
         </div>
       )}
