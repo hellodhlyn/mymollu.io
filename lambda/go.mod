@@ -1,4 +1,4 @@
-module github.com/hellodhlyn/mollulog/functions
+module github.com/hellodhlyn/mollulog/lambda
 
 go 1.21.4
 

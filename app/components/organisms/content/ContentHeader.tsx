@@ -1,5 +1,6 @@
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import { Suspense } from "react";
 import { useState } from "react";
 import YouTube from "react-youtube";
 import { MultilineText } from "~/components/atoms/typography";
@@ -52,24 +53,31 @@ export default function ContentHeader(
     <div className="relative w-screen md:w-full -mx-4 md:mx-0 aspect-video">
       <div className="relative w-full h-full">
         {(videos && videos.length > 0) && (
-          <YouTube
-            videoId={videos[0].youtube}
-            className="absolute w-full aspect-video"
-            iframeClassName="w-full h-full md:rounded-xl"
-            opts={{
-              playerVars: {
-                autoplay: 1, mute: 1, controls: 0, rel: 0, start: videos[0].start ?? 0,
-              }
-            }}
-            onPlay={(ytEvent) => {
-              setVideoPlaying(true);
-              setTimeout(
-                () => { setVideoPlaying(false); },
-                (ytEvent.target.getDuration() - (videos![0].start ?? 0) - 1.0) * 1000,
-              );
-            }}
-            onEnd={() => setVideoPlaying(false)}
-          />
+          <Suspense>
+            <YouTube
+              videoId={videos[0].youtube}
+              className="absolute w-full aspect-video"
+              iframeClassName="w-full h-full md:rounded-xl"
+              opts={{
+                playerVars: {
+                  autoplay: 1,
+                  mute: 1,
+                  controls: 0,
+                  rel: 0,
+                  start: videos[0].start ?? 0,
+                }
+              }}
+              // @ts-ignore
+              onPlay={(ytEvent) => {
+                setVideoPlaying(true);
+                setTimeout(
+                  () => { setVideoPlaying(false); },
+                  (ytEvent.target.getDuration() - (videos![0].start ?? 0) - 1.0) * 1000,
+                );
+              }}
+              onEnd={() => setVideoPlaying(false)}
+            />
+          </Suspense>
         )}
         <img
           className={`absolute w-full md:rounded-xl ${videoPlaying ? "opacity-0" : "opacity-100"} ease-in duration-500 transition-opacity`}

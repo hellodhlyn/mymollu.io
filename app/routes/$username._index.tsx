@@ -4,7 +4,6 @@ import { Await, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { Callout, SubTitle } from "~/components/atoms/typography";
 import type { ProfileCardProps } from "~/components/organisms/profile";
 import { ProfileCard } from "~/components/organisms/profile";
-import type { Env } from "~/env.server";
 import { getFollowers, getFollowings } from "~/models/followership";
 import { getSenseiByUsername } from "~/models/sensei";
 import { getUserStudentStates } from "~/models/student-state";
@@ -21,7 +20,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     throw new Error("Not found");
   }
 
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const username = usernameParam.replace("@", "");
   const sensei = (await getSenseiByUsername(env, username))!;
 
@@ -119,7 +118,7 @@ export default function UserIndex() {
         <SubTitle text="최근 활동" />
         <Suspense fallback={<TimelinePlaceholder />}>
           <Await resolve={userActivities}>
-            {(userActivities) => <Timeline activities={userActivities} />}
+            {(userActivities) => <Timeline activities={userActivities.map((activity) => ({ ...activity, eventAt: new Date(activity.eventAt) }))} />}
           </Await>
         </Suspense>
       </div>

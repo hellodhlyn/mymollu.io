@@ -49,12 +49,12 @@ resource "aws_iam_role_policy_attachment" "mollulog-functions-to-s3" {
 # Functions
 data "archive_file" "assets-metadata" {
   type        = "zip"
-  source_file = "../../functions/build/bootstrap"
-  output_path = "../../functions/build/bootstrap.zip"
+  source_file = "../../lambda/build/bootstrap"
+  output_path = "../../lambda/build/bootstrap.zip"
 }
 
 resource "aws_lambda_function" "assets-metadata" {
-  filename         = "../../functions/build/bootstrap.zip"
+  filename         = "../../lambda/build/bootstrap.zip"
   function_name    = "mollulog-assets-metadata"
   role             = aws_iam_role.mollulog-functions.arn
   handler          = "assets-metadata"

@@ -5,7 +5,6 @@ import { PlusCircle } from "iconoir-react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { RaidForPartyEditQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
@@ -22,7 +21,7 @@ export const raidForPartyEditQuery = graphql(`
 `);
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
   if (!currentUser) {
     return redirect("/signin");

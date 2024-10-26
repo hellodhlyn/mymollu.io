@@ -1,5 +1,7 @@
-import { search } from "hangul-js";
+import hangul from 'hangul-js';
 import type { StudentState } from "~/models/student-state";
+
+const { search } = hangul;
 
 export function filterStatesByName(keyword: string, states: StudentState[]): StudentState[] {
   return states.filter((state) => search(state.student.name, keyword) >= 0);

@@ -8,7 +8,6 @@ import { useToast } from "~/components/atoms/notification";
 import { EditTier } from "~/components/atoms/student";
 import { Title } from "~/components/atoms/typography";
 import { useStateFilter } from "~/components/organisms/student";
-import type { Env } from "~/env.server";
 import { studentImageUrl } from "~/models/assets";
 import { getUserStudentStates, updateStudentStates } from "~/models/student-state";
 
@@ -17,7 +16,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export const loader = async ({ context, request }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
@@ -29,7 +28,7 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ context, request }: ActionFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

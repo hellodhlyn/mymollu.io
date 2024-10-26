@@ -7,7 +7,6 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
 import type { ContentTimelineProps } from "~/components/organisms/content";
 import { ContentTimeline } from "~/components/organisms/content";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { FutureContentsQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
@@ -62,7 +61,7 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     throw error ?? "failed to fetch events";
   }
 
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
   const signedIn = currentUser !== null;
   return json({
@@ -73,7 +72,7 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
   if (!currentUser) {
     return redirect("/signin");

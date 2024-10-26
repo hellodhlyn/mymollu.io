@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "@remix-run/react";
-import postposition from "cox-postposition";
 import { Shuffle, UserBadgeCheck } from "iconoir-react";
 import { useState } from "react";
 import TierSelector from "~/components/molecules/editor/TierSelector";
@@ -58,7 +57,7 @@ export default function SenseiFinder(
                   src={studentImageUrl(searchedStudent.studentId)}
                   alt={searchedStudent.name}
                 />
-                <p><span className="font-bold">{searchedStudent.name}</span>{postposition.pick(searchedStudent.name, "을")} 선택했어요.</p>
+                <p><span className="font-bold">{searchedStudent.name}</span> 학생을 선택했어요.</p>
               </div>
               <TierSelector
                 text="최소 성급으로 찾기"

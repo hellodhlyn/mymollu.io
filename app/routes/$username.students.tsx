@@ -2,14 +2,13 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getUserStudentStates } from "~/models/student-state";
-import type { Env } from "~/env.server";
 import { useStateFilter } from "~/components/organisms/student";
 import { StudentCards } from "~/components/molecules/student";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
 
 export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");

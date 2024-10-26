@@ -4,7 +4,6 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
 import { PartyGenerator } from "~/components/organisms/party";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { RaidForPartyEditQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
@@ -24,7 +23,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
@@ -49,7 +48,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
 };
 
 export const action: ActionFunction = async ({ context, request }) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

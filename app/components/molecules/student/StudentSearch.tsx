@@ -1,8 +1,10 @@
-import { disassemble } from "hangul-js";
+import hangul from 'hangul-js';
 import { useState } from "react";
 import { Input } from "~/components/atoms/form";
 import StudentCards from "./StudentCards";
 import { filterStudentByName } from "~/filters/student";
+
+const { disassemble } = hangul;
 
 type SearchableStudent = {
   studentId: string;

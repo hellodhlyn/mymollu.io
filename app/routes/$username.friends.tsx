@@ -7,9 +7,8 @@ import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";
 import { ErrorPage } from "~/components/organisms/error";
 import { SenseiList } from "~/components/organisms/sensei";
-import type { Env } from "~/env.server";
 import { getFollowers, getFollowings } from "~/models/followership";
-import type { Sensei} from "~/models/sensei";
+import type { Sensei } from "~/models/sensei";
 import { getSenseiByUsername } from "~/models/sensei";
 
 type LoaderData = {
@@ -23,7 +22,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     throw new Error("Not found");
   }
 
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const username = usernameParam.replace("@", "");
   const sensei = (await getSenseiByUsername(env, username))!;
 

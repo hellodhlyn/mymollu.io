@@ -1,7 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { defer } from "@remix-run/cloudflare";
 import { Await, useLoaderData } from "@remix-run/react";
-import postposition from "cox-postposition";
 import { Suspense } from "react";
 import { SubTitle, Title } from "~/components/atoms/typography";
 import { SenseiFinder } from "~/components/organisms/home";
@@ -63,7 +62,7 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
   const studentId = searchParams.get("studentId");
   const minTier = searchParams.get("minTier");
 
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const senseis = studentId ? filterByStudentId(env, studentId, minTier ? parseInt(minTier) : 1) : Promise.resolve(null);
   return defer({
     students: data.students,
@@ -109,7 +108,7 @@ export default function SenseiSearch() {
               <>
                 <SubTitle text="검색 결과" />
                 <p>
-                  <span className="font-bold">{studentName}</span>{postposition.pick(studentName, "을")} <span className="font-bold">{tierText}</span> 이상 성장시킨 선생님 검색 결과입니다.
+                  <span className="font-bold">{studentName}</span> 학생을 <span className="font-bold">{tierText}</span> 이상 성장시킨 선생님 검색 결과입니다.
                 </p>
                 <SenseiList senseis={senseis} />
               </>

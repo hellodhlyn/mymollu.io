@@ -31,4 +31,4 @@ override.tf.json
 terraform.rc
 
 ### Lambda Functions
-/functions/build
+/lambda/build

@@ -3,7 +3,6 @@ import { json, redirect } from "@remix-run/cloudflare";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Title } from "~/components/atoms/typography";
 import { updateSensei } from "~/models/sensei";
-import type { Env } from "~/env.server";
 import { getAuthenticator, sessionStorage } from "~/auth/authenticator.server";
 import { ProfileEditor } from "~/components/organisms/profile";
 import type { ProfileStudentsQuery } from "~/graphql/graphql";
@@ -15,7 +14,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
-  const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
+  const sensei = await getAuthenticator(context.cloudflare.env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");
   } else if (sensei.active) {
@@ -35,7 +34,7 @@ type ActionData = {
 }
 
 export const action: ActionFunction = async ({ request, context }) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const authenticator = getAuthenticator(env);
   const sensei = await authenticator.isAuthenticated(request);
   if (!sensei) {

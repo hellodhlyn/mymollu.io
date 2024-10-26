@@ -5,7 +5,6 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout, SubTitle } from "~/components/atoms/typography";
 import { ContentHeader } from "~/components/organisms/content";
 import { PartyView } from "~/components/organisms/party";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { RaidDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
@@ -48,7 +47,7 @@ export const loader = async ({ request, context, params }: LoaderFunctionArgs) =
     );
   }
 
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const parties = await getPartiesByRaidId(env, raidId, true);
   const studentIds = parties.flatMap((party) => party.studentIds.flatMap((squad) => squad));
 

@@ -13,13 +13,16 @@ importers:
         version: 0.3.4
       '@graphql-codegen/cli':
         specifier: ^5.0.3
-        version: 5.0.3(@types/node@22.7.6)(graphql@16.9.0)(typescript@5.6.3)
+        version: 5.0.3(@types/node@22.8.1)(graphql@16.9.0)(typescript@5.6.3)
       '@headlessui/react':
-        specifier: ^2.1.10
-        version: 2.1.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.2.0
+        version: 2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@remix-run/cloudflare':
         specifier: ^2.13.1
-        version: 2.13.1(@cloudflare/workers-types@4.20241011.0)(typescript@5.6.3)
+        version: 2.13.1(@cloudflare/workers-types@4.20241022.0)(typescript@5.6.3)
+      '@remix-run/cloudflare-pages':
+        specifier: ^2.13.1
+        version: 2.13.1(@cloudflare/workers-types@4.20241022.0)(typescript@5.6.3)
       '@remix-run/css-bundle':
         specifier: ^2.13.1
         version: 2.13.1
@@ -31,10 +34,7 @@ importers:
         version: 0.4.2(tailwindcss@3.4.14)
       '@urql/exchange-request-policy':
         specifier: ^1.2.0
-        version: 1.2.0(@urql/core@5.0.6(graphql@16.9.0))
-      cox-postposition:
-        specifier: ^1.4.1
-        version: 1.4.1
+        version: 1.2.0(@urql/core@5.0.8(graphql@16.9.0))
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -56,9 +56,6 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
-      react-content-loader:
-        specifier: ^7.0.2
-        version: 7.0.2(react@18.3.1)
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
@@ -72,21 +69,21 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(@remix-run/server-runtime@2.13.1(typescript@5.6.3))(remix-auth@3.7.0(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(@remix-run/server-runtime@2.13.1(typescript@5.6.3)))
       urql:
-        specifier: ^4.1.0
-        version: 4.1.0(@urql/core@5.0.6(graphql@16.9.0))(react@18.3.1)
+        specifier: ^4.2.0
+        version: 4.2.0(@urql/core@5.0.8(graphql@16.9.0))(react@18.3.1)
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20241011.0
-        version: 4.20241011.0
+        specifier: ^4.20241022.0
+        version: 4.20241022.0
       '@remix-run/dev':
         specifier: ^2.13.1
-        version: 2.13.1(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(@types/node@22.7.6)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6))(wrangler@3.80.5(@cloudflare/workers-types@4.20241011.0))
+        version: 2.13.1(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(@types/node@22.8.1)(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.1))(wrangler@3.83.0(@cloudflare/workers-types@4.20241022.0))
       '@remix-run/eslint-config':
         specifier: ^2.13.1
         version: 2.13.1(eslint@8.57.0)(react@18.3.1)(typescript@5.6.3)
       '@types/react':
-        specifier: ^18.3.11
-        version: 18.3.11
+        specifier: ^18.3.12
+        version: 18.3.12
       '@types/react-dom':
         specifier: ^18.3.1
         version: 18.3.1
@@ -99,14 +96,20 @@ importers:
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
+      vite:
+        specifier: ^5.4.10
+        version: 5.4.10(@types/node@22.8.1)
+      vite-tsconfig-paths:
+        specifier: ^5.0.1
+        version: 5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.1))
       wrangler:
-        specifier: ^3.80.5
-        version: 3.80.5(@cloudflare/workers-types@4.20241011.0)
+        specifier: ^3.83.0
+        version: 3.83.0(@cloudflare/workers-types@4.20241022.0)
 
 packages:
 
-  '@0no-co/graphql.web@1.0.8':
-    resolution: {integrity: sha512-8BG6woLtDMvXB9Ajb/uE+Zr/U7y4qJ3upXi0JQHZmsKUJa7HjF/gFvmL2f3/mSmfZoQGRr9VoY97LCX2uaFMzA==}
+  '@0no-co/graphql.web@1.0.9':
+    resolution: {integrity: sha512-lXSg4bDHvP8CiMdpQf9f/rca12IIjXHN/p0Rc5mgzgLe4JBlIoA1zFa9NKhfG1bW0OyI2hgaOldFCfkEQwZuEQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
     peerDependenciesMeta:
@@ -456,42 +459,42 @@ packages:
     resolution: {integrity: sha512-YLPHc8yASwjNkmcDMQMY35yiWjoKAKnhUbPRszBRS0YgH+IXtsMp61j+yTcnCE3oO2DgP0U3iejLC8FTtKDC8Q==}
     engines: {node: '>=16.13'}
 
-  '@cloudflare/workerd-darwin-64@1.20241011.1':
-    resolution: {integrity: sha512-gZ2PrMCQ4WdDCB+V6vsB2U2SyYcmgaGMEa3GGjcUfC79L/8so3Vp/bO0eCoLmvttRs39wascZ+JiWL0HpcZUgA==}
+  '@cloudflare/workerd-darwin-64@1.20241022.0':
+    resolution: {integrity: sha512-1NNYun37myMTgCUiPQEJ0cMal4mKZVTpkD0b2tx9hV70xji+frVJcSK8YVLeUm1P+Rw1d/ct8DMgQuCpsz3Fsw==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [darwin]
 
-  '@cloudflare/workerd-darwin-arm64@1.20241011.1':
-    resolution: {integrity: sha512-c26TYtS0e3WZ09nL/a8YaEqveCsTlgDm12ehPMNua9u68sh1KzETMl2G45O934m8UrI3Rhpv2TTecO0S5b9exA==}
+  '@cloudflare/workerd-darwin-arm64@1.20241022.0':
+    resolution: {integrity: sha512-FOO/0P0U82EsTLTdweNVgw+4VOk5nghExLPLSppdOziq6IR5HVgP44Kmq5LdsUeHUhwUmfOh9hzaTpkNzUqKvw==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [darwin]
 
-  '@cloudflare/workerd-linux-64@1.20241011.1':
-    resolution: {integrity: sha512-pl4xvHNXnm3cYh5GwHadOTQRWt4Ih/gzCOb6RW4n78oNQQydFvpwqYAjbYk32y485feLhdTKXut/MgZAyWnKyQ==}
+  '@cloudflare/workerd-linux-64@1.20241022.0':
+    resolution: {integrity: sha512-RsNc19BQJG9yd+ngnjuDeG9ywZG+7t1L4JeglgceyY5ViMNMKVO7Zpbsu69kXslU9h6xyQG+lrmclg3cBpnhYA==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [linux]
 
-  '@cloudflare/workerd-linux-arm64@1.20241011.1':
-    resolution: {integrity: sha512-I4HAF2Qe8xgIjAdE53viT2fDdHXkrb3Be0L3eWeeP5SEkOtQ4cHLqsOV7yhUWOJpHiI1XCDcf+wdfn0PB/EngQ==}
+  '@cloudflare/workerd-linux-arm64@1.20241022.0':
+    resolution: {integrity: sha512-x5mUXpKxfsosxcFmcq5DaqLs37PejHYVRsNz1cWI59ma7aC4y4Qn6Tf3i0r9MwQTF/MccP4SjVslMU6m4W7IaA==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [linux]
 
-  '@cloudflare/workerd-windows-64@1.20241011.1':
-    resolution: {integrity: sha512-oVr1Cb7NkDpukd7v68FdxOH8vaHRSzHkX9uE/IttHd2yPK6mwOS220nIxK9UMcx5CwZmrgphRwtZwSYVk/lREQ==}
+  '@cloudflare/workerd-windows-64@1.20241022.0':
+    resolution: {integrity: sha512-eBCClx4szCOgKqOlxxbdNszMqQf3MRG1B9BRIqEM/diDfdR9IrZ8l3FaEm+l9gXgPmS6m1NBn40aWuGBl8UTSw==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-shared@0.6.0':
-    resolution: {integrity: sha512-rfUCvb3hx4AsvdUZsxgk9lmgEnQehqV3jdtXLP/Xr0+P56n11T/0nXNMzmn7Nnv+IJFOV6X9NmFhuMz4sBPw7w==}
+  '@cloudflare/workers-shared@0.7.0':
+    resolution: {integrity: sha512-LLQRTqx7lKC7o2eCYMpyc5FXV8d0pUX6r3A+agzhqS9aoR5A6zCPefwQGcvbKx83ozX22ATZcemwxQXn12UofQ==}
     engines: {node: '>=16.7.0'}
 
-  '@cloudflare/workers-types@4.20241011.0':
-    resolution: {integrity: sha512-emwBnuFB/2lS1z6NXAeBqrSL8Xwnr7YpgdLuchOmgu/igqBsLLNPBb4Qmgh3neFWUe9wbzQyx030836YF3c3Xw==}
+  '@cloudflare/workers-types@4.20241022.0':
+    resolution: {integrity: sha512-1zOAw5QIDKItzGatzCrEpfLOB1AuMTwVqKmbw9B9eBfCUGRFNfJYMrJxIwcse9EmKahsQt2GruqU00pY/GyXgg==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -1175,12 +1178,12 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@headlessui/react@2.1.10':
-    resolution: {integrity: sha512-6mLa2fjMDAFQi+/R10B+zU3edsUk/MDtENB2zHho0lqKU1uzhAfJLUduWds4nCo8wbl3vULtC5rJfZAQ1yqIng==}
+  '@headlessui/react@2.2.0':
+    resolution: {integrity: sha512-RzCEg+LXsuI7mHiSomsu/gBJSjpupm6A1qIZ5sWjd7JhARNlMiSA4kKfJpCKwU9tE+zMRterhhrP74PvfJrpXQ==}
     engines: {node: '>=10'}
     peerDependencies:
-      react: ^18
-      react-dom: ^18
+      react: ^18 || ^19 || ^19.0.0-rc
+      react-dom: ^18 || ^19 || ^19.0.0-rc
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -1296,6 +1299,16 @@ packages:
     resolution: {integrity: sha512-OZSyhzU6vTdW3eV/mz5i6hQwQUhkRs7xwY2d1aqPvTdMe0+2cY7Fwp45PAiwYLEj73i9ro2FxF9qC4DvHGSCgQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0
+
+  '@remix-run/cloudflare-pages@2.13.1':
+    resolution: {integrity: sha512-CcXcGkFx7RJ5yROQXvyzBg1AR6Emv7uOZWv+PbwNRdtsB8lsmiTSrrmpxNlg3FFxX2Khul6B5/V8hpohhl3KJw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@cloudflare/workers-types': ^4.0.0
+      typescript: ^5.1.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   '@remix-run/cloudflare@2.13.1':
     resolution: {integrity: sha512-+Xiy2ypFIm+IxNiPuXQzIfW/3RWLT5i1ZrgLsc/cMb4dp2BK7/o+iqTYwXze0t4XSPd5KuZn+yWquOwZhfg30g==}
@@ -1546,14 +1559,17 @@ packages:
   '@types/node@22.7.6':
     resolution: {integrity: sha512-/d7Rnj0/ExXDMcioS78/kf1lMzYk4BZV8MZGTBKzTGZ6/406ukkbYlIsZmMPhcR5KlkunDHQLrtAVmSq7r+mSw==}
 
+  '@types/node@22.8.1':
+    resolution: {integrity: sha512-k6Gi8Yyo8EtrNtkHXutUu2corfDf9su95VYVP10aGYMMROM6SAItZi0w1XszA6RtWTHSVp5OeFof37w0IEqCQg==}
+
   '@types/prop-types@15.7.13':
     resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
 
   '@types/react-dom@18.3.1':
     resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
 
-  '@types/react@18.3.11':
-    resolution: {integrity: sha512-r6QZ069rFTjrEYgFdOck1gK7FLVsgJE7tTz0pQBczlBNUhBNk0MQH4UbnFSwjpQLMkLzgqvBBa+qGpLje16eTQ==}
+  '@types/react@18.3.12':
+    resolution: {integrity: sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -1625,8 +1641,8 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@urql/core@5.0.6':
-    resolution: {integrity: sha512-38rgSDqVNihFDauw1Pm9V7XLWIKuK8V9CKgrUF7/xEKinze8ENKP1ZeBhkG+dxWzJan7CHK+SLl46kAdvZwIlA==}
+  '@urql/core@5.0.8':
+    resolution: {integrity: sha512-1GOnUw7/a9bzkcM0+U8U5MmxW2A7FE5YquuEmcJzTtW5tIs2EoS4F2ITpuKBjRBbyRjZgO860nWFPo1m4JImGA==}
 
   '@urql/exchange-request-policy@1.2.0':
     resolution: {integrity: sha512-30CwS5/YzX0YWVATg19rrDhruDCRIu96xUz6HGlhJPUw22M7njRldl44fmoU11ZbIemg01t8ysq6+0rdktYBgg==}
@@ -2071,9 +2087,6 @@ packages:
       typescript:
         optional: true
 
-  cox-postposition@1.4.1:
-    resolution: {integrity: sha512-TNXGxd7l49ogBp0VMVDHhId2wk2NTpzcR2xg+rjHzB25YSs91gEDko0WmV9xPNLZzPnqdeBcrVHbHJzo3EfnNQ==}
-
   cross-fetch@3.1.8:
     resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
 
@@ -2121,6 +2134,9 @@ packages:
 
   dataloader@2.2.2:
     resolution: {integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==}
+
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   dayjs@1.11.13:
     resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
@@ -2787,6 +2803,9 @@ packages:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
 
+  globrex@0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
+
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
 
@@ -3173,6 +3192,9 @@ packages:
     resolution: {integrity: sha512-FW5iMbeQ6rBGm/oKgzq2aW4KvAGpxPzYES8N4g4xNXUKpL1mclMvOe+76AcLDTvD+Ze+sOpVhgdAQEKF4L9iGQ==}
     engines: {node: '>= 0.4'}
 
+  itty-time@1.0.6:
+    resolution: {integrity: sha512-+P8IZaLLBtFv8hCkIjcymZOp4UJ+xW6bSlQsXGqrkmJh7vSiMFSlNne0mCYagEE0N7HDNR5jJBRxwN0oYv61Rw==}
+
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
 
@@ -3537,8 +3559,8 @@ packages:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
 
-  miniflare@3.20241011.0:
-    resolution: {integrity: sha512-Mb3U9+QvKgIUl9LgHwBxEz8WajMRYqO5mMHRtO8yHjNCLGh24I6Ts9z13zRAYGPDd1xBQ1o983fHT9S+tn6r+A==}
+  miniflare@3.20241022.0:
+    resolution: {integrity: sha512-x9Fbq1Hmz1f0osIT9Qmj78iX4UpCP2EqlZnA/tzj/3+I49vc3Kq0fNqSSKplcdf6HlCHdL3fOBicmreQF4BUUQ==}
     engines: {node: '>=16.13'}
     hasBin: true
 
@@ -4057,12 +4079,6 @@ packages:
   raw-body@2.5.2:
     resolution: {integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==}
     engines: {node: '>= 0.8'}
-
-  react-content-loader@7.0.2:
-    resolution: {integrity: sha512-773S98JTyC8VB2nu7LXUhpHx8tZMieGxMcx3qTe7IkohT6Br7d9AXnIXs/wQ6IhlUdKQcw6JLKk1QKigYCWDRA==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>=16.0.0'
 
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
@@ -4603,6 +4619,16 @@ packages:
   ts-log@2.2.7:
     resolution: {integrity: sha512-320x5Ggei84AxzlXp91QkIGSw5wgaLT6GeAH0KsqDmRZdVWW2OiSeVvElVoatk3f7nicwXlElXsoFkARiGE2yg==}
 
+  tsconfck@3.1.4:
+    resolution: {integrity: sha512-kdqWFGVJqe+KGYvlSO9NIaWn9jT1Ny4oKVzAJsKii5eoE9snzTJzL4+MMVOMn+fikWGFmKEylcXL710V/kIPJQ==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
@@ -4690,8 +4716,8 @@ packages:
     resolution: {integrity: sha512-AjQF1QsmqfJys+LXfGTNum+qw4S88CojRInG/6t31W/1fk6G59s92bnAvGz5Cmur+kQv2SURXEvvudLmbrE8QA==}
     engines: {node: '>=18.17'}
 
-  unenv-nightly@2.0.0-20241009-125958-e8ea22f:
-    resolution: {integrity: sha512-hRxmKz1iSVRmuFx/vBdPsx7rX4o7Cas9vdjDNeUeWpQTK2LzU3Xy3Jz0zbo7MJX0bpqo/LEFCA+GPwsbl6zKEQ==}
+  unenv-nightly@2.0.0-20241018-011344-e666fcf:
+    resolution: {integrity: sha512-D00bYn8rzkCBOlLx+k1iHQlc69jvtJRT7Eek4yIGQ6461a2tUBjngGZdRpqsoXAJCz/qBW0NgPting7Zvg+ysg==}
 
   unified@10.1.2:
     resolution: {integrity: sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==}
@@ -4758,8 +4784,8 @@ packages:
   urlpattern-polyfill@10.0.0:
     resolution: {integrity: sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==}
 
-  urql@4.1.0:
-    resolution: {integrity: sha512-NfbfTvxy1sM89EQAJWm89qJZihUWk7BSMfrWgfljFXLOf+e7RK7DtV/Tbg2+82HnCG2x3LcEOJenxiFSYEC+bw==}
+  urql@4.2.0:
+    resolution: {integrity: sha512-xj9KoMxdF3omd0QCHHS3SvgxDHZAmuAFgUcdNe0w75NeJDA4qesc2/M6CquefZ7Sod6uyImENKCKg+/2I7YvXQ==}
     peerDependencies:
       '@urql/core': ^5.0.0
       react: '>= 16.8.0'
@@ -4813,8 +4839,16 @@ packages:
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
 
-  vite@5.4.9:
-    resolution: {integrity: sha512-20OVpJHh0PAM0oSOELa5GaZNWeDjcAvQjGXy2Uyr+Tp+/D2/Hdz6NLgpJLsarPTA2QJ6v8mX2P1ZfbsSKvdMkg==}
+  vite-tsconfig-paths@5.0.1:
+    resolution: {integrity: sha512-yqwv+LstU7NwPeNqajZzLEBVpUFU6Dugtb2P84FXuvaoYA+/70l9MHE+GYfYAycVyPSDYZ7mjOFuYBRqlEpTig==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+
+  vite@5.4.10:
+    resolution: {integrity: sha512-1hvaPshuPUtxeQ0hsVH3Mud0ZanOLwVTneA1EgbAM5LhaZEqyPWGRQ7BtaMvUrTDeEaC8pxtj6a6jku3x4z6SQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -4895,17 +4929,17 @@ packages:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
 
-  workerd@1.20241011.1:
-    resolution: {integrity: sha512-ORobT1XDkE+p+36yk6Szyw68bWuGSmuwIlDnAeUOfnYunb/Txt0jg7ydzfwr4UIsof7AH5F1nqZms5PWLu05yw==}
+  workerd@1.20241022.0:
+    resolution: {integrity: sha512-jyGXsgO9DRcJyx6Ovv7gUyDPc3UYC2i/E0p9GFUg6GUzpldw4Y93y9kOmdfsOnKZ3+lY53veSiUniiBPE6Q2NQ==}
     engines: {node: '>=16'}
     hasBin: true
 
-  wrangler@3.80.5:
-    resolution: {integrity: sha512-BS8n54pwkk/NnkChgtuMUifP2I2SiJHgIUZqvmnVKm92pQE3ghellQx91FS5oCtWLXKlQiaToodERNfIDSti5g==}
+  wrangler@3.83.0:
+    resolution: {integrity: sha512-qDzdUuTngKqmm2OJUZm7Gk4+Hv37F2nNNAHuhIgItEIhxBdOVDsgKmvpd+f41MFxyuGg3fbGWYANHI+0V2Z5yw==}
     engines: {node: '>=16.17.0'}
     hasBin: true
     peerDependencies:
-      '@cloudflare/workers-types': ^4.20241011.0
+      '@cloudflare/workers-types': ^4.20241022.0
     peerDependenciesMeta:
       '@cloudflare/workers-types':
         optional: true
@@ -5011,7 +5045,7 @@ packages:
 
 snapshots:
 
-  '@0no-co/graphql.web@1.0.8(graphql@16.9.0)':
+  '@0no-co/graphql.web@1.0.9(graphql@16.9.0)':
     optionalDependencies:
       graphql: 16.9.0
 
@@ -5461,27 +5495,27 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/workerd-darwin-64@1.20241011.1':
+  '@cloudflare/workerd-darwin-64@1.20241022.0':
     optional: true
 
-  '@cloudflare/workerd-darwin-arm64@1.20241011.1':
+  '@cloudflare/workerd-darwin-arm64@1.20241022.0':
     optional: true
 
-  '@cloudflare/workerd-linux-64@1.20241011.1':
+  '@cloudflare/workerd-linux-64@1.20241022.0':
     optional: true
 
-  '@cloudflare/workerd-linux-arm64@1.20241011.1':
+  '@cloudflare/workerd-linux-arm64@1.20241022.0':
     optional: true
 
-  '@cloudflare/workerd-windows-64@1.20241011.1':
+  '@cloudflare/workerd-windows-64@1.20241022.0':
     optional: true
 
-  '@cloudflare/workers-shared@0.6.0':
+  '@cloudflare/workers-shared@0.7.0':
     dependencies:
       mime: 3.0.0
       zod: 3.23.8
 
-  '@cloudflare/workers-types@4.20241011.0': {}
+  '@cloudflare/workers-types@4.20241022.0': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -5758,7 +5792,7 @@ snapshots:
       graphql: 16.9.0
       tslib: 2.6.3
 
-  '@graphql-codegen/cli@5.0.3(@types/node@22.7.6)(graphql@16.9.0)(typescript@5.6.3)':
+  '@graphql-codegen/cli@5.0.3(@types/node@22.8.1)(graphql@16.9.0)(typescript@5.6.3)':
     dependencies:
       '@babel/generator': 7.25.7
       '@babel/template': 7.25.7
@@ -5769,12 +5803,12 @@ snapshots:
       '@graphql-tools/apollo-engine-loader': 8.0.2(graphql@16.9.0)
       '@graphql-tools/code-file-loader': 8.1.4(graphql@16.9.0)
       '@graphql-tools/git-loader': 8.0.8(graphql@16.9.0)
-      '@graphql-tools/github-loader': 8.0.2(@types/node@22.7.6)(graphql@16.9.0)
+      '@graphql-tools/github-loader': 8.0.2(@types/node@22.8.1)(graphql@16.9.0)
       '@graphql-tools/graphql-file-loader': 8.0.2(graphql@16.9.0)
       '@graphql-tools/json-file-loader': 8.0.2(graphql@16.9.0)
       '@graphql-tools/load': 8.0.3(graphql@16.9.0)
-      '@graphql-tools/prisma-loader': 8.0.9(@types/node@22.7.6)(graphql@16.9.0)
-      '@graphql-tools/url-loader': 8.0.7(@types/node@22.7.6)(graphql@16.9.0)
+      '@graphql-tools/prisma-loader': 8.0.9(@types/node@22.8.1)(graphql@16.9.0)
+      '@graphql-tools/url-loader': 8.0.7(@types/node@22.8.1)(graphql@16.9.0)
       '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
       '@whatwg-node/fetch': 0.9.21
       chalk: 4.1.2
@@ -5782,7 +5816,7 @@ snapshots:
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.9.0
-      graphql-config: 5.1.3(@types/node@22.7.6)(graphql@16.9.0)(typescript@5.6.3)
+      graphql-config: 5.1.3(@types/node@22.8.1)(graphql@16.9.0)(typescript@5.6.3)
       inquirer: 8.2.6
       is-glob: 4.0.3
       jiti: 1.21.6
@@ -5975,14 +6009,14 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@graphql-tools/executor-http@1.1.7(@types/node@22.7.6)(graphql@16.9.0)':
+  '@graphql-tools/executor-http@1.1.7(@types/node@22.8.1)(graphql@16.9.0)':
     dependencies:
       '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
       '@repeaterjs/repeater': 3.0.6
       '@whatwg-node/fetch': 0.9.21
       extract-files: 11.0.0
       graphql: 16.9.0
-      meros: 1.3.0(@types/node@22.7.6)
+      meros: 1.3.0(@types/node@22.8.1)
       tslib: 2.8.0
       value-or-promise: 1.0.12
     transitivePeerDependencies:
@@ -6021,10 +6055,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@graphql-tools/github-loader@8.0.2(@types/node@22.7.6)(graphql@16.9.0)':
+  '@graphql-tools/github-loader@8.0.2(@types/node@22.8.1)(graphql@16.9.0)':
     dependencies:
       '@ardatan/sync-fetch': 0.0.1
-      '@graphql-tools/executor-http': 1.1.7(@types/node@22.7.6)(graphql@16.9.0)
+      '@graphql-tools/executor-http': 1.1.7(@types/node@22.8.1)(graphql@16.9.0)
       '@graphql-tools/graphql-tag-pluck': 8.3.3(graphql@16.9.0)
       '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
       '@whatwg-node/fetch': 0.9.21
@@ -6092,9 +6126,9 @@ snapshots:
       graphql: 16.9.0
       tslib: 2.8.0
 
-  '@graphql-tools/prisma-loader@8.0.9(@types/node@22.7.6)(graphql@16.9.0)':
+  '@graphql-tools/prisma-loader@8.0.9(@types/node@22.8.1)(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/url-loader': 8.0.7(@types/node@22.7.6)(graphql@16.9.0)
+      '@graphql-tools/url-loader': 8.0.7(@types/node@22.8.1)(graphql@16.9.0)
       '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
       '@types/js-yaml': 4.0.9
       '@whatwg-node/fetch': 0.9.21
@@ -6136,12 +6170,12 @@ snapshots:
       tslib: 2.8.0
       value-or-promise: 1.0.12
 
-  '@graphql-tools/url-loader@8.0.7(@types/node@22.7.6)(graphql@16.9.0)':
+  '@graphql-tools/url-loader@8.0.7(@types/node@22.8.1)(graphql@16.9.0)':
     dependencies:
       '@ardatan/sync-fetch': 0.0.1
       '@graphql-tools/delegate': 10.0.26(graphql@16.9.0)
       '@graphql-tools/executor-graphql-ws': 1.3.1(graphql@16.9.0)
-      '@graphql-tools/executor-http': 1.1.7(@types/node@22.7.6)(graphql@16.9.0)
+      '@graphql-tools/executor-http': 1.1.7(@types/node@22.8.1)(graphql@16.9.0)
       '@graphql-tools/executor-legacy-ws': 1.1.1(graphql@16.9.0)
       '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
       '@graphql-tools/wrap': 10.0.10(graphql@16.9.0)
@@ -6179,7 +6213,7 @@ snapshots:
     dependencies:
       graphql: 16.9.0
 
-  '@headlessui/react@2.1.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@headlessui/react@2.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@floating-ui/react': 0.26.25(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@react-aria/focus': 3.18.4(react@18.3.1)
@@ -6351,17 +6385,24 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  '@remix-run/cloudflare@2.13.1(@cloudflare/workers-types@4.20241011.0)(typescript@5.6.3)':
+  '@remix-run/cloudflare-pages@2.13.1(@cloudflare/workers-types@4.20241022.0)(typescript@5.6.3)':
+    dependencies:
+      '@cloudflare/workers-types': 4.20241022.0
+      '@remix-run/cloudflare': 2.13.1(@cloudflare/workers-types@4.20241022.0)(typescript@5.6.3)
+    optionalDependencies:
+      typescript: 5.6.3
+
+  '@remix-run/cloudflare@2.13.1(@cloudflare/workers-types@4.20241022.0)(typescript@5.6.3)':
     dependencies:
       '@cloudflare/kv-asset-handler': 0.1.3
-      '@cloudflare/workers-types': 4.20241011.0
+      '@cloudflare/workers-types': 4.20241022.0
       '@remix-run/server-runtime': 2.13.1(typescript@5.6.3)
     optionalDependencies:
       typescript: 5.6.3
 
   '@remix-run/css-bundle@2.13.1': {}
 
-  '@remix-run/dev@2.13.1(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(@types/node@22.7.6)(typescript@5.6.3)(vite@5.4.9(@types/node@22.7.6))(wrangler@3.80.5(@cloudflare/workers-types@4.20241011.0))':
+  '@remix-run/dev@2.13.1(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(@types/node@22.8.1)(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.1))(wrangler@3.83.0(@cloudflare/workers-types@4.20241022.0))':
     dependencies:
       '@babel/core': 7.25.8
       '@babel/generator': 7.25.7
@@ -6378,7 +6419,7 @@ snapshots:
       '@remix-run/router': 1.20.0
       '@remix-run/server-runtime': 2.13.1(typescript@5.6.3)
       '@types/mdx': 2.0.13
-      '@vanilla-extract/integration': 6.5.0(@types/node@22.7.6)
+      '@vanilla-extract/integration': 6.5.0(@types/node@22.8.1)
       arg: 5.0.2
       cacache: 17.1.4
       chalk: 4.1.2
@@ -6419,8 +6460,8 @@ snapshots:
       ws: 7.5.10
     optionalDependencies:
       typescript: 5.6.3
-      vite: 5.4.9(@types/node@22.7.6)
-      wrangler: 3.80.5(@cloudflare/workers-types@4.20241011.0)
+      vite: 5.4.10(@types/node@22.8.1)
+      wrangler: 3.83.0(@cloudflare/workers-types@4.20241022.0)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -6650,9 +6691,13 @@ snapshots:
 
   '@types/node-forge@1.3.11':
     dependencies:
-      '@types/node': 22.7.6
+      '@types/node': 22.8.1
 
   '@types/node@22.7.6':
+    dependencies:
+      undici-types: 6.19.8
+
+  '@types/node@22.8.1':
     dependencies:
       undici-types: 6.19.8
 
@@ -6660,9 +6705,9 @@ snapshots:
 
   '@types/react-dom@18.3.1':
     dependencies:
-      '@types/react': 18.3.11
+      '@types/react': 18.3.12
 
-  '@types/react@18.3.11':
+  '@types/react@18.3.12':
     dependencies:
       '@types/prop-types': 15.7.13
       csstype: 3.1.3
@@ -6761,16 +6806,16 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@urql/core@5.0.6(graphql@16.9.0)':
+  '@urql/core@5.0.8(graphql@16.9.0)':
     dependencies:
-      '@0no-co/graphql.web': 1.0.8(graphql@16.9.0)
+      '@0no-co/graphql.web': 1.0.9(graphql@16.9.0)
       wonka: 6.3.4
     transitivePeerDependencies:
       - graphql
 
-  '@urql/exchange-request-policy@1.2.0(@urql/core@5.0.6(graphql@16.9.0))':
+  '@urql/exchange-request-policy@1.2.0(@urql/core@5.0.8(graphql@16.9.0))':
     dependencies:
-      '@urql/core': 5.0.6(graphql@16.9.0)
+      '@urql/core': 5.0.8(graphql@16.9.0)
       wonka: 6.3.4
 
   '@vanilla-extract/babel-plugin-debug-ids@1.1.0':
@@ -6796,7 +6841,7 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
 
-  '@vanilla-extract/integration@6.5.0(@types/node@22.7.6)':
+  '@vanilla-extract/integration@6.5.0(@types/node@22.8.1)':
     dependencies:
       '@babel/core': 7.25.8
       '@babel/plugin-syntax-typescript': 7.25.7(@babel/core@7.25.8)
@@ -6809,8 +6854,8 @@ snapshots:
       lodash: 4.17.21
       mlly: 1.7.2
       outdent: 0.8.0
-      vite: 5.4.9(@types/node@22.7.6)
-      vite-node: 1.6.0(@types/node@22.7.6)
+      vite: 5.4.10(@types/node@22.8.1)
+      vite-node: 1.6.0(@types/node@22.8.1)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -7328,8 +7373,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.6.3
 
-  cox-postposition@1.4.1: {}
-
   cross-fetch@3.1.8:
     dependencies:
       node-fetch: 2.7.0
@@ -7377,6 +7420,8 @@ snapshots:
       is-data-view: 1.0.1
 
   dataloader@2.2.2: {}
+
+  date-fns@4.1.0: {}
 
   dayjs@1.11.13: {}
 
@@ -8305,6 +8350,8 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
+  globrex@0.1.2: {}
+
   gopd@1.0.1:
     dependencies:
       get-intrinsic: 1.2.4
@@ -8313,13 +8360,13 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  graphql-config@5.1.3(@types/node@22.7.6)(graphql@16.9.0)(typescript@5.6.3):
+  graphql-config@5.1.3(@types/node@22.8.1)(graphql@16.9.0)(typescript@5.6.3):
     dependencies:
       '@graphql-tools/graphql-file-loader': 8.0.2(graphql@16.9.0)
       '@graphql-tools/json-file-loader': 8.0.2(graphql@16.9.0)
       '@graphql-tools/load': 8.0.3(graphql@16.9.0)
       '@graphql-tools/merge': 9.0.8(graphql@16.9.0)
-      '@graphql-tools/url-loader': 8.0.7(@types/node@22.7.6)(graphql@16.9.0)
+      '@graphql-tools/url-loader': 8.0.7(@types/node@22.8.1)(graphql@16.9.0)
       '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
       cosmiconfig: 8.3.6(typescript@5.6.3)
       graphql: 16.9.0
@@ -8694,6 +8741,8 @@ snapshots:
       reflect.getprototypeof: 1.0.6
       set-function-name: 2.0.2
 
+  itty-time@1.0.6: {}
+
   jackspeak@3.4.3:
     dependencies:
       '@isaacs/cliui': 8.0.2
@@ -8974,9 +9023,9 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  meros@1.3.0(@types/node@22.7.6):
+  meros@1.3.0(@types/node@22.8.1):
     optionalDependencies:
-      '@types/node': 22.7.6
+      '@types/node': 22.8.1
 
   methods@1.1.2: {}
 
@@ -9212,7 +9261,7 @@ snapshots:
 
   mimic-fn@2.1.0: {}
 
-  miniflare@3.20241011.0:
+  miniflare@3.20241022.0:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.13.0
@@ -9222,7 +9271,7 @@ snapshots:
       glob-to-regexp: 0.4.1
       stoppable: 1.1.0
       undici: 5.28.4
-      workerd: 1.20241011.1
+      workerd: 1.20241022.0
       ws: 8.18.0
       youch: 3.3.4
       zod: 3.23.8
@@ -9727,10 +9776,6 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       unpipe: 1.0.0
-
-  react-content-loader@7.0.2(react@18.3.1):
-    dependencies:
-      react: 18.3.1
 
   react-dom@18.3.1(react@18.3.1):
     dependencies:
@@ -10385,6 +10430,10 @@ snapshots:
 
   ts-log@2.2.7: {}
 
+  tsconfck@3.1.4(typescript@5.6.3):
+    optionalDependencies:
+      typescript: 5.6.3
+
   tsconfig-paths@3.15.0:
     dependencies:
       '@types/json5': 0.0.29
@@ -10479,7 +10528,7 @@ snapshots:
 
   undici@6.20.1: {}
 
-  unenv-nightly@2.0.0-20241009-125958-e8ea22f:
+  unenv-nightly@2.0.0-20241018-011344-e666fcf:
     dependencies:
       defu: 6.1.4
       ohash: 1.1.4
@@ -10566,9 +10615,9 @@ snapshots:
 
   urlpattern-polyfill@10.0.0: {}
 
-  urql@4.1.0(@urql/core@5.0.6(graphql@16.9.0))(react@18.3.1):
+  urql@4.2.0(@urql/core@5.0.8(graphql@16.9.0))(react@18.3.1):
     dependencies:
-      '@urql/core': 5.0.6(graphql@16.9.0)
+      '@urql/core': 5.0.8(graphql@16.9.0)
       react: 18.3.1
       wonka: 6.3.4
 
@@ -10618,13 +10667,13 @@ snapshots:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.4
 
-  vite-node@1.6.0(@types/node@22.7.6):
+  vite-node@1.6.0(@types/node@22.8.1):
     dependencies:
       cac: 6.7.14
       debug: 4.3.7
       pathe: 1.1.2
       picocolors: 1.1.1
-      vite: 5.4.9(@types/node@22.7.6)
+      vite: 5.4.10(@types/node@22.8.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -10636,13 +10685,24 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.4.9(@types/node@22.7.6):
+  vite-tsconfig-paths@5.0.1(typescript@5.6.3)(vite@5.4.10(@types/node@22.8.1)):
+    dependencies:
+      debug: 4.3.7
+      globrex: 0.1.2
+      tsconfck: 3.1.4(typescript@5.6.3)
+    optionalDependencies:
+      vite: 5.4.10(@types/node@22.8.1)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  vite@5.4.10(@types/node@22.8.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
       rollup: 4.24.0
     optionalDependencies:
-      '@types/node': 22.7.6
+      '@types/node': 22.8.1
       fsevents: 2.3.3
 
   wcwidth@1.0.1:
@@ -10716,35 +10776,37 @@ snapshots:
 
   word-wrap@1.2.5: {}
 
-  workerd@1.20241011.1:
+  workerd@1.20241022.0:
     optionalDependencies:
-      '@cloudflare/workerd-darwin-64': 1.20241011.1
-      '@cloudflare/workerd-darwin-arm64': 1.20241011.1
-      '@cloudflare/workerd-linux-64': 1.20241011.1
-      '@cloudflare/workerd-linux-arm64': 1.20241011.1
-      '@cloudflare/workerd-windows-64': 1.20241011.1
+      '@cloudflare/workerd-darwin-64': 1.20241022.0
+      '@cloudflare/workerd-darwin-arm64': 1.20241022.0
+      '@cloudflare/workerd-linux-64': 1.20241022.0
+      '@cloudflare/workerd-linux-arm64': 1.20241022.0
+      '@cloudflare/workerd-windows-64': 1.20241022.0
 
-  wrangler@3.80.5(@cloudflare/workers-types@4.20241011.0):
+  wrangler@3.83.0(@cloudflare/workers-types@4.20241022.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
-      '@cloudflare/workers-shared': 0.6.0
+      '@cloudflare/workers-shared': 0.7.0
       '@esbuild-plugins/node-globals-polyfill': 0.2.3(esbuild@0.17.19)
       '@esbuild-plugins/node-modules-polyfill': 0.2.2(esbuild@0.17.19)
       blake3-wasm: 2.1.5
       chokidar: 3.6.0
+      date-fns: 4.1.0
       esbuild: 0.17.19
-      miniflare: 3.20241011.0
+      itty-time: 1.0.6
+      miniflare: 3.20241022.0
       nanoid: 3.3.7
       path-to-regexp: 6.3.0
       resolve: 1.22.8
       resolve.exports: 2.0.2
       selfsigned: 2.4.1
       source-map: 0.6.1
-      unenv: unenv-nightly@2.0.0-20241009-125958-e8ea22f
-      workerd: 1.20241011.1
+      unenv: unenv-nightly@2.0.0-20241018-011344-e666fcf
+      workerd: 1.20241022.0
       xxhash-wasm: 1.0.2
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20241011.0
+      '@cloudflare/workers-types': 4.20241022.0
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil

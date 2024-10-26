@@ -4,7 +4,6 @@ import { Outlet, isRouteErrorResponse, useLoaderData, useParams, useRouteError }
 import { Title } from "~/components/atoms/typography";
 import { ErrorPage } from "~/components/organisms/error";
 import { Navigation } from "~/components/organisms/navigation";
-import type { Env } from "~/env.server";
 import { getSenseiByUsername } from "~/models/sensei";
 
 type LoaderData = {
@@ -18,7 +17,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   }
 
   const username = usernameParam.replace("@", "");
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   if (!(await getSenseiByUsername(env, username))) {
     throw json(
       { error: { message: "해당하는 닉네임의 선생님을 찾을 수 없어요", data: { username } } },

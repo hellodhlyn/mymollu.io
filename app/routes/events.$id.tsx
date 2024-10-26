@@ -10,7 +10,6 @@ import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
 import { EventStages, EventVideos } from "~/components/organisms/event";
 import { TimelinePlaceholder } from "~/components/organisms/useractivity";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { EventStagesQuery, EventDetailQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
@@ -92,7 +91,7 @@ export const loader = async ({ params, context, request }: LoaderFunctionArgs) =
     );
   }
 
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   let studentStates: StudentState[] = [];
   if (sensei) {

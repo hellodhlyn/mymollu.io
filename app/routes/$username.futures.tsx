@@ -1,7 +1,6 @@
 import type { LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { FuturePlan } from "~/components/organisms/future";
-import type { Env } from "~/env.server";
 import type { UserFuturesQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getFuturePlan } from "~/models/future";
@@ -39,7 +38,7 @@ export const meta: MetaFunction = ({ params }) => {
 };
 
 export const loader = async ({ context, params }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");

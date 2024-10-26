@@ -3,10 +3,9 @@ import { Form, useNavigation } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Button } from "~/components/atoms/form";
 import { Title } from "~/components/atoms/typography";
-import type { Env } from "~/env.server";
 
 export const action: ActionFunction = async ({ request, context }) => {
-  return getAuthenticator(context.env as Env).authenticate("google", request);
+  return getAuthenticator(context.cloudflare.env).authenticate("google", request);
 };
 
 export default function SignIn() {

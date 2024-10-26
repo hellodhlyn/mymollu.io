@@ -1,9 +1,8 @@
-import { json} from "@remix-run/cloudflare";
-import type { LoaderFunctionArgs, LinksFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -11,12 +10,11 @@ import {
   useLoaderData,
   useMatches,
 } from "@remix-run/react";
-import styles from "./tailwind.css";
+import styles from "./tailwind.css?url";
 import { getAuthenticator } from "./auth/authenticator.server";
-import type { Env } from "./env.server";
 import { Header, Footer } from "./components/organisms/base";
 
-export const links: LinksFunction = () => [
+export const links = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.8/static/pretendard.css" },
   { rel: "stylesheet", href: "https://cdn.jsdelivr.net/gh/Nyannnnnng/GyeonggiTitleWoff/stylesheet.css" },
@@ -24,7 +22,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {
-  const sensei = await getAuthenticator(context.env as Env).isAuthenticated(request);
+  const sensei = await getAuthenticator(context.cloudflare.env).isAuthenticated(request);
   return json({ currentUsername: sensei?.username ?? null });
 };
 
@@ -57,7 +55,6 @@ export default function App() {
         
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

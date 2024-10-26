@@ -1,18 +1,14 @@
 import { defer } from "@remix-run/cloudflare";
-import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { Await, Link, useLoaderData } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/cloudflare";
+import { Link, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
-import { Suspense } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { ContentTimelineItem } from "~/components/molecules/content";
 import { contentOrders } from "~/components/organisms/content/ContentTimeline";
 import { SenseiFinder } from "~/components/organisms/home";
-import { Timeline, TimelinePlaceholder } from "~/components/organisms/useractivity";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { IndexQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
-import { getUserActivities } from "~/models/user-activity";
 
 const indexQuery = graphql(`
   query Index($now: ISO8601DateTime!) {
@@ -51,9 +47,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ context }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
-
+export const loader = async () => {
   const { data, error } = await runQuery<IndexQuery>(indexQuery, { now: new Date().toISOString() });
   if (error || !data) {
     throw error ?? "failed to fetch events";
@@ -62,12 +56,11 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   return defer({
     students: data.students,
     contents: data.contents.nodes,
-    userActivities: getUserActivities(env),
   });
 }
 
 export default function Index() {
-  const { students, contents, userActivities } = useLoaderData<typeof loader>();
+  const { students, contents } = useLoaderData<typeof loader>();
   const today = dayjs();
   return (
     <>
@@ -107,15 +100,6 @@ export default function Index() {
         <SubTitle text="선생님 찾기" />
         <SenseiFinder students={students} />
       </div>
-
-      <SubTitle text="타임라인" />
-      <Suspense fallback={<TimelinePlaceholder />}>
-        <Await resolve={userActivities}>
-          {(userActivities) => (
-            <Timeline activities={userActivities.map((activity) => ({ ...activity, eventAt: new Date(activity.eventAt) }))} showProfile />
-          )}
-        </Await>
-      </Suspense>
     </>
   );
 }

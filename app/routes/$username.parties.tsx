@@ -5,7 +5,6 @@ import { PlusCircle } from "iconoir-react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
 import { PartyView } from "~/components/organisms/party";
-import type { Env } from "~/env.server";
 import { graphql } from "~/graphql";
 import type { RaidForPartyQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
@@ -31,7 +30,7 @@ export const meta: MetaFunction = ({ params }) => {
 };
 
 export const loader = async ({ context, request, params }: LoaderFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const usernameParam = params.username;
   if (!usernameParam || !usernameParam.startsWith("@")) {
     throw new Error("Not found");
@@ -56,7 +55,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
 };
 
 export const action = async ({ context, request }: ActionFunctionArgs) => {
-  const env = context.env as Env;
+  const env = context.cloudflare.env;
   const sensei = await getAuthenticator(env).isAuthenticated(request);
   if (!sensei) {
     return redirect("/signin");

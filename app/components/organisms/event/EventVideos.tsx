@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { useState } from "react";
 import YouTube from "react-youtube";
 import { SubTitle } from "~/components/atoms/typography";
@@ -32,12 +33,14 @@ export default function EventVideos({ videos }: EventVideosProps) {
           ))}
         </div>
         <div className="flex-auto">
-          <YouTube
-            videoId={videoId}
-            className="w-full aspect-video"
-            iframeClassName="w-full h-full rounded-t-xl md:rounded-tl-none md:rounded-r-xl"
-            opts={{ playerVars: { rel: 0 } }}
-          />
+          <Suspense>
+            <YouTube
+              videoId={videoId}
+              className="w-full aspect-video"
+              iframeClassName="w-full h-full rounded-t-xl md:rounded-tl-none md:rounded-r-xl"
+              opts={{ playerVars: { rel: 0 } }}
+            />
+          </Suspense>
         </div>
       </div>
     </div>

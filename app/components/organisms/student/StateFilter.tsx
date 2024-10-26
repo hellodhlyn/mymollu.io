@@ -1,4 +1,4 @@
-import { disassemble, search } from "hangul-js";
+import hangul from 'hangul-js';
 import { Archery, Running, Search, Sort, Star } from "iconoir-react";
 import type { Dispatch, SetStateAction} from "react";
 import { useEffect, useState } from "react";
@@ -6,6 +6,8 @@ import { Input } from "~/components/atoms/form";
 import { FilterButtons } from "~/components/molecules/student";
 import type { AttackType } from "~/models/content";
 import type { Role, StudentState } from "~/models/student-state";
+
+const { disassemble, search } = hangul;
 
 type Filter = {
   minimumTier: number;
