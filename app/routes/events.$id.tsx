@@ -8,7 +8,7 @@ import { SubTitle } from "~/components/atoms/typography";
 import { StudentCards } from "~/components/molecules/student";
 import { ContentHeader } from "~/components/organisms/content";
 import { ErrorPage } from "~/components/organisms/error";
-import { EventStages, EventVideos } from "~/components/organisms/event";
+import { EventStages } from "~/components/organisms/event";
 import { TimelinePlaceholder } from "~/components/organisms/useractivity";
 import { graphql } from "~/graphql";
 import type { EventStagesQuery, EventDetailQuery } from "~/graphql/graphql";
@@ -163,7 +163,6 @@ export default function EventDetail() {
                 };
               }
             )}
-            mobileGrid={5}
           />
         </div>
       )}
@@ -179,8 +178,6 @@ export default function EventDetail() {
           )}
         </Await>
       </Suspense>
-
-      {(event.videos && event.videos.length > 0) && <EventVideos videos={event.videos} />}
     </>
   );
 }

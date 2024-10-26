@@ -31,27 +31,43 @@ type EventStagesProps = {
 }
 
 export default function EventStages({ stages, signedIn, ownedStudentIds }: EventStagesProps) {
-  const itemBonuses: { [itemId: string]: { item: EventStagesProps["stages"][number]["rewards"][number]["item"], ratio: number } } = {};
+  const itemBonuses: {
+    [itemId: string]: {
+      item: EventStagesProps["stages"][number]["rewards"][number]["item"],
+      ratio: number,
+      maxRatio: number,
+    },
+  } = {};
   for (const reward of stages.map((stage) => stage.rewards).flat()) {
     const { item, amount } = reward;
     if (itemBonuses[item.itemId] || amount < 1) {
       continue;
     }
 
-    let appliedRatio = 0;
-    let appliedStriker = 0, appliedSpecial = 0;
+    let appliedRatio = 0, maxApplieRatio = 0;
+    let appliedStriker = 0, appliedSpecial = 0, maxAppliedStriker = 0, maxAppliedSpecial = 0;
     for (const { student, ratio } of reward.item.eventBonuses.sort((a, b) => b.ratio - a.ratio)) {
-      if (!ownedStudentIds.includes(student.studentId)) {
-        continue;
-      }
+      const owned = ownedStudentIds.includes(student.studentId);
+      if (student.role === "striker") {
+        if (maxAppliedStriker < 4) {
+          maxAppliedStriker += 1;
+          maxApplieRatio += ratio * 100;
+        }
 
-      if (student.role === "striker" && appliedStriker < 4) {
-        appliedStriker += 1;
-        appliedRatio += ratio * 100;
-      }
-      if (student.role === "special" && appliedSpecial < 2) {
-        appliedSpecial += 1;
-        appliedRatio += ratio * 100;
+        if (owned && appliedStriker < 4) {
+          appliedStriker += 1;
+          appliedRatio += ratio * 100;
+        }
+      } else if (student.role === "special") {
+        if (maxAppliedSpecial < 2) {
+          maxAppliedSpecial += 1;
+          maxApplieRatio += ratio * 100;
+        }
+
+        if (owned && appliedSpecial < 2) {
+          appliedSpecial += 1;
+          appliedRatio += ratio * 100;
+        }
       }
 
       if (appliedStriker === 4 && appliedSpecial === 2) {
@@ -59,7 +75,7 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
       }
     }
 
-    itemBonuses[item.itemId] = { item, ratio: appliedRatio / 100 };
+    itemBonuses[item.itemId] = { item, ratio: appliedRatio / 100, maxRatio: maxApplieRatio / 100 };
   }
 
   return (
@@ -81,7 +97,7 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
       )}
       <div className="w-screen -mx-4 md:w-auto overflow-x-scroll">
         <div className="px-4">
-          <table className="my-4 table-auto">
+          <table className="mb-8 table-auto">
             <thead className="bg-neutral-100 text-left">
               <tr>
                 <th className="px-2 md:px-4 py-2 rounded-l-lg">#</th>
@@ -129,28 +145,42 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
         </div>
       </div>
 
-      <SubTitle text="학생 보너스" />
+      <SubTitle text="이벤트 아이템" />
       <div>
         {Object.keys(itemBonuses).map((itemId) => {
-          const { item, ratio } = itemBonuses[itemId];
+          const { item, ratio, maxRatio } = itemBonuses[itemId];
           return (
             <div key={`item-bonus-${itemId}`} className="my-4">
-              <div className="flex items-center">
+              <div className="px-4 py-2 flex items-center bg-neutral-100 rounded-lg">
                 <div>
                   <ItemCard name={item.name} imageId={item.imageId} />
                 </div>
                 <div className="p-2">
                   <p className="font-bold">{item.name}</p>
                   <p className="text-sm text-neutral-500">
-                    모집 학생 보너스{signedIn ? ` +${Math.floor(ratio * 100)}%` : "는 로그인 후 확인 가능"}
+                    모집 학생 보너스{signedIn ? ` +${Math.floor(ratio * 100)}% (최대 +${Math.floor(maxRatio * 100)}%)` : "는 로그인 후 확인 가능"}
                   </p>
                 </div>
               </div>
-              <StudentCards mobileGrid={8} pcGrid={12} cardProps={item.eventBonuses.map(({ student, ratio }) => ({
-                studentId: student.studentId,
-                grayscale: signedIn && !ownedStudentIds.includes(student.studentId),
-                label: (<span className="text-white font-normal">{Math.floor(ratio * 100)}%</span>),
-              }))} />
+
+              <div className="flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2 p-2">
+                  <p className="mb-2 font-bold">스트라이커</p>
+                  <StudentCards mobileGrid={8} pcGrid={6} cardProps={item.eventBonuses.filter(({ student }) => student.role === "striker").map(({ student, ratio }) => ({
+                    studentId: student.studentId,
+                    grayscale: signedIn && !ownedStudentIds.includes(student.studentId),
+                    label: (<span className="text-white font-normal">{Math.floor(ratio * 100)}%</span>),
+                  }))} />
+                </div>
+                <div className="w-full md:w-1/2 p-2">
+                  <p className="mb-2 font-bold">스페셜</p>
+                  <StudentCards mobileGrid={8} pcGrid={6} cardProps={item.eventBonuses.filter(({ student }) => student.role === "special").map(({ student, ratio }) => ({
+                    studentId: student.studentId,
+                    grayscale: signedIn && !ownedStudentIds.includes(student.studentId),
+                    label: (<span className="text-white font-normal">{Math.floor(ratio * 100)}%</span>),
+                  }))} />
+                </div>
+              </div>
             </div>
           )
         })}

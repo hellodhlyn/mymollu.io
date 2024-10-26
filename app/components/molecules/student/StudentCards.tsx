@@ -26,7 +26,7 @@ type StudentCardsProps = {
     };
   }[];
   mobileGrid?: 4 | 5 | 6 | 8;
-  pcGrid?: 8 | 10 | 12;
+  pcGrid?: 6 | 8 | 10 | 12;
   onSelect?: (id: string) => void;
   onFavorite?: (id: string, favorited: boolean) => void;
 };
@@ -44,7 +44,9 @@ export default function StudentCards({ cardProps, students, mobileGrid, pcGrid, 
   }
 
   let pcGridClass = "md:grid-cols-8"
-  if (pcGrid === 10) {
+  if (pcGrid === 6) {
+    pcGridClass = "md:grid-cols-6";
+  } else if (pcGrid === 10) {
     pcGridClass = "md:grid-cols-10";
   } else if (pcGrid === 12) {
     pcGridClass = "md:grid-cols-12";
