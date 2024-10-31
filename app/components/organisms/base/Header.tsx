@@ -20,6 +20,10 @@ export default function Header({ currentUsername }: HeaderProps) {
             <Link to="/futures" className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>미래시</span>
             </Link>
+            <Link to="/festivals" className="mr-2 cursor-pointer hover:opacity-50 hover:underline transition-opacity relative">
+              <span>행사</span>
+              <div className="absolute -right-2 top-0 size-1.5 rounded-full bg-red-500 animate-pulse" />
+            </Link>
             <Link to={`/@${currentUsername}`} className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>내 정보</span>
             </Link>
@@ -32,6 +36,10 @@ export default function Header({ currentUsername }: HeaderProps) {
           <>
             <Link to="/futures" className="cursor-pointer hover:opacity-50 hover:underline transition-opacity">
               <span>미래시</span>
+            </Link>
+            <Link to="/festivals" className="mr-2 cursor-pointer hover:opacity-50 hover:underline transition-opacity relative">
+              <span>행사</span>
+              <div className="absolute -right-2 top-0 size-1.5 rounded-full bg-red-500 animate-pulse" />
             </Link>
             <Link to="/signin">
               <span>로그인 후 내 정보 관리 →</span>
