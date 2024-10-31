@@ -1,7 +1,7 @@
-import { json } from "@remix-run/cloudflare";
+import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
-import { Internet, MapPin } from "iconoir-react";
+import { MapPinIcon, HomeIcon } from "@heroicons/react/16/solid";
 import { Title } from "~/components/atoms/typography";
 
 type Festival = {
@@ -17,8 +17,6 @@ type Festival = {
     until: string;
   }[];
 };
-
-const festivals: Festival[] = [];
 
 const festivalTypeLocales: Record<Festival["type"], string> = {
   "offline-festival": "페스티벌",
@@ -40,8 +38,23 @@ function timeToSort(festival: Festival): dayjs.Dayjs {
   return time;
 }
 
-export const loader = async () => {
+export const meta: MetaFunction = () => {
+  const title = "블루 아카이브 행사 정보";
+  const description = "블루 아카이브 한국/일본 서버에서 진행하는 행사 정보 모음";
+  return [
+    { title: `${title} | 몰루로그` },
+    { name: "description", content: description },
+    { name: "og:title", content: title },
+    { name: "og:description", content: description },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+  ];
+};
+
+export const loader = async ({ context }: LoaderFunctionArgs) => {
   const now = dayjs();
+  const festivals = JSON.parse(await context.cloudflare.env.KV_USERDATA.get("festivals") ?? "[]") as Festival[];
+
   return json({
     festivals: festivals
       .filter((festival) => dayjs(festival.schedules[festival.schedules.length - 1].since).isAfter(now))
@@ -69,12 +82,12 @@ export default function Festivals() {
           <div className="grow px-6 py-4">
             <p className="my-2 text-xl font-bold">{festival.name}</p>
             <p className="my-1 text-sm flex items-center text-neutral-700">
-              <MapPin className="size-4 inline-block" strokeWidth={2} />
+              <MapPinIcon className="size-4" />
               <span className="ml-1">{festival.location}</span>
             </p>
             {festival.link && (
               <p className="my-1 text-sm flex items-center text-neutral-700">
-                <Internet className="size-4 inline-block" strokeWidth={2} />
+                <HomeIcon className="size-4 inline-block" />
                 <a href={festival.link} target="_blank" rel="noreferrer" className="ml-1 underline hover:opacity-50">
                   {new URL(festival.link).hostname}
                 </a>
@@ -91,12 +104,12 @@ export default function Festivals() {
                   const until = dayjs(schedule.until);
                   const now = dayjs();
                   return (
-                    <div key={`schedule-value-${festival.id}-${schedule.name}`} className="flex items-center">
+                    <div key={`schedule-value-${festival.id}-${schedule.name}`} className="flex items-center relative">
                       <span>
                         {since.format("MM/DD HH:mm")} ~ {until.format("MM/DD HH:mm")}
                       </span>
                       {now.isAfter(since) && now.isBefore(until) && (
-                        <span className="ml-2 px-2 py-0.5 bg-red-500 text-white rounded-xl leading-tight text-xs animate-pulse">진행중</span>
+                        <div className="absolute -right-2 top-0 size-1.5 rounded-full bg-red-500 animate-pulse" />
                       )}
                     </div>
                   );
