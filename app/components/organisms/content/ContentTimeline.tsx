@@ -87,7 +87,7 @@ export default function ContentTimeline({ contents, futurePlans, onMemoUpdate, o
     });
   };
 
-  const today = dayjs().startOf("day");
+  const today = dayjs();
   return (
     <>
       <div className="my-6">
