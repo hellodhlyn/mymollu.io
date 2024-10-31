@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import type { LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { FuturePlan } from "~/components/organisms/future";
@@ -8,7 +9,6 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { graphql } from "~/graphql";
 import { getSenseiByUsername } from "~/models/sensei";
 import { SubTitle } from "~/components/atoms/typography";
-import { ArrowRight } from "iconoir-react";
 import { sanitizeClassName } from "~/prophandlers";
 
 const userFuturesQuery = graphql(`
@@ -100,7 +100,7 @@ export default function UserFutures() {
             rounded-lg text-neutral-500 hover:bg-neutral-100 transition cursor-pointer
           `)}>
           <span>전체 미래시 보러 가기</span>
-          <ArrowRight className="size-4 ml-2" strokeWidth={2} />
+          <ArrowRightIcon className="size-4 ml-1" strokeWidth={2} />
         </div>
       </Link>
     </div>

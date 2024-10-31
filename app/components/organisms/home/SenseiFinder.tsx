@@ -1,5 +1,5 @@
+import { ArrowPathIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { Link, useNavigate } from "@remix-run/react";
-import { Shuffle, UserBadgeCheck } from "iconoir-react";
 import { useState } from "react";
 import TierSelector from "~/components/molecules/editor/TierSelector";
 import { StudentSearch } from "~/components/molecules/student";
@@ -27,7 +27,7 @@ export default function SenseiFinder(
       <div className="flex gap-x-2">
         <Link to="/sensei/random">
           <div className="flex items-center px-4 py-2 gap-x-1 bg-neutral-200 hover:opacity-75 rounded-lg cursor-pointer transition">
-            <Shuffle className="size-4" strokeWidth={2} />
+            <ArrowPathIcon className="size-4" />
             <span>무작위</span>
           </div>
         </Link>
@@ -35,7 +35,7 @@ export default function SenseiFinder(
           className="flex items-center px-4 py-2 gap-x-1 bg-neutral-200 hover:opacity-75 rounded-lg cursor-pointer transition"
           onClick={() => { finder === "student" ? setFinder(null) : setFinder("student") }}
         >
-          <UserBadgeCheck className="size-4" strokeWidth={2} />
+          <UsersIcon className="size-4" />
           <span>모집한 학생</span>
         </div>
       </div>

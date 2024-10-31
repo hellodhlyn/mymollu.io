@@ -1,5 +1,5 @@
+import { UserIcon, UserMinusIcon, UserPlusIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { Link } from "@remix-run/react";
-import { User, UserPlus, Group, UserXmark } from "iconoir-react";
 import { sanitizeClassName } from "~/prophandlers";
 
 type ProfileUsernameProps = {
@@ -23,7 +23,7 @@ export default function ProfileUsername({
         <img className="size-12 md:w-16 md:h-16 rounded-full object-cover" src={imageUrl ?? ""} alt={`${username}의 프로필`} /> :
         (
           <div className="size-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700">
-            <User className="size-8" strokeWidth={2} />
+            <UserIcon className="size-8" />
           </div>
         )
       }
@@ -56,7 +56,7 @@ export default function ProfileUsername({
           onClick={onFollow}
           disabled={loading}
         >
-          <UserPlus className="h-4 w-4 mr-1" strokeWidth={2} />
+          <UserPlusIcon className="h-4 w-4 mr-1" />
           <span className="text-sm">팔로우</span>
         </button>
       )}
@@ -70,9 +70,9 @@ export default function ProfileUsername({
           onClick={onUnfollow}
           disabled={loading}
         >
-          <Group className="h-4 w-4 mr-1 block group-hover:hidden" strokeWidth={2} />
+          <UsersIcon className="h-4 w-4 mr-1 block group-hover:hidden" />
           <span className="text-sm block group-hover:hidden">팔로우 중</span>
-          <UserXmark className="h-4 w-4 mr-1 hidden group-hover:block" strokeWidth={2} />
+          <UserMinusIcon className="h-4 w-4 mr-1 hidden group-hover:block" />
           <span className="text-sm hidden group-hover:block">팔로우 해제</span>
         </button>
       )}

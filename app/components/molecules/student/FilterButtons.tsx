@@ -1,4 +1,4 @@
-import { FilterList } from "iconoir-react";
+import { FunnelIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 
 // === FilterButton
@@ -25,7 +25,7 @@ function FilterButton({ text, color, active, onToggle }: FilterButtonProps) {
 
 // === FilterButtons
 type FilterButtonsProps = {
-  Icon?: typeof FilterList,
+  Icon?: typeof FunnelIcon,
   buttonProps: FilterButtonProps[],
   exclusive?: boolean;
 }
@@ -33,7 +33,7 @@ type FilterButtonsProps = {
 export default function FilterButtons({ Icon, buttonProps, exclusive }: FilterButtonsProps) {
   const [actives, setActives] = useState(buttonProps.map((prop) => prop.active ?? false));
 
-  const IconElem = Icon || FilterList;
+  const IconElem = Icon || FunnelIcon;
   return (
     <div className="my-2 flex items-center">
       <IconElem className="h-5 w-5 mr-2" strokeWidth={2} />

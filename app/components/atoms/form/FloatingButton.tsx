@@ -1,12 +1,12 @@
-import { CloudUpload, RefreshDouble } from "iconoir-react";
+import { ArrowPathIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { sanitizeClassName } from "~/prophandlers";
 
 export default function FloatingButton({ state }: { state: "idle" | "submitting" | "loading" }) {
   let icon;
   if (state === "idle") {
-    icon = <CloudUpload className="size-4 mr-2" strokeWidth={2} />;
+    icon = <CheckIcon className="size-4 mr-2" strokeWidth={2} />;
   } else {
-    icon = <RefreshDouble className="size-4 mr-2 animate-spin" strokeWidth={2} />;
+    icon = <ArrowPathIcon className="size-4 mr-2 animate-spin" strokeWidth={2} />;
   }
 
   return (

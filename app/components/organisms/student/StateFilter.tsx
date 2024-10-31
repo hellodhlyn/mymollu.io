@@ -1,5 +1,5 @@
+import { ArrowsUpDownIcon, BarsArrowDownIcon, FireIcon, MagnifyingGlassIcon, StarIcon } from '@heroicons/react/24/outline';
 import hangul from 'hangul-js';
-import { Archery, Running, Search, Sort, Star } from "iconoir-react";
 import type { Dispatch, SetStateAction} from "react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components/atoms/form";
@@ -111,19 +111,19 @@ export function useStateFilter(
       </p>
       {useFilter && (
         <>
-          <FilterButtons Icon={Star} buttonProps={[
+          <FilterButtons Icon={StarIcon} buttonProps={[
             {
               text: "3성 미만 감추기",
               onToggle: (activated) => { setFilter((prev) => ({ ...prev, minimumTier: activated ? 3 : 1 })) },
             },
           ]} />
-          <FilterButtons Icon={Archery} buttonProps={[
+          <FilterButtons Icon={FireIcon} buttonProps={[
             { text: "폭발", color: buttonColors["red"], onToggle: toggleAttackType("explosive") },
             { text: "관통", color: buttonColors["yellow"], onToggle: toggleAttackType("piercing") },
             { text: "신비", color: buttonColors["blue"], onToggle: toggleAttackType("mystic") },
             { text: "진동", color: buttonColors["purple"], onToggle: toggleAttackType("sonic") },
           ]} />
-          <FilterButtons Icon={Running} exclusive={true} buttonProps={[
+          <FilterButtons Icon={ArrowsUpDownIcon} exclusive={true} buttonProps={[
             {
               text: "스트라이커", color: buttonColors["red"],
               onToggle: (activated) => { setFilter((prev) => ({ ...prev, role: activated ? "striker" : null })) },
@@ -137,7 +137,7 @@ export function useStateFilter(
       )}
 
       {useSort && (
-        <FilterButtons Icon={Sort} exclusive={true} buttonProps={[
+        <FilterButtons Icon={BarsArrowDownIcon} exclusive={true} buttonProps={[
           { text: "★ 등급", onToggle: (activated) => { setSort({ by: activated ? "tier" : null }) } },
           { text: "이름", onToggle: (activated) => { setSort({ by: activated ? "name" : null }) } },
         ]} />
@@ -145,7 +145,7 @@ export function useStateFilter(
 
       {useSearch && (
         <div className="flex items-center">
-          <Search className="h-5 w-5 mr-2" strokeWidth={2} />
+          <MagnifyingGlassIcon className="h-5 w-5 mr-2" strokeWidth={2} />
           <Input placeholder="이름으로 찾기" className="-my-4 text-sm" onChange={setKeyword} />
         </div>
       )}

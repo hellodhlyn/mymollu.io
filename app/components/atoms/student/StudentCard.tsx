@@ -1,4 +1,4 @@
-import { HeartSolid } from "iconoir-react";
+import { HeartIcon } from "@heroicons/react/16/solid";
 import type { ReactNode } from "react";
 import { studentImageUrl } from "~/models/assets";
 
@@ -54,7 +54,7 @@ export default function StudentCard(
         />
         {favorited && (
           <div className="absolute top-1 right-1 bg-white opacity-90 rounded-full">
-            <HeartSolid className="p-0.5 text-red-500 size-5" />
+            <HeartIcon className="p-0.5 text-red-500 size-5" />
           </div>
         )}
         {showInfo && (

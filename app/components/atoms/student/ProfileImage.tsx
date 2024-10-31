@@ -1,4 +1,4 @@
-import { User } from "iconoir-react";
+import { UserIcon } from "@heroicons/react/24/outline";
 import { studentImageUrl } from "~/models/assets";
 
 type ProfileImageProps = {
@@ -21,7 +21,7 @@ export default function ProfileImage({ studentId, imageSize }: ProfileImageProps
     <img className={`${imageSizeClass} rounded-full object-cover`} src={studentImageUrl(studentId)} alt="학생 프로필" /> :
     (
       <div className={`${imageSizeClass} flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700`}>
-        <User className={iconSizeClass} strokeWidth={2} />
+        <UserIcon className={iconSizeClass} />
       </div>
     );
 }

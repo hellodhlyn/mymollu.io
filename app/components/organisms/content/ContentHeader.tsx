@@ -1,6 +1,7 @@
+import { SpeakerWaveIcon, SpeakerXMarkIcon } from "@heroicons/react/16/solid";
+import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import { FastArrowLeft, FastArrowRight, SoundHigh, SoundOff } from "iconoir-react";
 import { Suspense, useEffect, useRef } from "react";
 import { useState } from "react";
 import YouTube from "react-youtube";
@@ -156,7 +157,7 @@ export default function ContentHeader(
               <span className="py-1 px-4 bg-neutral-900 bg-opacity-75 text-xs md:text-sm rounded-full">{dDayText}</span>
               {videos && videos.length > 0 && (
                 <div className="p-1.5 ml-2 bg-neutral-900 bg-opacity-75 rounded-full cursor-pointer text-white" onClick={() => setMuted((prev) => !prev)}>
-                  {muted ? <SoundOff className="size-3.5" strokeWidth={2} /> : <SoundHigh className="size-3.5" strokeWidth={2} />}
+                  {muted ? <SpeakerXMarkIcon className="size-3.5" /> : <SpeakerWaveIcon className="size-3.5" />}
                 </div>
               )}
             </div>
@@ -181,13 +182,13 @@ export default function ContentHeader(
             ))}
           </div>
           <div className="h-full w-8 absolute left-0 top-0 flex items-center justify-center bg-white">
-            <FastArrowLeft
+            <ChevronDoubleLeftIcon
               className="p-1 size-6 hover:bg-black hover:text-white rounded-full transition cursor-pointer" strokeWidth={2}
               onClick={() => selectVideo(-1)}
             />
           </div>
           <div className="h-full w-8 absolute right-0 top-0 flex items-center justify-center bg-white">
-            <FastArrowRight
+            <ChevronDoubleRightIcon
               className="p-1 size-6 hover:bg-black hover:text-white rounded-full transition cursor-pointer" strokeWidth={2}
               onClick={() => selectVideo(1)}
             />

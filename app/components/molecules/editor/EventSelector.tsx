@@ -1,12 +1,12 @@
 import { Menu } from "@headlessui/react";
 import dayjs from "dayjs";
-import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Label } from "~/components/atoms/form";
 import { raidTypeLocale, terrainLocale } from "~/locales/ko";
 import type { RaidType, Terrain } from "~/models/content";
 import { bossImageUrl } from "~/models/assets"
 import { sanitizeClassName } from "~/prophandlers";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 type EventSelectorProps = {
   raids: {
@@ -102,7 +102,7 @@ function EventSelectorItem(
       {imageUrl ?
         <img className={`w-28 md:w-36 h-20 object-cover ${singleCard ? "rounded-l-lg" : ""}`} src={imageUrl} alt={`${name} 이벤트`} /> :
         <div className="w-28 md:w-36 h-20 bg-neutral-200 flex items-center justify-center rounded-l-lg">
-          <PlusCircle className="h-8 w-8 text-neutral-500" strokeWidth={2} />
+          <PlusCircleIcon className="h-8 w-8 text-neutral-500" strokeWidth={2} />
         </div>
       }
       <div className="px-4 text-left">

@@ -1,4 +1,4 @@
-import { ChatLines } from "iconoir-react";
+import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/16/solid";
 
 type MemoEditorProps = {
   initialText?: string;
@@ -10,7 +10,7 @@ export default function MemoEditor({ initialText, placeholder, onUpdate }: MemoE
   return (
     <div className="flex p-2 my-2 text-sm items-center bg-neutral-100 rounded-lg ">
       <div className="text-neutral-500">
-        <ChatLines className="mr-2 w-4 h-4" strokeWidth={2} />
+        <ChatBubbleOvalLeftEllipsisIcon className="mr-2 w-4 h-4" />
       </div>
       <input
         className="flex-grow bg-neutral-100"

@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction} from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData, useSubmit } from "@remix-run/react";
-import { Calendar } from "iconoir-react";
+import { CalendarDateRangeIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
@@ -162,7 +162,7 @@ export default function Futures() {
               text-white shadow-xl rounded-full transition cursor-pointer
             `)}
           >
-            <Calendar className="size-4 mr-2" strokeWidth={2} />
+            <CalendarDateRangeIcon className="size-4 mr-2" />
             <span>모집 계획</span>
           </div>
         </Link>

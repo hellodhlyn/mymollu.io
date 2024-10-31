@@ -1,11 +1,11 @@
 import { Link, Outlet, useMatches } from "@remix-run/react";
-import { Group, HomeSimpleDoor, LogOut, Menu, ProfileCircle, ViewGrid } from "iconoir-react";
+import { Bars3Icon, HomeIcon, Squares2X2Icon, UserCircleIcon, UserMinusIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 const navigations = [
-  { title: "프로필", to: "/edit/profile", icon: ProfileCircle },
-  { title: "학생 명부", to: "/edit/students", icon: Group },
-  { title: "편성 관리", to: "/edit/parties", icon: ViewGrid },
+  { title: "프로필", to: "/edit/profile", icon: UserCircleIcon },
+  { title: "학생 명부", to: "/edit/students", icon: UsersIcon },
+  { title: "편성 관리", to: "/edit/parties", icon: Squares2X2Icon },
 ]
 
 export default function Edit() {
@@ -33,7 +33,7 @@ export default function Edit() {
             </Link>
             <p className="ml-2 sm:ml-0 sm:text-sm">프로필 관리</p>
           </div>
-          <Menu className="sm:hidden size-6" strokeWidth={2} onClick={() => setOpen((prev) => !prev)} />
+          <Bars3Icon className="sm:hidden size-6" strokeWidth={2} onClick={() => setOpen((prev) => !prev)} />
         </div>
 
         <div className={`${open ? "h-4" : ""} sm:h-4`} />
@@ -53,13 +53,13 @@ export default function Edit() {
           <div className="w-full my-4 border-t border-white opacity-50" />
           <Link to="/">
             <div className="flex items-center -mx-2 my-2 px-4 py-2 hover:bg-blue-400 rounded-lg transition">
-              <HomeSimpleDoor className="size-5 mr-2" strokeWidth={2} />
+              <HomeIcon className="size-5 mr-2" strokeWidth={2} />
               <p>홈으로</p>
             </div>
           </Link>
           <Link to="/signout">
             <div className="flex items-center -mx-2 my-2 px-4 py-2 hover:bg-blue-400 rounded-lg transition">
-              <LogOut className="size-5 mr-2" strokeWidth={2} />
+              <UserMinusIcon className="size-5 mr-2" strokeWidth={2} />
               <p>로그아웃</p>
             </div>
           </Link>

@@ -7,9 +7,9 @@ import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party"
 import { bossImageUrl } from "~/models/assets";
 import type { StudentState } from "~/models/student-state";
-import { CheckCircleSolid } from "iconoir-react";
 import { useState } from "react";
 import { StudentCards } from "~/components/molecules/student";
+import { CheckCircleIcon } from "@heroicons/react/16/solid";
 
 type PartyViewProps = {
   party: Party;
@@ -87,7 +87,7 @@ export default function PartyView({ party, sensei, students, studentStates, edit
             </p>
             {party.showAsRaidTip && (
               <p className="flex my-1 text-xs md:text-sm text-neutral-500 items-center">
-                <CheckCircleSolid className="mr-1 size-4 inline-block" strokeWidth={2} />
+                <CheckCircleIcon className="mr-1 size-4 inline-block" />
                 컨텐츠 공략으로 공개중
               </p>
             )}

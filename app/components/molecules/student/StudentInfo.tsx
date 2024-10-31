@@ -1,4 +1,4 @@
-import { Xmark, PlusCircle, OpenNewWindow, MinusCircle } from "iconoir-react";
+import { ArrowTopRightOnSquareIcon, MinusCircleIcon, PlusCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { attackTypeLocale, defenseTypeLocale, roleLocale } from "~/locales/ko";
 import type { AttackType, DefenseType, Role } from "~/models/content";
 
@@ -54,19 +54,19 @@ export default function StudentInfo({ student, favorited, onRemoveFavorite, onAd
             {roleLocale[role]}
           </span>
         </div>
-        <Xmark className="absolute top-4 right-2 size-6 hover:text-neutral-700 transition cursor-pointer" strokeWidth={2} onClick={onClose} />
+        <XMarkIcon className="absolute top-4 right-2 size-6 hover:text-neutral-700 transition cursor-pointer" strokeWidth={2} onClick={onClose} />
       </div>
       <div>
         {onAddFavorite && onRemoveFavorite && (
           <div className="px-4 py-2 flex items-center hover:bg-neutral-700 transition cursor-pointer border-t border-neutral-700" onClick={favorited ? onRemoveFavorite: onAddFavorite}>
-            {favorited ? <MinusCircle className="size-4" /> : <PlusCircle className="size-4" />}
+            {favorited ? <MinusCircleIcon className="size-4" /> : <PlusCircleIcon className="size-4" />}
             <span className="ml-1.5">관심 모집 학생에{favorited ? "서 해제" : " 등록"}</span>
           </div>
         )}
 
         <a href={`https://schaledb.com/student/${student.schaleDbId}`} target="_blank" rel="noreferrer">
           <div className="px-4 py-2 flex items-center hover:bg-neutral-700 transition cursor-pointer border-t border-neutral-700 rounded-b-lg">
-            <OpenNewWindow className="size-4" strokeWidth={2} />
+            <ArrowTopRightOnSquareIcon className="size-4" />
             <span className="ml-1.5">SchaleDB에서 학생 정보 보기</span>
           </div>
         </a>

@@ -1,7 +1,7 @@
 import "dayjs/locale/ko";
-import { ChatBubbleXmark } from "iconoir-react";
 import type { UserActivity } from "~/models/user-activity";
 import { TimelineItem } from "~/components/molecules/useractivity";
+import { SparklesIcon } from "@heroicons/react/24/outline";
 
 type ActivityTimelineProps = {
   activities: UserActivity[],
@@ -12,7 +12,7 @@ export default function Timeline({ activities, showProfile }: ActivityTimelinePr
   if (activities.length === 0) {
     return (
       <div className="my-16 md:my-24 w-full flex flex-col items-center justify-center text-neutral-500">
-        <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
+        <SparklesIcon className="my-2 w-16 h-16" strokeWidth={2} />
         <p className="my-2 text-sm">최근 활동 내역이 없어요</p>
       </div>
     )

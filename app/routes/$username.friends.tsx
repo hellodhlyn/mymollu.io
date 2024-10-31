@@ -1,7 +1,7 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
-import { ChatBubbleEmpty, Group } from "iconoir-react";
+import { SparklesIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { FilterButtons } from "~/components/molecules/student";
@@ -50,7 +50,7 @@ export default function UserFollowing() {
     <div className="my-8">
       <SubTitle text="친구 목록" />
       <FilterButtons
-        Icon={Group}
+        Icon={UsersIcon}
         buttonProps={[
           {
             text: "팔로잉",
@@ -67,7 +67,7 @@ export default function UserFollowing() {
       />
 
       {senseis.length === 0 ?
-        <ErrorPage Icon={ChatBubbleEmpty} message="등록한 친구가 없어요 :(" /> :
+        <ErrorPage Icon={SparklesIcon} message="등록한 친구가 없어요 :(" /> :
         <SenseiList senseis={senseis} />
       }
     </div>

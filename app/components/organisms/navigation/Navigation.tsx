@@ -1,5 +1,5 @@
+import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useMatches } from "@remix-run/react";
-import { Menu } from "iconoir-react";
 import { NavigationLink } from "~/components/atoms/navigation";
 
 type NavigationProps = {
@@ -12,7 +12,7 @@ export default function Navigation({ links, allowPathPrefix }: NavigationProps) 
   const pathname = matches[matches.length - 1].pathname;
   return (
     <div className="-mt-4 flex w-full text-gray-700 items-center gap-x-1">
-      <Menu className="flex-none mr-2 my-2 h-5 w-5" strokeWidth={2} />
+      <Bars3Icon className="flex-none mr-2 my-2 h-5 w-5" strokeWidth={2} />
       <div className="py-2 flex flex-nowrap overflow-x-auto">
         {links.map(({ to, text, pathAliases }) => {
           const pathsToMatch = [to, ...(pathAliases ?? [])];

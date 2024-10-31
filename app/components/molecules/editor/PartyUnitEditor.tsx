@@ -1,4 +1,4 @@
-import { UserPlus, ChatBubbleXmark, Search } from "iconoir-react";
+import { ChatBubbleOvalLeftEllipsisIcon, MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { Label, Toggle } from "~/components/atoms/form";
 import { StudentCard } from "~/components/atoms/student";
@@ -114,7 +114,7 @@ export default function PartyUnitEditor(
     <>
       <Label text={`${index + 1}번째 파티`} />
       <div className="mt-4 p-4 flex items-center border border-neutral-200 bg-neutral-100 rounded-t-lg">
-        <Search className="h-4 w-4 mr-2" strokeWidth={2} />
+        <MagnifyingGlassIcon className="h-4 w-4 mr-2" strokeWidth={2} />
         <input
           className="w-full bg-neutral-100"
           placeholder="이름으로 찾기..."
@@ -131,7 +131,7 @@ export default function PartyUnitEditor(
             pcGrid={10}
           /> :
           <div className="w-full h-64 md:h-80 flex flex-col items-center justify-center text-neutral-500">
-            <ChatBubbleXmark className="my-2 w-16 h-16" strokeWidth={2} />
+            <ChatBubbleOvalLeftEllipsisIcon className="my-2 w-16 h-16" strokeWidth={2} />
             <p className="my-2 text-sm">검색 결과가 없어요</p>
           </div>
         }
@@ -159,7 +159,7 @@ export default function PartyUnitEditor(
                 {student ?
                   <StudentCard {...student} nameSize="small" /> :
                   <div className="w-full h-full bg-neutral-200 rounded-lg flex items-center justify-center">
-                    <UserPlus />
+                    <UserPlusIcon className="size-6" />
                   </div>
                 }
               </div>

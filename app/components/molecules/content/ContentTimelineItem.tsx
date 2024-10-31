@@ -1,4 +1,3 @@
-import { NavArrowRight } from "iconoir-react";
 import { Chip } from "~/components/atoms/button";
 import { attackTypeLocale, contentTypeLocale, defenseTypeLocale, pickupLabelLocale, terrainLocale } from "~/locales/ko";
 import { bossImageUrl } from "~/models/assets";
@@ -7,6 +6,7 @@ import { StudentCards } from "../student";
 import type { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 import { MemoEditor } from "../editor";
+import { ChevronRightIcon } from "@heroicons/react/16/solid";
 
 export type ContentTimelineItemProps = {
   name: string;
@@ -67,7 +67,7 @@ function ContentTitles({ name, showLink }: { name: string, showLink: boolean }):
         return (
           <div key={key}>
             <span className="inline">{titleLine}</span>
-            {showLink && <NavArrowRight className="inline size-4" strokeWidth={2} />}
+            {showLink && <ChevronRightIcon className="inline size-4" strokeWidth={2} />}
           </div>
         );
       }

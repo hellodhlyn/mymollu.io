@@ -1,5 +1,5 @@
+import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import { Link } from "@remix-run/react";
-import { PlusCircle } from "iconoir-react";
 import { useState } from "react";
 import { Button, Input, Label, Textarea, Toggle } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
@@ -96,7 +96,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
           `)}
           onClick={() => setShowPartyEditor(true)}
         >
-          <PlusCircle className="h-4 w-4 mr-2" strokeWidth={2} />
+          <PlusCircleIcon className="h-4 w-4 mr-1" />
           <span>파티 추가하기</span>
         </div>
       }

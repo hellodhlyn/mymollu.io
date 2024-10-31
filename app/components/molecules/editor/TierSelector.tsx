@@ -1,5 +1,5 @@
 import { Menu } from "@headlessui/react";
-import { Star } from "iconoir-react";
+import { StarIcon } from "@heroicons/react/20/solid";
 import { SmallButton } from "~/components/atoms/form";
 
 function Stars({ tier }: { tier: number }) {
@@ -32,7 +32,7 @@ export default function TierSelector({ text, onSelect }: TierSelectorProps) {
         <>
           <Menu.Button>
             <SmallButton>
-              <Star className="mr-1 w-4 h-4" strokeWidth={2} />
+              <StarIcon className="mr-1 w-4 h-4" />
               <span>{text ?? "성장"}</span>
             </SmallButton>
           </Menu.Button>
