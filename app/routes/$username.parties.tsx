@@ -1,16 +1,15 @@
-import { PlusCircleIcon } from "@heroicons/react/16/solid";
-import type { ActionFunctionArgs, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
-import { json, redirect } from "@remix-run/cloudflare";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Callout } from "~/components/atoms/typography";
+import { AddContentButton } from "~/components/molecules/editor";
 import { PartyView } from "~/components/organisms/party";
 import { graphql } from "~/graphql";
 import type { RaidForPartyQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
-import { getUserParties, removePartyByUid } from "~/models/party";
+import { getUserParties } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";
-import { sanitizeClassName } from "~/prophandlers";
 
 export const raidForPartyQuery = graphql(`
   query RaidForParty {
@@ -54,18 +53,6 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
   });
 };
 
-export const action = async ({ context, request }: ActionFunctionArgs) => {
-  const env = context.cloudflare.env;
-  const sensei = await getAuthenticator(env).isAuthenticated(request);
-  if (!sensei) {
-    return redirect("/signin");
-  }
-
-  const formData = await request.formData();
-  await removePartyByUid(env, sensei, formData.get("uid") as string);
-  return redirect(`/@${sensei.username}/parties`);
-};
-
 export default function UserPartyPage() {
   const { me, states, parties, raids } = useLoaderData<typeof loader>();
   const isNewbee = me && parties.length === 0;
@@ -85,17 +72,7 @@ export default function UserPartyPage() {
         </p>
       )}
 
-      {me && (
-        <Link to="/edit/parties/new">
-          <div className={sanitizeClassName(`
-            my-4 p-4 flex justify-center items-center border border-neutral-200
-            rounded-lg text-neutral-500 hover:bg-neutral-100 transition cursor-pointer
-          `)}>
-            <PlusCircleIcon className="h-4 w-4 mr-1" />
-            <span>새로운 편성 추가하기</span>
-          </div>
-        </Link>
-      )}
+      {me && <AddContentButton text="새로운 편성 추가하기" link="/edit/parties/new" />}
 
       {parties.map((party) => (
         <PartyView

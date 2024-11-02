@@ -1,5 +1,5 @@
 import { PlusCircleIcon } from "@heroicons/react/16/solid";
-import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
@@ -8,7 +8,7 @@ import { PartyView } from "~/components/organisms/party";
 import { graphql } from "~/graphql";
 import type { RaidForPartyEditQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
-import { getUserParties } from "~/models/party";
+import { getUserParties, removePartyByUid } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";
 import { sanitizeClassName } from "~/prophandlers";
 
@@ -35,6 +35,18 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
   const parties = (await getUserParties(env, currentUser.username)).reverse();
   const states = await getUserStudentStates(env, currentUser.username, true);
   return json({ parties, states, raids: raidQueryResult.data.raids.nodes });
+};
+
+export const action = async ({ context, request }: ActionFunctionArgs) => {
+  const env = context.cloudflare.env;
+  const sensei = await getAuthenticator(env).isAuthenticated(request);
+  if (!sensei) {
+    return redirect("/signin");
+  }
+
+  const formData = await request.formData();
+  await removePartyByUid(env, sensei, formData.get("uid") as string);
+  return redirect("/edit/parties");
 };
 
 export default function EditParties() {

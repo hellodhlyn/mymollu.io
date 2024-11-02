@@ -1,4 +1,4 @@
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import { ActionFunctionArgs, json, LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/cloudflare";
 import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import dayjs from "dayjs";
@@ -84,8 +84,8 @@ function PickupStudentCard({ studentId, tier3Students, onChange }: PickupStudent
   const searchResult = filterStudentByName(search, studentNames);
 
   return (
-    <div className="w-12 group">
-      <div className="relative w-full">
+    <div className="w-12">
+      <div className="relative w-full group">
         <StudentCard studentId={studentId} />
         <div
           className="absolute w-full h-full rounded-lg top-0 left-0 bg-black flex items-center justify-center bg-opacity-0 group-hover:bg-opacity-50 transition cursor-pointer"
@@ -96,7 +96,13 @@ function PickupStudentCard({ studentId, tier3Students, onChange }: PickupStudent
       </div>
       {open && (
         <div className="absolute w-full left-0 my-2 px-4 py-2 bg-white z-10 rounded-lg border">
-          <Input label="학생 찾기" placeholder="이름으로 찾기..." onChange={setSearch} />
+          <div className="relative">
+            <Input label="학생 찾기" placeholder="이름으로 찾기..." onChange={setSearch} />
+            <XMarkIcon
+              onClick={() => setOpen(false)}
+              className="absolute right-0 top-0 p-1 size-6 cursor-pointer"
+            />
+          </div>
           {searchResult.length > 0 && (
             <div className="p-2 flex gap-x-2 bg-neutral-100 rounded-lg">
               {searchResult.slice(0, 5).map(({ name }) => (
@@ -165,6 +171,9 @@ export default function EditPickup() {
         /> :
         <>
           <Label text="모집 결과" />
+          <p className="my-2 text-sm text-neutral-500">
+            학생 이미지를 클릭하여 모집한 학생을 수정할 수 있어요.
+          </p>
           <table>
             <thead className="bg-neutral-100 rounded-lg">
               <tr>
