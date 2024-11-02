@@ -8,5 +8,8 @@ export function filterStatesByName(keyword: string, states: StudentState[]): Stu
 }
 
 export function filterStudentByName<T extends { name: string }>(keyword: string, students: T[]): T[] {
+  if (keyword.length <= 1) {
+    return [];
+  }
   return students.filter((student) => search(student.name, keyword) >= 0);
 }
