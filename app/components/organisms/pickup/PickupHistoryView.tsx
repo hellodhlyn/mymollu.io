@@ -23,7 +23,9 @@ type PickupHistoryViewProps = {
 export default function PickupHistoryView({ uid, event, students, pickupStudentIds, editable }: PickupHistoryViewProps) {
   return (
     <div key={uid} className="my-4 p-4 md:p-6 rounded-lg bg-neutral-100">
-      <SubTitle className="my-0" text={event.name} />
+      <div className="-my-4">
+        <SubTitle text={event.name} />
+      </div>
       <p className="text-neutral-500 text-sm">
         {eventTypeLocale[event.type]} | {dayjs(event.since).format("YYYY-MM-DD")}
       </p>

@@ -6,6 +6,7 @@ type TextareaProps = {
   label?: string;
   description?: string;
   placeholder?: string;
+  rows?: number;
   required?: boolean;
   defaultValue?: string;
   error?: string;
@@ -13,7 +14,7 @@ type TextareaProps = {
 };
 
 export default function Textarea({
-  className, name, label, description, placeholder, required, defaultValue, error, onChange,
+  className, name, label, description, placeholder, rows, required, defaultValue, error, onChange,
 }: TextareaProps) {
   return (
     <div className="mt-2 mb-8 last:mb-4 mr-1 md:mr-2">
@@ -22,6 +23,7 @@ export default function Textarea({
       <textarea
         name={name}
         placeholder={placeholder}
+        rows={rows}
         className={sanitizeClassName(`
           h-24 md:h-32 w-full p-2 border rounded-lg shadow-lg dark:shadow-neutral-500 dark:text-neutral-900 transition
           ${error ? "border-red-300 shadow-red-300" : ""}

@@ -163,7 +163,7 @@ export default function EditPickup() {
 
       {result.length === 0 ?
         <Textarea
-          className="max-w-4xl"
+          className="h-64 md:h-64 max-w-4xl"
           label="모집 결과"
           description="10연 모집의 결과를 입력 한 줄에 하나씩 입력"
           placeholder="1/2/7 드요코&#10;1 3 6 밴즈사&#10;..."
