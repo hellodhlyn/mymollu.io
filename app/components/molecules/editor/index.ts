@@ -1,9 +1,9 @@
-import EventSelector from "./EventSelector";
+import ContentSelector from "./ContentSelector";
 import MemoEditor from "./MemoEditor";
 import PartyUnitEditor from "./PartyUnitEditor";
 
 export {
-  EventSelector,
+  ContentSelector,
   MemoEditor,
   PartyUnitEditor,
 };

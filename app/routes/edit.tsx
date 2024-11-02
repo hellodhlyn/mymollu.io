@@ -1,11 +1,12 @@
 import { Link, Outlet, useMatches } from "@remix-run/react";
-import { Bars3Icon, HomeIcon, Squares2X2Icon, UserCircleIcon, UserMinusIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, DocumentDuplicateIcon, HomeIcon, Squares2X2Icon, UserCircleIcon, UserMinusIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 const navigations = [
   { title: "프로필", to: "/edit/profile", icon: UserCircleIcon },
   { title: "학생 명부", to: "/edit/students", icon: UsersIcon },
-  { title: "편성 관리", to: "/edit/parties", icon: Squares2X2Icon },
+  { title: "모집 이력", to: "/edit/pickups", icon: DocumentDuplicateIcon },
+  { title: "편성/공략", to: "/edit/parties", icon: Squares2X2Icon },
 ]
 
 export default function Edit() {
