@@ -1,6 +1,5 @@
 import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
-import { pickupEventsQuery } from "./edit.pickups";
-import { EventTypeEnum, PickupEventsQuery } from "~/graphql/graphql";
+import { EventTypeEnum, UserPickupEventsQuery, UserPickupEventsQueryVariables } from "~/graphql/graphql";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { runQuery } from "~/lib/baql";
 import { getPickupHistories } from "~/models/pickup-history";
@@ -11,12 +10,27 @@ import { SparklesIcon } from "@heroicons/react/24/outline";
 import { AddContentButton } from "~/components/molecules/editor";
 import { PickupHistoryView } from "~/components/organisms/pickup";
 import { SubTitle } from "~/components/atoms/typography";
+import { graphql } from "~/graphql";
+import { getAllStudentsMap } from "~/models/student";
+
+export const userPickupEventsQuery = graphql(`
+  query UserPickupEvents($eventIds: [String!]!) {
+    events(eventIds: $eventIds) {
+      nodes {
+        eventId name type since
+        pickups {
+          student { studentId }
+        }
+      }
+    }
+  }
+`);
 
 export const meta: MetaFunction = ({ params }) => {
   return [
     { title: `${params.username || ""} - 모집 이력 | 몰루로그`.trim() },
     { name: "description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
-    { name: "og:title", content: `${params.username || ""} - 편성 | 몰루로그`.trim() },
+    { name: "og:title", content: `${params.username || ""} - 모집 이력 | 몰루로그`.trim() },
     { name: "og:description", content: `${params.username} 선생님이 모집한 학생 목록을 확인해보세요` },
   ];
 };
@@ -34,22 +48,26 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     throw new Error("Not found");
   }
 
-  const { data, error } = await runQuery<PickupEventsQuery>(pickupEventsQuery, {});
+  const pickupHistories = await getPickupHistories(env, sensei.id);
+  const eventIds = pickupHistories.map((history) => history.eventId);
+  const { data, error } = await runQuery<UserPickupEventsQuery, UserPickupEventsQueryVariables>(userPickupEventsQuery, { eventIds });
   if (!data) {
     console.error(error);
     throw "failed to load data";
   }
 
-  const currentUser = await getAuthenticator(env).isAuthenticated(request);
-  const pickupHistories = (await getPickupHistories(env, sensei.id)).map((history) => ({
+  const allStudentsMap = await getAllStudentsMap(env);
+  const aggregatedHistories = (await getPickupHistories(env, sensei.id)).map((history) => ({
     ...history,
     event: data.events.nodes.find((event) => event.eventId === history.eventId)!,
-    students: history.result.flatMap((trial) => trial.tier3StudentIds.map((studentId) => data.students.find((student) => student.studentId === studentId)!)),
+    students: history.result
+      .flatMap((trial) => trial.tier3StudentIds.map((studentId) => allStudentsMap[studentId]))
+      .map((student) => ({ studentId: student.id, name: student.name })),
   }));
 
   let tier3Count = 0, tier3RateCount = 0;
   let pickupCount = 0, pickupRateCount = 0;
-  pickupHistories.forEach((history) => {
+  aggregatedHistories.forEach((history) => {
     const currentTier3Count = history.result.map((trial) => trial.tier3Count).reduce((a, b) => a + b);
 
     const pickupStudentIds = history.event.pickups.map((pickup) => pickup.student?.studentId).filter((id) => id !== undefined);
@@ -75,9 +93,14 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     pickupRateCount,
   };
 
+  const currentUser = await getAuthenticator(env).isAuthenticated(request);
   return json({
     me: username === currentUser?.username,
-    pickupHistories,
+    pickupHistories: aggregatedHistories.map((history) => ({
+      uid: history.uid,
+      event: history.event,
+      students: history.students,
+    })),
     pickupStatistics,
   });
 };

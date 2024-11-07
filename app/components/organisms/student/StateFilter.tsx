@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { Input } from "~/components/atoms/form";
 import { FilterButtons } from "~/components/molecules/student";
 import type { AttackType } from "~/models/content";
-import type { Role, StudentState } from "~/models/student-state";
+import type { Role } from "~/models/student";
+import type { StudentState } from '~/models/student-state';
 
 const { disassemble, search } = hangul;
 

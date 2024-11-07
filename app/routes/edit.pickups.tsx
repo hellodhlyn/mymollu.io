@@ -4,27 +4,11 @@ import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
 import { AddContentButton } from "~/components/molecules/editor";
 import { PickupHistoryView } from "~/components/organisms/pickup";
-import { graphql } from "~/graphql";
-import { PickupEventsQuery } from "~/graphql/graphql";
+import { UserPickupEventsQuery, UserPickupEventsQueryVariables } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { deletePickupHistory, getPickupHistories } from "~/models/pickup-history";
-
-export const pickupEventsQuery = graphql(`
-  query PickupEvents {
-    events(first: 9999) {
-      nodes {
-        eventId name since until type rerun
-        pickups {
-          student { studentId }
-          studentName
-        }
-      }
-    }
-    students {
-      initialTier studentId name
-    }
-  }
-`);
+import { getAllStudentsMap } from "~/models/student";
+import { userPickupEventsQuery } from "./$username.pickups";
 
 export const meta: MetaFunction = () => [
   { title: "모집 이력 관리 | 몰루로그" },
@@ -37,20 +21,24 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     return redirect("/signin");
   }
 
-  const { data, error } = await runQuery<PickupEventsQuery>(pickupEventsQuery, {});
+  const pickupHistories = await getPickupHistories(env, sensei.id);
+  const eventIds = pickupHistories.map((history) => history.eventId);
+  const { data, error } = await runQuery<UserPickupEventsQuery, UserPickupEventsQueryVariables>(userPickupEventsQuery, { eventIds });
   if (!data) {
     console.error(error);
     throw "failed to load data";
   }
 
-  const pickupHistories = await getPickupHistories(env, sensei.id);
-  return json({
-    pickupHistories: pickupHistories.map((history) => ({
-      ...history,
-      event: data.events.nodes.find((event) => event.eventId === history.eventId)!,
-      students: history.result.flatMap((trial) => trial.tier3StudentIds.map((studentId) => data.students.find((student) => student.studentId === studentId)!)),
-    })),
-  });
+  const allStudentsMap = await getAllStudentsMap(env);
+  const aggregatedHistories = (await getPickupHistories(env, sensei.id)).map((history) => ({
+    uid: history.uid,
+    event: data.events.nodes.find((event) => event.eventId === history.eventId)!,
+    students: history.result
+      .flatMap((trial) => trial.tier3StudentIds.map((studentId) => allStudentsMap[studentId]))
+      .map((student) => ({ studentId: student.id, name: student.name })),
+  }));
+
+  return json({ pickupHistories: aggregatedHistories });
 };
 
 export const action = async ({ context, request }: ActionFunctionArgs) => {

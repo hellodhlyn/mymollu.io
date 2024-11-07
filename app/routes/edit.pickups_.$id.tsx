@@ -9,10 +9,28 @@ import { StudentCard } from "~/components/atoms/student";
 import { Title } from "~/components/atoms/typography";
 import { ContentSelector } from "~/components/molecules/editor";
 import { filterStudentByName } from "~/filters/student";
+import { graphql } from "~/graphql";
 import { PickupEventsQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { createPickupHistory, getPickupHistory, parsePickupHistory, PickupHistory } from "~/models/pickup-history";
-import { pickupEventsQuery } from "./edit.pickups";
+
+export const pickupEventsQuery = graphql(`
+  query PickupEvents {
+    events(first: 9999) {
+      nodes {
+        eventId name since until type rerun
+        pickups {
+          student { studentId }
+          studentName
+        }
+      }
+    }
+    students {
+      initialTier studentId name
+    }
+  }
+`);
+
 
 export const meta: MetaFunction = () => [
   { title: "모집 이력 관리 | 몰루로그" },
