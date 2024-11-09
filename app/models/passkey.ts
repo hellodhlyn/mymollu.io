@@ -171,3 +171,22 @@ export async function getPasskeysBySensei(env: Env, sensei: Sensei): Promise<Pas
   const passkeys = await env.DB.prepare("select * from passkeys where userId = ?1").bind(sensei.id).all<DBPasskey>();
   return passkeys.results.map((row) => ({ uid: row.uid, memo: row.memo, createdAt: row.createdAt }));
 }
+
+
+// Update passkey memo
+const UPDATE_PASSKEY_MEMO_QUERY = `
+  update passkeys set memo = ?1 where userId = ?2 and uid = ?3
+`;
+
+export async function updatePasskeyMemo(env: Env, sensei: Sensei, uid: string, memo: string): Promise<void> {
+  await env.DB.prepare(UPDATE_PASSKEY_MEMO_QUERY).bind(memo, sensei.id, uid).run();
+}
+
+// Delete passkey
+const DELETE_PASSKEY_QUERY = `
+  delete from passkeys where userId = ?1 and uid = ?2
+`;
+
+export async function deletePasskey(env: Env, sensei: Sensei, uid: string): Promise<void> {
+  await env.DB.prepare(DELETE_PASSKEY_QUERY).bind(sensei.id, uid).run();
+}

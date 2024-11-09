@@ -48,7 +48,7 @@ export async function getSenseiByRandom(env: Env): Promise<Sensei> {
 }
 
 // Get or create a sensei by googleId
-const CREATE_SENSEI_QUERY = "insert into senseis (username, googleId) values (?1, ?2)";
+const CREATE_SENSEI_QUERY = "insert into senseis (uid, username, googleId) values (?1, ?2, ?3)";
 
 export async function getOrCreateSenseiByGoogleId(env: Env, googleId: string): Promise<Sensei> {
   const result = await env.DB.prepare("select * from senseis where googleId = ?1").bind(googleId).first<DBSensei>();
@@ -56,7 +56,7 @@ export async function getOrCreateSenseiByGoogleId(env: Env, googleId: string): P
     return toModel(result);
   }
 
-  const createResult = await env.DB.prepare(CREATE_SENSEI_QUERY).bind(nanoid(8), googleId).run();
+  const createResult = await env.DB.prepare(CREATE_SENSEI_QUERY).bind(nanoid(8), nanoid(8), googleId).run();
   if (createResult.error) {
     throw createResult.error;
   }

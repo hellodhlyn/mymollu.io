@@ -37,7 +37,9 @@ export default function StudentSearch(
 
   return (
     <>
-      <Input label={label} placeholder={placeholder} description={description} onChange={onSearch} />
+      <div>
+        <Input label={label} placeholder={placeholder} description={description} onChange={onSearch} />
+      </div>
       {(searched && searched.length > 0) && (
         <StudentCards
           students={searched}
