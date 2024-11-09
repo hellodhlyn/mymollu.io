@@ -7,7 +7,13 @@ import { updateSensei } from "~/models/sensei";
 import { graphql } from "~/graphql";
 import { runQuery } from "~/lib/baql";
 import type { ProfileStudentsQuery } from "~/graphql/graphql";
-import { Title } from "~/components/atoms/typography";
+import { SubTitle, Title } from "~/components/atoms/typography";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const profileStudentsQuery = graphql(`
   query ProfileStudents {
@@ -31,7 +37,10 @@ export const loader = async ({ context, request }: LoaderFunctionArgs) => {
     throw new Error("failed to load students");
   }
 
-  return json({ sensei, students: data.students });
+  return json({
+    sensei,
+    students: data.students,
+  });
 }
 
 type ActionData = {
@@ -75,10 +84,14 @@ export const action: ActionFunction = async ({ request, context }) => {
 }
 
 export default function EditProfile() {
-  const { sensei, students } = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<typeof loader>();
+  const { sensei, students } = loaderData;
+
   return (
-    <>
+    <div className="pb-16">
       <Title text="프로필" />
+
+      <SubTitle text="계정 정보" />
       <Form method="post">
         <ProfileEditor
           students={students}
@@ -86,6 +99,6 @@ export default function EditProfile() {
           error={useActionData<ActionData>()?.error}
         />
       </Form>
-    </>
+    </div>
   );
 }
