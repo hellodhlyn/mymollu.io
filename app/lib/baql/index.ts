@@ -16,7 +16,7 @@ export const client = createClient({
 });
 
 export async function runQuery<Data = any, Variables extends AnyVariables = AnyVariables>(
-  query: DocumentNode | TypedDocumentNode<Data, Variables> | string,
+  query: TypedDocumentNode<Data, Variables>,
   variables: Variables,
 ): Promise<OperationResult<Data, Variables>> {
   return client.query<Data, Variables>(query, variables).toPromise();

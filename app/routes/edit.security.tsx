@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, json, LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/cloudflare";
-import { Form, useLoaderData, useRevalidator } from "@remix-run/react";
+import { Form, Link, useLoaderData, useRevalidator } from "@remix-run/react";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useState } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
@@ -120,8 +120,11 @@ export default function EditSecurity() {
       <SubButton onClick={addPasskey} Icon={PlusIcon} text="Passkey 추가" />
 
       {error && <p className="my-4 text-red-500">{error}</p>}
-
       {passkeys.map((passkey) => <PasskeyCard key={passkey.uid} {...passkey} />)}
+
+      <Link to="/signout">
+        <Button color="red">로그아웃</Button>
+      </Link>
     </div>
   );
 }

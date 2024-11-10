@@ -10,11 +10,12 @@ import { Title } from "~/components/atoms/typography";
 import { ContentSelector } from "~/components/molecules/editor";
 import { filterStudentByName } from "~/filters/student";
 import { graphql } from "~/graphql";
-import { PickupEventsQuery } from "~/graphql/graphql";
+import { type PickupEventsQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { createPickupHistory, getPickupHistory, parsePickupHistory, PickupHistory } from "~/models/pickup-history";
+import { getAllStudentsMap } from "~/models/student";
 
-export const pickupEventsQuery = graphql(`
+const pickupEventsQuery = graphql(`
   query PickupEvents {
     events(first: 9999) {
       nodes {
@@ -25,12 +26,8 @@ export const pickupEventsQuery = graphql(`
         }
       }
     }
-    students {
-      initialTier studentId name
-    }
   }
 `);
-
 
 export const meta: MetaFunction = () => [
   { title: "모집 이력 관리 | 몰루로그" },
@@ -57,7 +54,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
   const now = dayjs();
   return json({
     events: data.events.nodes.filter((event) => event.pickups.length > 0 && dayjs(event.since).isBefore(now)).reverse(),
-    students: data.students,
+    students: await getAllStudentsMap(env),
     pickupHistory,
   });
 };
@@ -154,10 +151,9 @@ export default function EditPickup() {
 
   const submit = useSubmit();
 
-
-  const allTier3Students = new Map(students.filter((student) => student.initialTier === 3).map((student) => [student.name, student.studentId]));
+  const allTier3Students = new Map(Object.entries(students).filter(([_, student]) => student.initialTier === 3).map(([_, student]) => [student.name, student.id]));
   return (
-    <>
+    <div className="min-h-screen">
       <Title text="모집 이력 관리" />
       <ContentSelector
         contents={events.map((event) => ({
@@ -173,10 +169,12 @@ export default function EditPickup() {
               ))}
             </div>
           ),
+          searchKeyword: `${event.name} ${event.pickups.map((pickup) => pickup.studentName).join(" ")}`,
         }))}
         placeholder="모집 컨텐츠를 선택하세요"
         initialContentId={eventId ?? undefined}
         onSelectContent={setEventId}
+        searchable
       />
 
       {result.length === 0 ?
@@ -269,6 +267,6 @@ export default function EditPickup() {
           <Button text="다시 입력하기" onClick={() => setResult([])} />
         </Form>
       }
-    </>
+    </div>
   );
 }

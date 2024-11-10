@@ -129,7 +129,7 @@ export default function ContentTimeline({ contents, futurePlans, onMemoUpdate, o
                   <ContentTimelineItem
                     key={content.contentId}
                     {...content}
-                    remainingDays={isToday ? dayjs(content.until).diff(today, "day") : null}
+                    until={isToday ? content.until : null}
 
                     showMemo={showMemo}
                     initialMemo={showMemo ? (futurePlans?.memos?.[content.contentId]) : undefined}

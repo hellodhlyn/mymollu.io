@@ -7,12 +7,13 @@ import type { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 import { MemoEditor } from "../editor";
 import { ChevronRightIcon } from "@heroicons/react/16/solid";
+import dayjs from "dayjs";
 
 export type ContentTimelineItemProps = {
   name: string;
   contentType: EventType | RaidType;
   rerun: boolean;
-  remainingDays: number | null;
+  until: Date | null;
   link: string | null;
 
   showMemo: boolean;
@@ -77,10 +78,12 @@ function ContentTitles({ name, showLink }: { name: string, showLink: boolean }):
 
 export default function ContentTimelineItem(
   {
-    name, contentType, rerun, remainingDays, link, raidInfo, pickups,
+    name, contentType, rerun, until, link, raidInfo, pickups,
     showMemo, initialMemo, onUpdateMemo, favoritedStudents, onFavorite,
   }: ContentTimelineItemProps,
 ) {
+  const remainingDays = until ? dayjs(until).startOf("day").diff(dayjs().startOf("day"), "day") : null;
+
   let remainingDaysText = "";
   if (remainingDays === 1) {
     remainingDaysText = "내일 종료";

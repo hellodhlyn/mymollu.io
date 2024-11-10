@@ -1,7 +1,8 @@
 import { defer } from "@remix-run/cloudflare";
-import type { MetaFunction } from "@remix-run/cloudflare";
-import { Link, useLoaderData } from "@remix-run/react";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { Await, Link, useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
+import { Suspense } from "react";
 import { SubTitle } from "~/components/atoms/typography";
 import { ContentTimelineItem } from "~/components/molecules/content";
 import { contentOrders } from "~/components/organisms/content/ContentTimeline";
@@ -9,10 +10,10 @@ import { SenseiFinder } from "~/components/organisms/home";
 import { graphql } from "~/graphql";
 import type { IndexQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
+import { getAllStudentsMap } from "~/models/student";
 
 const indexQuery = graphql(`
   query Index($now: ISO8601DateTime!) {
-    students { studentId name }
     contents(untilAfter: $now, sinceBefore: $now, first: 9999) {
       nodes {
         __typename
@@ -47,14 +48,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async () => {
+export const loader = async ({ context }: LoaderFunctionArgs) => {
   const { data, error } = await runQuery<IndexQuery>(indexQuery, { now: new Date().toISOString() });
   if (error || !data) {
     throw error ?? "failed to fetch events";
   }
 
   return defer({
-    students: data.students,
+    students: getAllStudentsMap(context.cloudflare.env),
     contents: data.contents.nodes,
   });
 }
@@ -83,7 +84,7 @@ export default function Index() {
               name={content.name}
               contentType={isEvent ? content.eventType : content.raidType}
               rerun={isEvent ? content.rerun : false}
-              remainingDays={dayjs(content.until).diff(today, "day")}
+              until={new Date(content.until)}
               link={showLink ? `/${isEvent ? "events" : "raids"}/${content.contentId}` : null}
               showMemo={false}
               pickups={isEvent ? content.pickups : undefined}
@@ -98,7 +99,11 @@ export default function Index() {
 
       <div className="my-8">
         <SubTitle text="선생님 찾기" />
-        <SenseiFinder students={students} />
+        <Suspense>
+          <Await resolve={students}>
+            {(students) => <SenseiFinder students={Object.entries(students).map(([_, student]) => ({ studentId: student.id, name: student.name }))} />}
+          </Await>
+        </Suspense>
       </div>
     </>
   );

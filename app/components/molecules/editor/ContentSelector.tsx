@@ -1,17 +1,22 @@
 import { ReactNode, useState } from "react";
+import hangul from 'hangul-js';
 import { Label } from "~/components/atoms/form";
+
+const { search } = hangul;
 
 type ContentProps = {
   contentId: string;
   name: string;
   description: string | ReactNode;
   imageUrl: string | null;
+  searchKeyword?: string;
 };
 
 type ContentSelectorProps = {
   contents: ContentProps[];
   initialContentId?: string;
   placeholder?: string;
+  searchable?: boolean;
   onSelectContent: (contentId: string) => void;
 };
 
@@ -32,11 +37,13 @@ function Content({ name, description, imageUrl }: ContentProps) {
   )
 }
 
-export default function ContentSelector({ contents, initialContentId, placeholder, onSelectContent }: ContentSelectorProps) {
+export default function ContentSelector({ contents, initialContentId, placeholder, searchable, onSelectContent }: ContentSelectorProps) {
   const [open, setOpen] = useState(false);
   const [selectedContent, setSelected] = useState<ContentSelectorProps["contents"][number] | null>(
     initialContentId ? contents.find((content) => content.contentId === initialContentId) ?? null : null,
   );
+
+  const [filteredContents, setFilteredContents] = useState(contents);
 
   return (
     <>
@@ -58,12 +65,23 @@ export default function ContentSelector({ contents, initialContentId, placeholde
         </div>
 
         {open && (
-          <div className="absolute left-0 pb-4 md:pb-64 bg-white z-10">
-            <div className="border border-neutral-200 rounded-lg shadow-lg">
-              {contents.map((content) => (
+          <div className="absolute left-0 w-full pb-4 md:pb-64 z-10">
+            <div className="border border-neutral-200 rounded-lg shadow-lg bg-white">
+              {searchable && (
+                <div className="p-4">
+                  <input
+                    className="w-full" type="text" placeholder="제목 혹은 학생으로 찾기..."
+                    onChange={(e) => {
+                      const keyword = e.target.value;
+                      setFilteredContents(contents.filter((content) => search(content.searchKeyword ?? content.name, keyword) >= 0));
+                    }}
+                  />
+                </div>
+              )}
+              {filteredContents.map((content) => (
                 <div
                   key={content.contentId}
-                  className="h-24 border-b border-neutral-100 hover:bg-neutral-100 cursor-pointer transition"
+                  className="h-24 border-t border-neutral-100 hover:bg-neutral-100 cursor-pointer transition"
                   onClick={() => {
                     onSelectContent(content.contentId);
                     setSelected(content);
@@ -73,6 +91,9 @@ export default function ContentSelector({ contents, initialContentId, placeholde
                   <Content {...content} />
                 </div>
               ))}
+              {filteredContents.length === 0 && (
+                <p className="border-t border-neutral-100 p-4 text-center text-neutral-500">검색 결과가 없어요.</p>
+              )}
             </div>
           </div>
         )}

@@ -1,19 +1,21 @@
 import { Form, Link } from "@remix-run/react";
 import { useState } from "react";
 
+export type ActionCardAction = {
+  text: string;
+  color: "red" | "default";
+  link?: string;
+  form?: {
+    method: "patch" | "delete";
+    hiddenInputs: { name: string; value: string }[];
+  };
+  popup?: ((close: () => void) => React.ReactNode);
+  onClick?: () => void;
+};
+
 type ActionCardProps = {
   children: React.ReactNode | React.ReactNode[];
-  actions: {
-    text: string;
-    color: "red" | "default";
-    link?: string;
-    form?: {
-      method: "patch" | "delete";
-      hiddenInputs: { name: string; value: string }[];
-    };
-    popup?: ((close: () => void) => React.ReactNode);
-    onClick?: () => void;
-  }[];
+  actions: ActionCardAction[];
 };
 
 export default function ActionCard({ children, actions }: ActionCardProps) {

@@ -1,6 +1,6 @@
-import { Link, Form } from "@remix-run/react";
 import dayjs from "dayjs";
 import { SubTitle } from "~/components/atoms/typography";
+import ActionCard, { ActionCardAction } from "~/components/molecules/editor/ActionCard";
 import { StudentCards } from "~/components/molecules/student";
 import { EventTypeEnum } from "~/graphql/graphql";
 import { eventTypeLocale } from "~/locales/ko";
@@ -21,8 +21,14 @@ type PickupHistoryViewProps = {
 };
 
 export default function PickupHistoryView({ uid, event, students, pickupStudentIds, editable }: PickupHistoryViewProps) {
+  const actions: ActionCardAction[] = [];
+  if (editable) {
+    actions.push({ text: "편집", color: "default", link: `/edit/pickups/${uid}` });
+    actions.push({ text: "삭제", color: "red", form: { method: "delete", hiddenInputs: [{ name: "uid", value: uid }] } });
+  }
+
   return (
-    <div key={uid} className="my-4 p-4 md:p-6 rounded-lg bg-neutral-100">
+    <ActionCard actions={actions}>
       <div className="-my-4">
         <SubTitle text={event.name} />
       </div>
@@ -38,22 +44,6 @@ export default function PickupHistoryView({ uid, event, students, pickupStudentI
           label: pickupStudentIds.includes(studentId) ? <span className="text-yellow-500">픽업</span> : undefined,
         }))}
       />
-
-     {editable && (
-        <div className="flex items-center justify-end">
-          <Link to={`/edit/pickups/${uid}`}>
-            <span className="-mr-2 px-4 p-2 hover:bg-neutral-200 text-neutral-500 font-bold transition rounded-lg">
-              편집
-            </span>
-          </Link>
-          <Form method="delete">
-            <input type="hidden" name="uid" value={uid} />
-            <button className="-mr-2 px-4 p-2 hover:bg-neutral-200 text-red-500 font-bold transition rounded-lg">
-              삭제
-            </button>
-          </Form>
-        </div>
-     )}
-    </div>
+    </ActionCard>
   );
 }

@@ -1,7 +1,5 @@
 export default function SubTitle({ text, className }: { text: string, className?: string }) {
   return (
-    <div className={`my-4 text-neutral-900 font-bold text-xl ${className ?? ""}`}>
-      <p>{text}</p>
-    </div>
+    <p className={`first-of-type:mt-4 mt-8 mb-4 text-neutral-900 font-bold text-xl ${className ?? ""}`}>{text}</p>
   );
 }

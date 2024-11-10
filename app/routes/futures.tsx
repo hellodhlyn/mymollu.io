@@ -79,7 +79,6 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
   }
 
   const updatedPlans = await request.json<FuturePlan>();
-  console.log(updatedPlans);
   await setFuturePlan(env, currentUser.id, updatedPlans);
 
   return json({});

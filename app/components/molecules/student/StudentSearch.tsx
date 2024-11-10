@@ -1,10 +1,7 @@
-import hangul from 'hangul-js';
 import { useState } from "react";
 import { Input } from "~/components/atoms/form";
 import StudentCards from "./StudentCards";
 import { filterStudentByName } from "~/filters/student";
-
-const { disassemble } = hangul;
 
 type SearchableStudent = {
   studentId: string;
@@ -29,10 +26,7 @@ export default function StudentSearch(
     if (search.length === 0) {
       return setSearched([]);
     }
-    if (disassemble(search).length <= 1) {
-      return setSearched([]);
-    }
-    setSearched(filterStudentByName(search, students).slice(0, 6));
+    setSearched(filterStudentByName(search, students, 6));
   };
 
   return (
