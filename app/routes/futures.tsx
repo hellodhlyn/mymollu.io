@@ -4,7 +4,7 @@ import { Link, useLoaderData, useSubmit } from "@remix-run/react";
 import { CalendarDateRangeIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
-import { Title } from "~/components/atoms/typography";
+import { Callout, Title } from "~/components/atoms/typography";
 import type { ContentTimelineProps } from "~/components/organisms/content";
 import { ContentTimeline } from "~/components/organisms/content";
 import { graphql } from "~/graphql";
@@ -68,9 +68,9 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     signedIn,
     contents: data.contents.nodes,
     futurePlans: signedIn ? await getFuturePlan(env, currentUser.id) : null,
+    noticeMessage: await env.KV_STATIC_DATA.get("futures::noticeMessage"),
   });
 };
-
 export const action = async ({ request, context }: ActionFunctionArgs) => {
   const env = context.cloudflare.env;
   const currentUser = await getAuthenticator(env).isAuthenticated(request);
@@ -86,7 +86,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 
 export default function Futures() {
   const loaderData = useLoaderData<typeof loader>();
-  const { signedIn, contents } = loaderData;
+  const { signedIn, contents, noticeMessage } = loaderData;
 
   const submit = useSubmit();
   const [futurePlans, setFuturePlans] = useState(loaderData.futurePlans ?? {});
@@ -105,6 +105,12 @@ export default function Futures() {
     <div className="pb-64">
       <Title text="미래시" />
       <p className="text-neutral-500 -mt-2 mb-4">미래시는 일본 서버 일정을 바탕으로 추정된 것으로, 실제 일정과 다를 수 있습니다.</p>
+
+      {noticeMessage && (
+        <Callout emoji="📅" className="bg-gradient-to-r from-red-500 to-orange-500 text-white shadow">
+          <p>{noticeMessage}</p>
+        </Callout>
+      )}
 
       <ContentTimeline
         contents={contents.map((content) => {

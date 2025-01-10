@@ -1,7 +1,7 @@
 export interface Env {
-  __STATIC_CONTENT: KVNamespace<string>;
   KV_USERDATA: KVNamespace;
   KV_SESSION: KVNamespace;
+  KV_STATIC_DATA: KVNamespace<string>;
   DB: D1Database;
 
   HOST: string;
