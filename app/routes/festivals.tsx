@@ -2,7 +2,7 @@ import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
 import { useLoaderData } from "@remix-run/react";
 import dayjs from "dayjs";
 import { MapPinIcon, HomeIcon } from "@heroicons/react/16/solid";
-import { Title } from "~/components/atoms/typography";
+import { KeyValueTable, Title } from "~/components/atoms/typography";
 
 type Festival = {
   id: string;
@@ -53,7 +53,7 @@ export const meta: MetaFunction = () => {
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
   const now = dayjs();
-  const festivals = JSON.parse(await context.cloudflare.env.KV_USERDATA.get("festivals") ?? "[]") as Festival[];
+  const festivals = JSON.parse(await context.cloudflare.env.KV_STATIC_DATA.get("festivals") ?? "[]") as Festival[];
 
   return json({
     festivals: festivals
@@ -64,6 +64,27 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 
 export default function Festivals() {
   const { festivals } = useLoaderData<typeof loader>();
+
+  const scheduleKV = (festival: Festival) => {
+    return festival.schedules.map((schedule) => {
+      const since = dayjs(schedule.since);
+      const until = dayjs(schedule.until);
+      const now = dayjs();
+      return {
+        key: schedule.name,
+        value: (
+          <div className="flex items-center relative">
+            <span>
+              {since.format("MM/DD HH:mm")} ~ {until.format("MM/DD HH:mm")}
+            </span>
+            {now.isAfter(since) && now.isBefore(until) && (
+              <div className="absolute -right-2 top-0 size-1.5 rounded-full bg-red-500 animate-pulse" />
+            )}
+          </div>
+        ),
+      };
+    });
+  };
 
   return (
     <div className="pb-64">
@@ -94,27 +115,8 @@ export default function Festivals() {
               </p>
             )}
 
-            <div className="flex mt-4 mb-2 text-sm">
-              <div className="mr-4 text-neutral-500">
-                {festival.schedules.map((schedule) => <p key={`schedule-key-${festival.id}-${schedule.name}`}>{schedule.name}</p>)}
-              </div>
-              <div className="text-neutral-700">
-                {festival.schedules.map((schedule) => {
-                  const since = dayjs(schedule.since);
-                  const until = dayjs(schedule.until);
-                  const now = dayjs();
-                  return (
-                    <div key={`schedule-value-${festival.id}-${schedule.name}`} className="flex items-center relative">
-                      <span>
-                        {since.format("MM/DD HH:mm")} ~ {until.format("MM/DD HH:mm")}
-                      </span>
-                      {now.isAfter(since) && now.isBefore(until) && (
-                        <div className="absolute -right-2 top-0 size-1.5 rounded-full bg-red-500 animate-pulse" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="mt-4 mb-2">
+              <KeyValueTable items={scheduleKV(festival)} keyPrefix={`schedule-${festival.id}`} />
             </div>
           </div>
         </div>

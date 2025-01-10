@@ -9,6 +9,7 @@ import { runQuery } from "~/lib/baql";
 import { deletePickupHistory, getPickupHistories } from "~/models/pickup-history";
 import { getAllStudentsMap } from "~/models/student";
 import { userPickupEventsQuery } from "./$username.pickups";
+import dayjs from "dayjs";
 
 export const meta: MetaFunction = () => [
   { title: "모집 이력 관리 | 몰루로그" },
@@ -36,7 +37,7 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     students: history.result
       .flatMap((trial) => trial.tier3StudentIds.map((studentId) => allStudentsMap[studentId]))
       .map((student) => ({ studentId: student.id, name: student.name })),
-  }));
+  })).sort((a, b) => dayjs(b.event.since).diff(dayjs(a.event.since)));
 
   return json({ pickupHistories: aggregatedHistories });
 };
@@ -77,7 +78,7 @@ export default function EditPickups() {
             <PickupHistoryView
               key={uid} uid={uid}
               event={{ ...event, since: new Date(event.since) }}
-              students={students}
+              tier3Students={students}
               pickupStudentIds={pickupStudentIds}
               editable={true}
             />

@@ -12,6 +12,7 @@ import { PickupHistoryView } from "~/components/organisms/pickup";
 import { SubTitle } from "~/components/atoms/typography";
 import { graphql } from "~/graphql";
 import { getAllStudentsMap } from "~/models/student";
+import dayjs from "dayjs";
 
 export const userPickupEventsQuery = graphql(`
   query UserPickupEvents($eventIds: [String!]!) {
@@ -63,7 +64,7 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     students: history.result
       .flatMap((trial) => trial.tier3StudentIds.map((studentId) => allStudentsMap[studentId]))
       .map((student) => ({ studentId: student.id, name: student.name })),
-  }));
+  })).sort((a, b) => dayjs(b.event.since).diff(dayjs(a.event.since)));
 
   let tier3Count = 0, tier3RateCount = 0;
   let pickupCount = 0, pickupRateCount = 0;
@@ -99,7 +100,8 @@ export const loader = async ({ context, request, params }: LoaderFunctionArgs) =
     pickupHistories: aggregatedHistories.map((history) => ({
       uid: history.uid,
       event: history.event,
-      students: history.students,
+      tier3Students: history.students,
+      trial: history.result.length * 10,
     })),
     pickupStatistics,
   });
@@ -141,15 +143,16 @@ export default function UserPickups() {
 
       <SubTitle text="모집 이력" />
       {me && <AddContentButton text="새로운 모집 이력 추가하기" link="/edit/pickups/new" />}
-      {pickupHistories.map(({ uid, event, students }) => {
+      {pickupHistories.map(({ uid, event, tier3Students, trial }) => {
         const pickupStudentIds = event.pickups.map((pickup) => pickup.student?.studentId).filter((id) => id !== undefined);
         return (
           <PickupHistoryView
             key={uid}
             uid={uid}
             event={{ ...event, since: new Date(event.since) }}
-            students={students}
+            tier3Students={tier3Students}
             pickupStudentIds={pickupStudentIds}
+            trial={trial}
           />
         );
       })}
