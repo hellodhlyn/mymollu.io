@@ -139,7 +139,7 @@ export default function ContentHeader(
             </Suspense>
           )}
           <img
-            className={`absolute w-full md:rounded-xl ${videoPlaying ? "opacity-0" : "opacity-100"} ease-in duration-500 transition-opacity`}
+            className={`absolute w-full md:rounded-xl ${videoPlaying ? "opacity-0" : "opacity-100"} ease-in duration-500 transition dark:brightness-75 dark:hover:brightness-100`}
             src={image} alt={`${name} 이벤트 이미지`}
           />
         </div>
@@ -167,13 +167,13 @@ export default function ContentHeader(
 
       {videos && (
         <div className="w-full my-2 relative">
-          <div className="w-full px-10 flex flex-nowrap overflow-x-scroll" ref={videoListRef}>
+          <div className="w-full px-10 flex flex-nowrap overflow-x-scroll no-scrollbar" ref={videoListRef}>
             {videos.map((video) => (
               <span
                 key={video.youtube}
                 className={sanitizeClassName(`
-                  -mx-1 px-4 py-2 rounded-lg hover:bg-neutral-100 transition text-sm cursor-pointer shrink-0
-                  ${currentVideo?.youtube === video.youtube ? "bg-neutral-100 font-bold" : ""}
+                  -mx-1 px-4 py-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-600 transition text-sm cursor-pointer shrink-0
+                  ${currentVideo?.youtube === video.youtube ? "bg-neutral-100 dark:bg-neutral-700 font-bold" : ""}
               `)}
                 onClick={() => setCurrentVideo(video)}
               >
@@ -181,13 +181,13 @@ export default function ContentHeader(
               </span>
             ))}
           </div>
-          <div className="h-full w-8 absolute left-0 top-0 flex items-center justify-center bg-white">
+          <div className="h-full w-8 absolute left-0 top-0 flex items-center justify-center">
             <ChevronDoubleLeftIcon
               className="p-1 size-6 hover:bg-black hover:text-white rounded-full transition cursor-pointer" strokeWidth={2}
               onClick={() => selectVideo(-1)}
             />
           </div>
-          <div className="h-full w-8 absolute right-0 top-0 flex items-center justify-center bg-white">
+          <div className="h-full w-8 absolute right-0 top-0 flex items-center justify-center">
             <ChevronDoubleRightIcon
               className="p-1 size-6 hover:bg-black hover:text-white rounded-full transition cursor-pointer" strokeWidth={2}
               onClick={() => selectVideo(1)}

@@ -13,6 +13,8 @@ import {
 import styles from "./tailwind.css?url";
 import { getAuthenticator } from "./auth/authenticator.server";
 import { Header, Footer } from "./components/organisms/base";
+import { useEffect, useState } from "react";
+import { isDarkMode } from "./lib/device/index.client";
 
 export const links = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -32,8 +34,13 @@ export default function App() {
   const matches = useMatches();
   const pathname = matches[matches.length - 1].pathname;
 
+  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+    setDarkMode(isDarkMode());
+  }, []);
+
   return (
-    <html lang="ko">
+    <html lang="ko" className={darkMode ? "dark" : ""}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
@@ -41,10 +48,12 @@ export default function App() {
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
+        <meta name="theme-color" content={darkMode ? "#262626" : "#ffffff"} />
+        <meta name="background-color" content={darkMode ? "#262626" : "#ffffff"} />
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="text-neutral-900 dark:bg-neutral-800 dark:text-neutral-200 transition">
         {pathname.startsWith("/edit") ? <Outlet /> : (
           <div className="mx-auto max-w-3xl p-4">
             <Header currentUsername={currentUsername} />

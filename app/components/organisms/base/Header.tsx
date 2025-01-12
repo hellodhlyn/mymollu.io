@@ -1,9 +1,11 @@
+import { MoonIcon } from "@heroicons/react/16/solid";
 import { KeyIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigation, useSubmit } from "@remix-run/react"
 import { startAuthentication } from "@simplewebauthn/browser";
 import { PublicKeyCredentialRequestOptionsJSON } from "@simplewebauthn/server/script/deps";
 import { useState } from "react";
 import { Button } from "~/components/atoms/form";
+import { toggleDarkMode } from "~/lib/device/index.client";
 
 type HeaderProps = {
   currentUsername: string | null;
@@ -42,7 +44,7 @@ function SignIn({ close }: { close: () => void }) {
   return (
     <>
       <div className="w-screen h-full min-h-screen top-0 left-0 absolute bg-black bg-opacity-50 z-10" onClick={close} />
-      <div className="fixed bottom-0 w-full md:max-w-3xl -mx-4 p-4 md:p-8 bg-white z-20 rounded-t-2xl text-base tracking-normal">
+      <div className="fixed bottom-0 w-full md:max-w-3xl -mx-4 p-4 md:p-8 bg-white dark:bg-neutral-800 z-20 rounded-t-2xl text-base tracking-normal">
         <div className="mt-4 mb-4 md:mb-8 flex items-center">
           <KeyIcon className="size-6 mr-2" />
           <p className="text-2xl md:text-4xl font-black">로그인</p>
@@ -66,12 +68,21 @@ export default function Header({ currentUsername }: HeaderProps) {
   const [showSignIn, setShowSignIn] = useState(false);
 
   return (
-    <div className="mt-8 mb-12 md:my-16 text-neutral-900">
+    <div className="mt-8 mb-12 md:my-16">
       <Link to="/" className="hover:opacity-50 transition-opacity">
         <h1 className="my-4 text-4xl md:text-5xl font-ingame">
           <span className="font-bold">몰루</span>로그
         </h1>
       </Link>
+
+      <div
+        className="-mt-2 md:mt-0 mb-4 flex font-bold text-yellow-600 dark:text-yellow-500 items-center hover:underline cursor-pointer"
+        onClick={() => toggleDarkMode()}
+      >
+        <MoonIcon className="size-4 mr-1" />
+        <p>다크 모드 지원!</p>
+      </div>
+
       <div className="flex gap-x-4 text-lg tracking-tight">
         {currentUsername && (
           <>

@@ -51,7 +51,7 @@ export default function ContentSelector({ contents, initialContentId, placeholde
 
       <div className="relative">
         <div
-          className={`my-4 h-24 w-full md:w-fit rounded-lg shadow-lg hover:opacity-50 cursor-pointer transition-opacity ${open ? "opacity-50" : ""}`}
+          className={`my-4 h-24 w-full md:w-fit border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg hover:opacity-50 cursor-pointer transition-opacity ${open ? "opacity-50" : ""}`}
           onClick={() => setOpen((prev) => !prev)}
         >
           {selectedContent ? <Content {...selectedContent} /> : (
@@ -65,12 +65,12 @@ export default function ContentSelector({ contents, initialContentId, placeholde
         </div>
 
         {open && (
-          <div className="absolute left-0 w-full pb-4 md:pb-64 z-10">
-            <div className="border border-neutral-200 rounded-lg shadow-lg bg-white">
+          <div className="absolute left-0 w-full max-w-4xl pb-4 md:pb-64 z-10">
+            <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg bg-white dark:bg-neutral-800">
               {searchable && (
                 <div className="p-4">
                   <input
-                    className="w-full" type="text" placeholder="제목 혹은 학생으로 찾기..."
+                    className="w-full dark:bg-neutral-800" type="text" placeholder="제목 혹은 학생으로 찾기..."
                     onChange={(e) => {
                       const keyword = e.target.value;
                       setFilteredContents(contents.filter((content) => search(content.searchKeyword ?? content.name, keyword) >= 0));
@@ -81,7 +81,7 @@ export default function ContentSelector({ contents, initialContentId, placeholde
               {filteredContents.map((content) => (
                 <div
                   key={content.contentId}
-                  className="h-24 border-t border-neutral-100 hover:bg-neutral-100 cursor-pointer transition"
+                  className="h-24 border-t border-neutral-100 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer transition"
                   onClick={() => {
                     onSelectContent(content.contentId);
                     setSelected(content);

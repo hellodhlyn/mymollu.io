@@ -32,16 +32,16 @@ export default function ProfileUsername({
         {followers !== undefined && following !== undefined && (
           <p className="text-sm">
             <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
-              {following} <span className="text-neutral-500">팔로잉</span>
+              {following} <span className="text-neutral-500 dark:text-neutral-400">팔로잉</span>
             </Link>
             <Link to={`/@${username}/friends?tab=following`} className="hover:underline mr-2">
-              {followers} <span className="text-neutral-500">팔로워</span>
+              {followers} <span className="text-neutral-500 dark:text-neutral-400">팔로워</span>
             </Link>
           </p>
         )}
         {friendCode && (
           <p className="text-sm">
-            <span className="text-neutral-500">친구 코드 </span>
+            <span className="text-neutral-500 dark:text-neutral-400">친구 코드 </span>
             <span>{friendCode}</span>
           </p>
         )}

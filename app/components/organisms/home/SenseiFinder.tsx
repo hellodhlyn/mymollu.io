@@ -1,7 +1,7 @@
 import { ArrowPathIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { Link, useNavigate } from "@remix-run/react";
 import { useState } from "react";
-import { SubButton } from "~/components/atoms/button";
+import { Button } from "~/components/atoms/form";
 import TierSelector from "~/components/molecules/editor/TierSelector";
 import { StudentSearch } from "~/components/molecules/student";
 import { studentImageUrl } from "~/models/assets";
@@ -27,9 +27,9 @@ export default function SenseiFinder(
     <>
       <div className="flex gap-x-2">
         <Link to="/sensei/random">
-          <SubButton text="무작위" Icon={ArrowPathIcon} />
+          <Button text="무작위" Icon={ArrowPathIcon} />
         </Link>
-        <SubButton
+        <Button
           text="모집한 학생" Icon={UsersIcon}
           onClick={() => { finder === "student" ? setFinder(null) : setFinder("student") }}
         />

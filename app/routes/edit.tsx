@@ -35,7 +35,7 @@ export default function Edit() {
           {navigations.map(({ title, to, icon: Icon }) => (
             <Link to={to} key={to}>
               <div className={pathname.startsWith(to) ?
-                "flex flex-col sm:flex-row justify-center sm:justify-start items-center sm:my-1 sm:-mr-6 sm:px-4 py-2 bg-white rounded-lg sm:rounded-r-none sm:rounded-l-lg text-blue-700 font-bold" :
+                "flex flex-col sm:flex-row justify-center sm:justify-start items-center sm:my-1 sm:-mr-6 sm:px-4 py-2 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-r-none sm:rounded-l-lg text-blue-700 dark:text-neutral-200 font-bold" :
                 "flex flex-col sm:flex-row justify-center sm:justify-start items-center sm:my-1 sm:px-4 py-2 hover:bg-blue-400 rounded-lg transition"
               }>
                 <Icon className="size-5 sm:mr-2" strokeWidth={2} />

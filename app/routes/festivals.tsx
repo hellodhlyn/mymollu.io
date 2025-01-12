@@ -90,7 +90,7 @@ export default function Festivals() {
     <div className="pb-64">
       <Title text="오프라인 행사" />
       {festivals.map((festival) => (
-        <div key={festival.id} className="my-8 w-full flex flex-col md:flex-row border border-neutral-300 rounded-lg">
+        <div key={festival.id} className="my-8 w-full flex flex-col md:flex-row border border-neutral-300 dark:border-neutral-700 rounded-lg">
           <div className="w-full h-48 md:max-w-64 md:h-auto relative">
             <img src={festival.thumbnail} alt={festival.name} className="w-full h-full object-cover rounded-t-lg md:rounded-tr-none md:rounded-bl-lg" />
             <div className="absolute top-0 left-0 p-2 m-1">
@@ -102,12 +102,12 @@ export default function Festivals() {
 
           <div className="grow px-6 py-4">
             <p className="my-2 text-xl font-bold">{festival.name}</p>
-            <p className="my-1 text-sm flex items-center text-neutral-700">
+            <p className="my-1 text-sm flex items-center text-neutral-700 dark:text-neutral-200">
               <MapPinIcon className="size-4" />
               <span className="ml-1">{festival.location}</span>
             </p>
             {festival.link && (
-              <p className="my-1 text-sm flex items-center text-neutral-700">
+              <p className="my-1 text-sm flex items-center text-neutral-700 dark:text-neutral-200">
                 <HomeIcon className="size-4 inline-block" />
                 <a href={festival.link} target="_blank" rel="noreferrer" className="ml-1 underline hover:opacity-50">
                   {new URL(festival.link).hostname}

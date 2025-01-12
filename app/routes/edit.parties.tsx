@@ -1,16 +1,15 @@
-import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { json, redirect } from "@remix-run/cloudflare";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { getAuthenticator } from "~/auth/authenticator.server";
 import { Title } from "~/components/atoms/typography";
+import { AddContentButton } from "~/components/molecules/editor";
 import { PartyView } from "~/components/organisms/party";
 import { graphql } from "~/graphql";
 import type { RaidForPartyEditQuery } from "~/graphql/graphql";
 import { runQuery } from "~/lib/baql";
 import { getUserParties, removePartyByUid } from "~/models/party";
 import { getUserStudentStates } from "~/models/student-state";
-import { sanitizeClassName } from "~/prophandlers";
 
 export const raidForPartyEditQuery = graphql(`
   query RaidForPartyEdit {
@@ -55,15 +54,7 @@ export default function EditParties() {
     <>
       <Title text="편성 관리" />
       <div className="max-w-4xl">
-        <Link to="/edit/parties/new">
-          <div className={sanitizeClassName(`
-            my-4 p-4 flex justify-center items-center border border-neutral-200
-            rounded-lg text-neutral-500 hover:bg-neutral-100 transition cursor-pointer
-          `)}>
-            <PlusCircleIcon className="h-4 w-4 mr-1" />
-            <span>새로운 편성 추가하기</span>
-          </div>
-        </Link>
+        <AddContentButton text="새로운 편성 추가하기" link="/edit/parties/new" />
         {parties.map((party) => (
           <PartyView
             key={party.uid}

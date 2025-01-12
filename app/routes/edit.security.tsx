@@ -3,7 +3,6 @@ import { Form, Link, useLoaderData, useRevalidator } from "@remix-run/react";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useState } from "react";
 import { getAuthenticator } from "~/auth/authenticator.server";
-import { SubButton } from "~/components/atoms/button";
 import { SubTitle, Title } from "~/components/atoms/typography";
 import { deletePasskey, getPasskeysBySensei, updatePasskeyMemo } from "~/models/passkey";
 import dayjs from "dayjs";
@@ -117,10 +116,12 @@ export default function EditSecurity() {
       <Title text="인증/보안" />
 
       <SubTitle text="Passkey 관리" />
-      <SubButton onClick={addPasskey} Icon={PlusIcon} text="Passkey 추가" />
+      <Button onClick={addPasskey} Icon={PlusIcon} text="Passkey 추가" />
 
       {error && <p className="my-4 text-red-500">{error}</p>}
-      {passkeys.map((passkey) => <PasskeyCard key={passkey.uid} {...passkey} />)}
+      <div className="max-w-4xl">
+        {passkeys.map((passkey) => <PasskeyCard key={passkey.uid} {...passkey} />)}
+      </div>
 
       <Link to="/signout">
         <Button color="red">로그아웃</Button>

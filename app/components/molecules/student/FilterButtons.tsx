@@ -9,12 +9,14 @@ type FilterButtonProps = {
   onToggle: (activated: boolean) => void;
 };
 
+const defaultButtonColor = "bg-gradient-to-br bg-blue-500 to-sky-400 dark:from-blue-600 dark:to-sky-500";
+
 function FilterButton({ text, color, active, onToggle }: FilterButtonProps) {
   return (
     <div
       className={`
-        inline-block w-fit flex items-center mr-1 px-2 py-1 border border-gray-300 rounded-lg shadow cursor-pointer
-        ${active ? `${color || "bg-blue-500"} text-white` : ""}
+        inline-block w-fit flex items-center mr-1 px-2 py-1 border border-gray-300 dark:border-gray-700 rounded-lg shadow cursor-pointer
+        ${active ? `${color || defaultButtonColor} text-white` : ""}
       `}
       onClick={() => { onToggle(!active); }}
     >
@@ -41,7 +43,7 @@ export default function FilterButtons({ Icon, buttonProps, exclusive }: FilterBu
         <FilterButton
           key={`filter-${prop.text}`}
           text={prop.text}
-          color={prop.color ?? "bg-gradient-to-br from-blue-500 to-sky-400"}
+          color={prop.color}
           active={actives[index]}
           onToggle={(activated) => {
             if (exclusive) {

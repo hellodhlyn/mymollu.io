@@ -23,7 +23,7 @@ export default function Input({
         type="text"
         name={name}
         placeholder={placeholder}
-        className={`w-48 md:w-64 max-w-full p-2 border rounded-lg shadow transition ${error ? "border-red-300 shadow-red-300" : ""} ${className ?? ""}`}
+        className={`w-48 md:w-64 max-w-full p-2 border border-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 rounded-lg shadow transition ${error ? "border-red-300 shadow-red-300 dark:border-red-700 dark:shadow-red-700" : ""} ${className ?? ""}`}
         required={required}
         defaultValue={defaultValue}
         onChange={(e) => onChange?.(e.target.value)}

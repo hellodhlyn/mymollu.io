@@ -34,12 +34,12 @@ export default function ProfileCard(props: ProfileCardProps) {
   tierCounts.forEach((count) => { totalCount += count; });
 
   return (
-    <div className="my-4 border border-neutral-100 rounded-lg shadow-lg">
+    <div className="my-4 border border-neutral-100 dark:border-neutral-700 rounded-lg shadow-lg">
       <ProfileUsername {...props} />
 
       <div className="m-4 md:m-6">
         {[1, 2, 3, 4, 5, 6, 7, 8].map((tier) => (
-          <div key={`tier-${tier}`} className="my-2 text-neutral-700">
+          <div key={`tier-${tier}`} className="my-2">
             <div className="flex">
               <div className="w-1/7 flex items-center">
                 {(tier <= 5) ?

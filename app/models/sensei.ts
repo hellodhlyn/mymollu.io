@@ -19,6 +19,9 @@ export type Sensei = {
   friendCode: string | null;
   profileStudentId: string | null;
   active: boolean;
+  config?: {
+    darkMode?: boolean;
+  };
 };
 
 // Get a sensei by a single field

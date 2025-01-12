@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 export type ButtonProps = {
   text?: string;
+  Icon?: React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, "ref">>;
+
   className?: string;
   children?: ReactNode | ReactNode[];
 
@@ -11,7 +13,7 @@ export type ButtonProps = {
   disabled?: boolean;
 };
 
-export default function Button({ text, className, children, type, color, onClick, disabled }: ButtonProps) {
+export default function Button({ text, Icon, className, children, type, color, onClick, disabled }: ButtonProps) {
   let colorClass = "";
   if (color === "primary") {
     colorClass = "bg-blue-500 enabled:hover:bg-blue-400 disabled:bg-blue-300 text-white"
@@ -20,17 +22,26 @@ export default function Button({ text, className, children, type, color, onClick
   } else if (color === "black") {
     colorClass = "bg-neutral-900 enabled:hover:bg-neutral-700 disabled:bg-neutral-500 text-white";
   } else {
-    colorClass = "bg-white hover:bg-gray-50 border";
+    colorClass = "hover:bg-neutral-100 border border-neutral-200 dark:border-neutral-700 dark:hover:bg-neutral-700";
   }
 
   return (
     <button
       type={type || "button"}
-      className={`inline-block my-2 px-4 py-2 rounded-xl transition ${colorClass} ${className ?? ""}`}
+      className={`inline-block my-2 mr-1 px-4 py-2 rounded-xl transition ${colorClass} ${className ?? ""}`}
       onClick={onClick}
       disabled={disabled}
     >
-      {children ?? text}
+      {children ?? (
+        Icon ? (
+          <div className="flex items-center">
+            <Icon className="size-3" strokeWidth={2} />
+            <span className="ml-2">{text}</span>
+          </div>
+        ) : (
+          text
+        )
+      )}
     </button>
   );
 }

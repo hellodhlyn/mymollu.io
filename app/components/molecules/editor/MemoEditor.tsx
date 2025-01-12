@@ -8,12 +8,12 @@ type MemoEditorProps = {
 
 export default function MemoEditor({ initialText, placeholder, onUpdate }: MemoEditorProps) {
   return (
-    <div className="flex p-2 my-2 text-sm items-center bg-neutral-100 rounded-lg ">
+    <div className="flex p-2 my-2 text-sm items-center bg-neutral-100 dark:bg-neutral-900 rounded-lg ">
       <div className="text-neutral-500">
         <ChatBubbleOvalLeftEllipsisIcon className="mr-2 w-4 h-4" />
       </div>
       <input
-        className="flex-grow bg-neutral-100"
+        className="flex-grow bg-neutral-100 dark:bg-neutral-900"
         placeholder={placeholder ?? "메모를 남겨보세요"}
         defaultValue={initialText}
         disabled={!onUpdate}

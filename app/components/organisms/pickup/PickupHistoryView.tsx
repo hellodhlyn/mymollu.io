@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { KeyValueTable, SubTitle } from "~/components/atoms/typography";
-import ActionCard, { ActionCardAction } from "~/components/molecules/editor/ActionCard";
+import { ActionCard, type ActionCardAction } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
 import { EventTypeEnum } from "~/graphql/graphql";
 import { eventTypeLocale } from "~/locales/ko";

@@ -25,8 +25,8 @@ export default function Textarea({
         placeholder={placeholder}
         rows={rows}
         className={sanitizeClassName(`
-          h-24 md:h-32 w-full p-2 border rounded-lg shadow-lg dark:shadow-neutral-500 dark:text-neutral-900 transition
-          ${error ? "border-red-300 shadow-red-300" : ""}
+          h-24 md:h-32 w-full p-2 border rounded-lg shadow-lg border-neutral-200 dark:bg-neutral-900 dark:border-neutral-700 transition
+          ${error ? "border-red-300 shadow-red-300 dark:border-red-500 dark:shadow-red-500" : ""}
           ${className ?? ""}
         `)}
         required={required}

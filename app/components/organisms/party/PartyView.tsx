@@ -1,15 +1,16 @@
-import { Form, Link } from "@remix-run/react";
 import dayjs from "dayjs";
-import { ProfileImage } from "~/components/atoms/student";
 import { SubTitle } from "~/components/atoms/typography";
 import { raidTypeLocale, terrainLocale } from "~/locales/ko";
 import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party"
-import { bossImageUrl } from "~/models/assets";
 import type { StudentState } from "~/models/student-state";
 import { useState } from "react";
-import { StudentCards } from "~/components/molecules/student";
-import { CheckCircleIcon } from "@heroicons/react/16/solid";
+import { ActionCard } from "~/components/molecules/editor";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { Link } from "@remix-run/react";
+import { ProfileImage } from "~/components/atoms/student";
+import { bossImageUrl } from "~/models/assets";
+import StudentCards from "~/components/molecules/student/StudentCards";
 
 type PartyViewProps = {
   party: Party;
@@ -61,8 +62,15 @@ export default function PartyView({ party, sensei, students, studentStates, edit
   }
 
   return (
-    <div className="my-4 px-4 md:px-6 py-2 rounded-lg bg-neutral-100">
-      <SubTitle text={party.name} />
+    <ActionCard actions={editable ?
+      [
+        { text: "편집", color: "default", link: `/edit/parties/${party.uid}` },
+        { text: "삭제", color: "red", form: { method: "post", hiddenInputs: [{ name: "uid", value: party.uid }] } },
+      ] : []
+    }>
+      <div className="-my-4">
+        <SubTitle text={party.name} />
+      </div>
 
       {sensei && (
         <Link className="flex items-center -mt-2 mb-4 hover:underline font-bold" to={`/@${sensei.username}`}>
@@ -74,19 +82,19 @@ export default function PartyView({ party, sensei, students, studentStates, edit
       {raid && (
         <Link className="group flex items-center my-4 md:my-8 -mx-4 md:-mx-6" to={`/raids/${raid.raidId}`}>
           <img
-            className="h-12 md:h-24 w-36 md:w-fit object-cover object-left bg-gradient-to-l from-white rounded-r-lg"
+            className="h-12 md:h-24 w-36 md:w-fit object-cover object-left bg-gradient-to-l from-white dark:from-neutral-800 rounded-r-lg"
             src={bossImageUrl(raid.boss)}
             alt={`${raid.name} 이벤트`}
           />
-          <div className="px-4 md:px-8 w-full">
+          <div className="px-4 md:px-6 w-full">
             <p className="font-bold group-hover:underline">
               {raid.name}
             </p>
-            <p className="text-xs md:text-sm text-neutral-500">
+            <p className="text-xs md:text-sm text-neutral-500 dark:text-neutral-300">
               {raidText}
             </p>
             {party.showAsRaidTip && (
-              <p className="flex my-1 text-xs md:text-sm text-neutral-500 items-center">
+              <p className="flex my-1 text-xs md:text-sm text-neutral-500 dark:text-neutral-300 items-center">
                 <CheckCircleIcon className="mr-1 size-4 inline-block" />
                 컨텐츠 공략으로 공개중
               </p>
@@ -95,7 +103,7 @@ export default function PartyView({ party, sensei, students, studentStates, edit
         </Link>
       )}
 
-      <div className="py-2 w-full border-t border-1 border-neutral-200" />
+      <div className="py-2 w-full border-t border-neutral-200 dark:border-neutral-700" />
 
       {party.studentIds.map((squad, index) => (
         <div key={`squad-${squad.join(":")}`} className={index > 0 ? "mt-2 pt-2 md:pt-0 border-t border-neutral-200 md:border-0" : undefined}>
@@ -142,22 +150,6 @@ export default function PartyView({ party, sensei, students, studentStates, edit
           )}
         </div>
       )}
-
-      {editable && (
-        <div className="my-2 flex items-center justify-end">
-          <Link to={`/edit/parties/${party.uid}`}>
-            <span className="-mr-2 px-4 p-2 hover:bg-neutral-200 text-neutral-500 font-bold transition rounded-lg">
-              편집
-            </span>
-          </Link>
-          <Form method="post">
-            <input type="hidden" name="uid" value={party.uid} />
-            <button className="-mr-2 px-4 p-2 hover:bg-neutral-200 text-red-500 font-bold transition rounded-lg">
-              삭제
-            </button>
-          </Form>
-        </div>
-      )}
-    </div>
+    </ActionCard>
   );
 }

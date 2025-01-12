@@ -1,17 +1,15 @@
-import { PlusCircleIcon } from "@heroicons/react/16/solid";
 import { Link } from "@remix-run/react";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Button, Input, Label, Textarea, Toggle } from "~/components/atoms/form";
 import { SubTitle } from "~/components/atoms/typography";
-import { ContentSelector, PartyUnitEditor } from "~/components/molecules/editor";
+import { AddContentButton, ContentSelector, PartyUnitEditor } from "~/components/molecules/editor";
 import { StudentCards } from "~/components/molecules/student";
 import { raidTypeLocale, terrainLocale } from "~/locales/ko";
 import { bossImageUrl } from "~/models/assets";
 import type { RaidType, Terrain } from "~/models/content";
 import type { Party } from "~/models/party";
 import type { StudentState } from "~/models/student-state";
-import { sanitizeClassName } from "~/prophandlers";
 
 type PartyGeneratorProps = {
   party?: Party;
@@ -63,7 +61,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
       <SubTitle text="파티" />
       <input type="hidden" name="studentIds" value={JSON.stringify(units)} />
       {units.map((unit, index) => (
-        <div className="my-4 px-4 py-2 md:px-6 md:py-4 bg-neutral-100 rounded-xl" key={`party-unit-${index}`}>
+        <div className="my-4 px-4 py-2 md:px-6 md:py-4 bg-neutral-100 dark:bg-neutral-900 rounded-xl" key={`party-unit-${index}`}>
           <Label text={`${index + 1}번째 파티`} />
           <StudentCards
             students={unit.map((studentId) => {
@@ -80,7 +78,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
           <div className="flex justify-end">
             <button
               type="button"
-              className="py-2 px-4 hover:bg-neutral-100 text-red-500 font-bold transition rounded-lg"
+              className="py-2 px-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 text-red-500 font-bold transition rounded-lg"
               onClick={() => setUnits((prev) => prev.filter((_, i) => i !== index))}
             >
               삭제
@@ -103,16 +101,7 @@ export default function PartyGenerator({ party, raids, studentStates }: PartyGen
           }}
           onCancel={() => setShowPartyEditor(false)}
         /> :
-        <div
-          className={sanitizeClassName(`
-            my-4 p-4 flex justify-center items-center border border-neutral-200
-            rounded-lg text-neutral-500 hover:bg-neutral-100 transition cursor-pointer
-          `)}
-          onClick={() => setShowPartyEditor(true)}
-        >
-          <PlusCircleIcon className="h-4 w-4 mr-1" />
-          <span>파티 추가하기</span>
-        </div>
+        <AddContentButton text="파티 추가하기" onClick={() => setShowPartyEditor(true)} />
       }
 
       <div className="flex gap-x-1">

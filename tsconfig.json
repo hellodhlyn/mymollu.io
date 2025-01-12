@@ -1,5 +1,5 @@
 {
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["env.d.ts", "**/*.ts", "**/*.tsx", "app/lib/device/index.client./ts"],
   "compilerOptions": {
     "types": ["@remix-run/cloudflare", "vite/client"],
     "skipLibCheck": true,

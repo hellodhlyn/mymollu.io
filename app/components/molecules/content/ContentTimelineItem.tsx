@@ -97,7 +97,7 @@ export default function ContentTimelineItem(
     <div className="my-6">
       {/* 컨텐츠 분류 */}
       <div className="my-1 flex items-center gap-x-2">
-        <span className="text-sm text-neutral-500">
+        <span className="text-sm text-neutral-500 dark:text-neutral-400">
           {(contentType === "event" || contentType === "pickup") && rerun && "복각 "}{contentTypeLocale[contentType]}
         </span>
         {remainingDaysText && (
@@ -121,7 +121,7 @@ export default function ContentTimelineItem(
       {raidInfo && (
         <div className="mt-2 mb-6 relative md:w-3/5">
           <img
-            className="rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300"
+            className="rounded-lg bg-gradient-to-br from-neutral-50 to-neutral-300 dark:from-neutral-600 dark:to-neutral-800"
             src={bossImageUrl(raidInfo.boss)} alt={`총력전 보스 ${name}`} loading="lazy"
           />
           <div className="absolute bottom-0 right-0 flex gap-x-1 p-1 text-white text-sm">

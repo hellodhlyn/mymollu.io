@@ -8,7 +8,7 @@ type CalloutProps = {
 
 export default function Callout({ className, emoji, children }: CalloutProps) {
   return (
-    <div className={`${className ?? ""} flex p-4 bg-neutral-100 rounded-lg`}>
+    <div className={`${className ?? ""} flex p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg`}>
       {emoji && <span className="ml-1 mr-2">{emoji}</span>}
       {children}
     </div>

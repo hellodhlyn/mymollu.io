@@ -121,23 +121,23 @@ export default function UserPickups() {
   return (
     <div className="my-8">
       <SubTitle text="모집 통계" />
-      <div className="p-4 flex grid md:grid-cols-3 border border-neutral-200 rounded-lg">
+      <div className="p-4 flex grid md:grid-cols-3 border border-neutral-200 dark:border-neutral-700 rounded-lg">
         <div className="my-4 text-center">
-          <p className="text-neutral-500">총 모집 횟수</p>
+          <p className="text-neutral-500 dark:text-neutral-400">총 모집 횟수</p>
           <p className="text-2xl font-bold">{pickupStatistics.trial} 번</p>
         </div>
         <div className="my-4 text-center">
-          <p className="text-neutral-500">★3 학생 모집 횟수</p>
+          <p className="text-neutral-500 dark:text-neutral-400">★3 학생 모집 횟수</p>
           <p className="text-2xl font-bold">{pickupStatistics.tier3Count} 번</p>
-          <p className="text-sm text-neutral-500">{(pickupStatistics.tier3RateCount / pickupStatistics.trial * 100).toFixed(2)} %</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">{(pickupStatistics.tier3RateCount / pickupStatistics.trial * 100).toFixed(2)} %</p>
         </div>
         <div className="my-4 text-center">
-          <p className="text-neutral-500">픽업 학생 모집 횟수</p>
+          <p className="text-neutral-500 dark:text-neutral-400">픽업 학생 모집 횟수</p>
           <p className="text-2xl font-bold">{pickupStatistics.pickupCount} 번</p>
-          <p className="text-sm text-neutral-500">{(pickupStatistics.pickupRateCount / pickupStatistics.trial * 100).toFixed(2)} %</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">{(pickupStatistics.pickupRateCount / pickupStatistics.trial * 100).toFixed(2)} %</p>
         </div>
       </div>
-      <p className="mt-4 mb-16 text-neutral-500 text-sm">
+      <p className="mt-4 mb-16 text-neutral-500 dark:text-neutral-400 text-sm">
         페스 기간에 모집한 ★3 학생은 확률이 0.5배로 계산됩니다.
       </p>
 

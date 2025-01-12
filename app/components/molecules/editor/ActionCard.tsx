@@ -6,7 +6,7 @@ export type ActionCardAction = {
   color: "red" | "default";
   link?: string;
   form?: {
-    method: "patch" | "delete";
+    method: "post" | "patch" | "delete";
     hiddenInputs: { name: string; value: string }[];
   };
   popup?: ((close: () => void) => React.ReactNode);
@@ -22,14 +22,14 @@ export default function ActionCard({ children, actions }: ActionCardProps) {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
-    <div className="my-4 p-4 md:p-6 rounded-lg bg-neutral-100">
+    <div className="my-4 p-4 md:p-6 rounded-lg bg-neutral-100 dark:bg-neutral-900">
       <div>
         {children}
       </div>
 
       <div className="mt-4 -mb-2 flex items-center justify-end">
         {actions.map((action) => {
-          let colorClass = "text-neutral-500";
+          let colorClass = "text-neutral-500 dark:text-neutral-200";
           if (action.color === "red") {
             colorClass = "text-red-500";
           }
@@ -38,7 +38,7 @@ export default function ActionCard({ children, actions }: ActionCardProps) {
             <button
               key={action.text}
               type={action.form ? "submit" : "button"}
-              className={`-mx-1 px-4 py-2 hover:bg-neutral-200 ${colorClass} font-bold transition rounded-lg`}
+              className={`-mx-1 px-4 py-2 hover:bg-neutral-200 dark:hover:bg-neutral-700 ${colorClass} font-bold transition rounded-lg`}
               onClick={action.onClick || (action.popup ? () => setShowPopup((prev) => !prev) : undefined)}
             >
               {action.text}

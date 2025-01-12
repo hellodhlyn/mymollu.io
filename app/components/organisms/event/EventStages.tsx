@@ -95,10 +95,10 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
           </span>
         </Callout>
       )}
-      <div className="w-screen -mx-4 md:w-auto overflow-x-scroll">
+      <div className="w-screen -mx-4 md:w-auto overflow-x-scroll no-scrollbar">
         <div className="px-4">
           <table className="mb-8 table-auto">
-            <thead className="bg-neutral-100 text-left">
+            <thead className="bg-neutral-100 dark:bg-neutral-900 text-left">
               <tr>
                 <th className="px-2 md:px-4 py-2 rounded-l-lg">#</th>
                 <th className="p-2 whitespace-nowrap">AP</th>
@@ -121,7 +121,7 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
                 }
 
                 return (
-                  <tr key={`event-stage-${stage.index}`} className="py-2 hover:bg-neutral-50 transition">
+                  <tr key={`event-stage-${stage.index}`} className="py-2 hover:bg-neutral-50 dark:hover:bg-neutral-700 transition">
                     <td className="px-2 md:px-4 py-2 font-bold rounded-l-lg">{stage.index}</td>
                     <td>
                       <ItemCard name="AP" imageId="currency_icon_ap" label={(stage.entryAp || 0).toString()} />
@@ -151,7 +151,7 @@ export default function EventStages({ stages, signedIn, ownedStudentIds }: Event
           const { item, ratio, maxRatio } = itemBonuses[itemId];
           return (
             <div key={`item-bonus-${itemId}`} className="my-4">
-              <div className="px-4 py-2 flex items-center bg-neutral-100 rounded-lg">
+              <div className="px-4 py-2 flex items-center bg-neutral-100 dark:bg-neutral-900 rounded-lg">
                 <div>
                   <ItemCard name={item.name} imageId={item.imageId} />
                 </div>

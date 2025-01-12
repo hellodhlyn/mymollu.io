@@ -113,16 +113,16 @@ export default function PartyUnitEditor(
   return (
     <>
       <Label text={`${index + 1}번째 파티`} />
-      <div className="mt-4 p-4 flex items-center border border-neutral-200 bg-neutral-100 rounded-t-lg">
+      <div className="mt-4 p-4 flex items-center border border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-900 rounded-t-lg">
         <MagnifyingGlassIcon className="h-4 w-4 mr-2" strokeWidth={2} />
         <input
-          className="w-full bg-neutral-100"
+          className="w-full bg-neutral-100 dark:bg-neutral-900"
           placeholder="이름으로 찾기..."
           onChange={(e) => onSearch(e.currentTarget.value)}
         />
       </div>
 
-      <div className="max-h-64 md:max-h-80 overflow-auto p-4 bg-neutral-100 border-l border-r border-neutral-200">
+      <div className="max-h-64 md:max-h-80 overflow-auto p-4 bg-neutral-100 dark:bg-neutral-900 border-l border-r border-neutral-200 dark:border-neutral-700">
         {filteredStudents.length > 0 ?
           <StudentCards
             students={filteredStudents}
@@ -137,7 +137,7 @@ export default function PartyUnitEditor(
         }
       </div>
 
-      <div className="p-4 border border-neutral-200 bg-neutral-100 rounded-b-lg">
+      <div className="p-4 border border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-900 rounded-b-lg">
         {error && <p className="text-sm text-red-500">{error}</p>}
 
         <div className="my-4">
@@ -152,13 +152,10 @@ export default function PartyUnitEditor(
         {unitStudents.find((student) => student !== null) ?
           <div className="grid grid-cols-6 md:grid-cols-10 gap-1 gap-2">
             {unitStudents.map((student, index) => (
-              <div
-                key={`partyGen-${student?.studentId ?? index}`}
-                className="bg-neutral-100 rounded-lg"
-              >
+              <div key={`partyGen-${student?.studentId ?? index}`} className="rounded-lg">
                 {student ?
                   <StudentCard {...student} nameSize="small" /> :
-                  <div className="w-full h-full bg-neutral-200 rounded-lg flex items-center justify-center">
+                  <div className="w-full h-full bg-neutral-200 dark:bg-neutral-800 rounded-lg flex items-center justify-center">
                     <UserPlusIcon className="size-6" />
                   </div>
                 }
@@ -171,14 +168,14 @@ export default function PartyUnitEditor(
         <div className="flex justify-end">
           <button
             type="button"
-            className="py-2 px-4 hover:bg-neutral-100 text-red-500 font-bold transition rounded-lg"
+            className="py-2 px-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 text-red-500 font-bold transition rounded-lg"
             onClick={onCancel}
           >
             취소
           </button>
           <button
             type="button"
-            className="py-2 px-4 hover:bg-neutral-100 text-neutral-700 font-bold transition rounded-lg"
+            className="py-2 px-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 font-bold transition rounded-lg"
             onClick={() => {
               setError(null);
               setUnitStudents(new Array(partySize).fill(null));
@@ -188,7 +185,7 @@ export default function PartyUnitEditor(
           </button>
           <button
             type="button"
-            className={`py-2 px-4 hover:bg-neutral-100 font-bold transition rounded-lg transition
+            className={`py-2 px-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 font-bold transition rounded-lg transition
                         ${completable ? "text-blue-500" : "text-neutral-300"}`}
             onClick={() => {
               if (completable) {

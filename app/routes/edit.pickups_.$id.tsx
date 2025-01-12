@@ -187,11 +187,11 @@ export default function EditPickup() {
         /> :
         <>
           <Label text="모집 결과" />
-          <p className="my-2 text-sm text-neutral-500">
+          <p className="my-2 text-sm text-neutral-500 dark:text-neutral-300">
             학생 이미지를 클릭하여 모집한 학생을 수정할 수 있어요.
           </p>
           <table>
-            <thead className="bg-neutral-100 rounded-lg">
+            <thead className="bg-neutral-100 dark:bg-neutral-900 rounded-lg">
               <tr>
                 <th className="px-4 py-2 rounded-l-lg">횟수</th>
                 <th className="p-2">★3</th>
@@ -210,7 +210,7 @@ export default function EditPickup() {
                 });
 
                 return (
-                  <tr key={`trial-${eachResult.trial}`} className="relative py-2 hover:bg-neutral-100 transition">
+                  <tr key={`trial-${eachResult.trial}`} className="relative py-2 hover:bg-neutral-100 hover:bg-neutral-700 transition">
                     <td className="px-4 p-2 font-bold rounded-l-lg">{eachResult.trial}</td>
                     <td className="p-2">{eachResult.tier3Count}</td>
                     <td className="p-2">{eachResult.tier2Count}</td>

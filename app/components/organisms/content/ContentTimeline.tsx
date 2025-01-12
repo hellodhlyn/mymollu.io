@@ -106,23 +106,23 @@ export default function ContentTimeline({ contents, futurePlans, onMemoUpdate, o
           <div key={groupDate.format("YYYY-MM-DD")}>
             {/* 날짜 구분자 영역 */}
             {isToday ? (
-              <div className="ml-1 flex items-center border-l border-white">
+              <div className="ml-1 flex items-center border-l border-neutral-200 dark:border-neutral-700">
                 <div className="inline-block -ml-1.5 size-3 bg-red-600 rounded-full animate-pulse" />
                 <span className="mx-2 md:mx-4 font-bold text-red-600">
                   진행중인 컨텐츠
                 </span>
               </div>
             ) : (
-              <div className="ml-1 pt-4 flex items-center border-l border-neutral-200">
-                <div className="inline-block -ml-1.5 size-3 bg-neutral-500 rounded-full" />
-                <span className="mx-2 md:mx-4 font-bold text-neutral-500 text-sm ">
+              <div className="ml-1 pt-4 flex items-center border-l border-neutral-200 dark:border-neutral-700">
+                <div className="inline-block -ml-1.5 size-3 bg-neutral-500 dark:bg-neutral-400 rounded-full" />
+                <span className="mx-2 md:mx-4 font-bold text-neutral-500 dark:text-neutral-400 text-sm ">
                   {groupDate.format("YYYY-MM-DD")}
                 </span>
               </div>
             )}
 
             {/* 컨텐츠 목록 영역 */}
-            <div className="ml-1 -mt-4 py-4 pl-4 md:pl-6 border-l border-neutral-200">
+            <div className="ml-1 -mt-4 py-4 pl-4 md:pl-6 border-l border-neutral-200 dark:border-neutral-700">
               {group.contents.map((content) => {
                 const showMemo = !!onMemoUpdate && !!content.pickups && content.pickups.length > 0;
                 return (

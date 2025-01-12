@@ -95,7 +95,7 @@ export default function EditStudents() {
           return (
             <div
               key={student.id}
-              className="p-4 bg-neutral-100 hover:bg-neutral-200 transition rounded-lg"
+              className="p-4 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-900 dark:hover:bg-neutral-700 transition rounded-lg"
             >
               <div className="flex items-center gap-x-3">
                 <img

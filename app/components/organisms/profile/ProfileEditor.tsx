@@ -44,7 +44,7 @@ export default function ProfileEditor({ students, initialData, error }: ProfileE
         />
         {profileStudent && (
           <>
-            <div className="my-4 flex items-center px-4 py-2 bg-neutral-100 rounded-lg">
+            <div className="my-4 flex items-center px-4 py-2 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
               <img
                 className="h-12 w-12 mr-4 rounded-full object-cover"
                 src={studentImageUrl(profileStudent.studentId)}

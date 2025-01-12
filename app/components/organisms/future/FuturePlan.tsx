@@ -62,7 +62,7 @@ export default function FuturePlan({ events }: FuturePlanProps) {
 
   return (
     <table className="w-full md:mx-auto my-4 table-auto">
-      <thead className="bg-neutral-100 text-left">
+      <thead className="bg-neutral-100 dark:bg-neutral-900 text-left">
         <tr>
           <th className="p-2">일자</th>
           <th className="p-2">이벤트</th>
