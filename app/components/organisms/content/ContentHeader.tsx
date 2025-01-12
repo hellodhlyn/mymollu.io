@@ -181,13 +181,13 @@ export default function ContentHeader(
               </span>
             ))}
           </div>
-          <div className="h-full w-8 absolute left-0 top-0 flex items-center justify-center">
+          <div className="h-full w-8 absolute left-0 top-0 flex items-center justify-center bg-white dark:bg-neutral-800">
             <ChevronDoubleLeftIcon
               className="p-1 size-6 hover:bg-black hover:text-white rounded-full transition cursor-pointer" strokeWidth={2}
               onClick={() => selectVideo(-1)}
             />
           </div>
-          <div className="h-full w-8 absolute right-0 top-0 flex items-center justify-center">
+          <div className="h-full w-8 absolute right-0 top-0 flex items-center justify-center bg-white dark:bg-neutral-800">
             <ChevronDoubleRightIcon
               className="p-1 size-6 hover:bg-black hover:text-white rounded-full transition cursor-pointer" strokeWidth={2}
               onClick={() => selectVideo(1)}

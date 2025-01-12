@@ -22,7 +22,7 @@ export default function ProfileUsername({
       {imageUrl ?
         <img className="size-12 md:w-16 md:h-16 rounded-full object-cover" src={imageUrl ?? ""} alt={`${username}의 프로필`} /> :
         (
-          <div className="size-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-neutral-200 text-neutral-700">
+          <div className="size-12 md:w-16 md:h-16 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
             <UserIcon className="size-8" />
           </div>
         )
@@ -50,7 +50,7 @@ export default function ProfileUsername({
         <button
           type="button"
           className={sanitizeClassName(`
-            px-4 py-2 flex items-center text-white border border-2 border-neutral-900 bg-neutral-900 rounded-full transition
+            px-4 py-2 flex items-center text-white border border-neutral-900 bg-neutral-900 rounded-full transition
             disabled:opacity-50 hover:bg-neutral-700
           `)}
           onClick={onFollow}
@@ -64,8 +64,8 @@ export default function ProfileUsername({
         <button
           type="button"
           className={sanitizeClassName(`
-            px-4 py-2 flex items-center border border-2 border-neutral-900 rounded-full transition group
-            disabled:opacity-50 hover:border-red-500 hover:bg-red-500 hover:text-white
+            px-4 py-2 flex items-center border border-neutral-900 dark:border-neutral-700 rounded-full transition group
+            disabled:opacity-50 dark:bg-neutral-900 hover:border-red-500 hover:bg-red-500 hover:text-white
           `)}
           onClick={onUnfollow}
           disabled={loading}

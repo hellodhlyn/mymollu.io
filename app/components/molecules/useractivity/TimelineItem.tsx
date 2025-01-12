@@ -34,7 +34,7 @@ export default function TimelineItem({ activity, showProfile, showTime }: Timeli
             )}
           </div>
         )}
-        <div className="my-2 p-4 bg-neutral-100 rounded-lg">
+        <div className="my-2 p-4 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
           <div className="flex items-center">
             <ProfileImage studentId={followee.profileStudentId} />
             <p className="ml-2">
